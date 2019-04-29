@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'user',
         'passwords' => 'users',
     ],
 
@@ -36,14 +36,37 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        'user' => [
             'driver' => 'session',
             'provider' => 'users',
         ],
 
-        'api' => [
+        'user_api' => [
             'driver' => 'token',
             'provider' => 'users',
+            'hash' => false,
+        ],
+
+
+        'instructor' => [
+            'driver' => 'session',
+            'provider' => 'instructors',
+        ],
+
+        'instructor_api' => [
+            'driver' => 'token',
+            'provider' => 'instructors',
+            'hash' => false,
+        ],
+
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+
+        'admin_api' => [
+            'driver' => 'token',
+            'provider' => 'admins',
             'hash' => false,
         ],
     ],
@@ -66,15 +89,21 @@ return [
     */
 
     'providers' => [
+
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'instructors' => [
+            'driver' => 'eloquent',
+            'model' => App\Instructor::class,
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Admin::class,
+        ],        
     ],
 
     /*

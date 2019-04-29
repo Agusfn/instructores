@@ -12,15 +12,39 @@ class RedirectIfAuthenticated
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string|null  $guard
+     * @param  string[]  $guards
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, ...$guards)
     {
-        if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+
+        if (empty($guards)) {
+            $guards = [null];
+        }
+
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+                return $this->redirectTo($guard);
+            }
         }
 
         return $next($request);
     }
+
+
+    /**
+     * [redirectTo description]
+     * @param  [type] $guard [description]
+     * @return [type]        [description]
+     */
+    private function redirectTo($guard)
+    {
+        if($guard == "admin") {
+            return redirect()->route("admin.home");
+        }
+        else if($guard == "user" || $guard == "instructor") {
+            return redirect()->route("home");
+        }
+    }
+
 }

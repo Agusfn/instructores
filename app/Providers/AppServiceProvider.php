@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Auth;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        
+
     }
 
     /**
@@ -25,5 +29,24 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+
+        // Guest only used in front end
+        Blade::if('guest', function () {
+            return !Auth::guard("user")->check() && !Auth::guard("instructor")->check();
+        });
+
+        Blade::if('user', function () {
+            return Auth::guard("user")->check();
+        });
+
+        Blade::if('instructor', function () {
+            return Auth::guard("instructor")->check();
+        });
+
+        Blade::if('admin', function () {
+            return Auth::guard("admin")->check();
+        });
+
     }
 }

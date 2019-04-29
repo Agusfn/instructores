@@ -2,21 +2,23 @@
 
 namespace App;
 
+use App\Mail\UserWelcomeEmail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password',
+    protected $guarded = [
+        'id', 'remember_token'
     ];
 
     /**
@@ -36,4 +38,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
+    public static function findByEmail($email) 
+    {
+        return self::where("email", $email)->first();
+    }
+
+
+    public function sendWelcomeAndVerificationEmail()
+    {
+        return Mail::to($this)->send(new UserWelcomeEmail($this));
+    }
+
+
+    
 }

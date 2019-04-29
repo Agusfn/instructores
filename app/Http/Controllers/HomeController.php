@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -23,6 +23,22 @@ class HomeController extends Controller
      */
     public function index()
     {
+        //dd(\Auth::guard("admin")->user());
         return view('home');
     }
+
+
+    public function faq()
+    {
+        return view("faq");
+    }
+
+
+
+    public function becomeInstructor()
+    {
+        return view("become-instructor");
+    }
+
+
 }
