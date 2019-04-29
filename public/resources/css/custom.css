@@ -1,0 +1,221 @@
+/*============================================================================================*/
+/* Your custom styles below */
+/*============================================================================================*/
+/*-------- COLOR BLUE--------*/
+[data-loader="circle-side"] {
+  border: 2px solid #299aea;
+}
+
+
+/*titulo*/
+.hero_single.version_2 .wrapper h3 {
+	 font-size: 1.8rem  ; 
+	 color: #ffc107;
+	 text-shadow: black;
+}
+
+/*botones menu*/
+
+.main-menu > ul > li span > a {
+	font-size: 1rem;
+
+}
+
+/*botones buscador*/
+
+.custom-search-input-2 input[type='submit'] {
+	background-color: #299aea;
+}
+
+
+.custom-search-input-2 input[type='submit']:hover {
+	background-color: darkgray;
+	color: white;
+
+}
+
+
+.qtyTotal {
+	background-color: #299aeaad;
+}
+
+/*separador*/
+
+.main_title_2 span em {
+	background-color: #8b8c8d;
+}
+
+
+/*segundo titulo*/
+.main_title_2 h2 {
+	color: #2b81ab;
+	font-size: 1.8rem;
+}
+
+.main_title_2 p {
+	font-size: 1.3rem;
+}
+
+/*iconos*/
+
+a.box_feat {
+	transform: translateY(0px);
+}
+
+a.box_feat:hover {
+	transform: translateY(0px);
+}
+
+a.box_feat h3 {
+	color: #827a7a;
+}
+
+a.box_feat i {
+	color: #2b81ab;
+	font-size: 3.5rem;
+}
+
+
+/*boton sos instructor*/
+
+a.btn_1, .btn_1 {
+	background-color: #0054a6;
+}
+
+a.btn_1:hover, .btn_1:hover {
+	background-color: darkgrey;
+}
+
+/*footer*/
+
+.contact_info ul li h4 {
+	color: #299aea;
+}
+
+
+/*boton navegar arriba*/
+
+#toTop:hover {
+	background-color: darkgray;
+}
+
+
+
+/*imagen portada*/
+
+.hero_single.version_2:before {
+  background: url(../img/1.jpg) center center no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  opacity: 0.5	;
+}
+
+
+/*imagen call*/
+
+.call_section {
+  background: url(../img/2.png) center center no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  min-height: 400px;
+  padding: 10% 0;
+}
+
+
+
+/*CALENDARIO*/
+
+
+.applyBtn.btn.btn-sm.btn-primary {
+	background-color: #299aea;
+}
+
+
+
+
+
+
+
+
+
+
+/*PREGUNTAS FRECUENTES FAQ*/
+
+
+.hero_in {
+	background-color: #f8f8f8;
+	height: 100px;
+}
+
+#menu2 a {
+	color: black;
+}
+
+ul#cat_nav li a:hover, ul#cat_nav li a#active, ul#cat_nav li a.active {
+	color: #299aea;
+}
+
+.accordion_2 .card-header h5 a i.indicator {
+	color: #299aea;
+}
+
+
+
+
+/*resultados de busqueda*/
+.mm-slideout {
+	background-color: #22c2ff0f;
+
+
+
+}
+.hero_in.hotels .wrapper {background-color: #299aea;}
+
+
+
+
+
+/*propiedades de los boxes - detalle de la busqueda*/
+#titulo {
+	font-size: 0.85rem;
+	color: white;
+}
+#resultados a{
+	color: black;
+}
+
+#resultados a.boxed_list{
+	color: blue;
+
+}
+
+.box_grid .price strong {
+	color: #009688;
+}
+
+#cargarmas a{
+	color: white;
+}
+
+
+/*compra*/
+
+.hero_in .wrapper {
+	background-color: #299aea;
+}
+
+.bs-wizard {
+	margin: 5px;
+}
+
+a.btn_1.full-width.purchase, .btn_1.full-width.purchase {
+	background-color: #0054a6;
+}
+
+.form_title h3 strong{
+	background-color: darkgrey;
+}
