@@ -57,6 +57,9 @@ Route::get("instructor/registro", "Instructor\Auth\RegisterController@showRegist
 Route::post("instructor/registro", "Instructor\Auth\RegisterController@register");
 
 Route::get("instructor/panel/cuenta", "Instructor\AccountDetailsController@index")->name("instructor.account");
+Route::get("instructor/panel/cuenta/password", "Instructor\AccountDetailsController@showChangePasswordForm");
+Route::post("instructor/panel/cuenta/password", "Instructor\AccountDetailsController@changePassword");
+
 Route::post("instructor/panel/cuenta/verificar", "Instructor\AccountDetailsController@sendVerifyInfo");
 Route::get("instructor/panel/servicio", "Instructor\ServiceDetailsController@index")->name("instructor.service");
 Route::get("instructor/panel/reservas", "Instructor\ReservationsController@showList")->name("instructor.reservations");
@@ -82,6 +85,8 @@ Route::get("admin", "Admin\HomeController@index")->name("admin.home");
 
 Route::get("admin/instructores", "Admin\InstructorsController@list")->name("admin.instructors.list");
 Route::get("admin/instructores/{id}", "Admin\InstructorsController@details")->name("admin.instructors.details");
+Route::post("admin/instructores/{id}/aprobar", "Admin\InstructorsController@approve");
+Route::post("admin/instructores/{id}/rechazar_doc", "Admin\InstructorsController@rejectDocs");
 
 Route::get("admin/usuarios", "Admin\UsersController@list")->name("admin.users.list");
 Route::get("admin/usuarios/{id}", "Admin\UsersController@details")->name("admin.users.details");

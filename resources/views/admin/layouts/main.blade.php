@@ -35,6 +35,10 @@
 
 <body class="fixed-nav sticky-footer" id="page-top">
 
+
+  @yield('body-start')
+
+
   <!-- Navigation-->
   @include('admin.layouts.navigation')
   <!-- /Navigation-->
@@ -76,7 +80,7 @@
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('resources/admin/js/admin.js') }}"></script>
 	<!-- Custom scripts for this page-->
-	@yield('js')
+	@yield('custom-js')
     
 	
 </body>

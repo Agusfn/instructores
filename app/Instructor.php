@@ -54,12 +54,21 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
 
+    /**
+     * Check if instructor has been approved.
+     * @return boolean
+     */
     public function isApproved()
     {
         return (bool)$this->approved;
     }
 
 
+
+    /**
+     * Check if instructor has sent the documents for their approval.
+     * @return bool
+     */
     public function approvalDocsSent()
     {
         if($this->identification_imgs == null || $this->professional_cert_imgs == null)
@@ -69,11 +78,38 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     }
 
 
+    /**
+     * Approve instructor.
+     * @return null
+     */
     public function approve()
     {
         $this->approved = true;
         $this->approved_at = date("Y-m-d H:i:s");
         $this->save();
+    }
+
+
+    /**
+     * Reject the documents sent for approval.
+     * @return null
+     */
+    public function rejectDocs()
+    {
+        $this->documents_sent_at = null;
+        $this->identification_imgs = null;
+        $this->professional_cert_imgs = null;
+        $this->save();
+    }
+
+
+    /**
+     * Get the service provided by the instructor
+     * @return App\InstructorService|null
+     */
+    public function service()
+    {
+        return $this->hasOne("App\InstructorService");
     }
 
 

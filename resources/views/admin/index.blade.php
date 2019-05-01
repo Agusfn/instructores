@@ -91,6 +91,6 @@
 @endsection
 
 
-@section('js')
+@section('custom-js')
 <script src="{{ asset('resources/admin/js/admin-charts.js') }}"></script>
 @endsection

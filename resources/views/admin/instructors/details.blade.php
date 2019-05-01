@@ -1,14 +1,122 @@
 @extends('admin.layouts.main')
 
 
+
+@section('body-start')
+
+@if($instructor != null)
+
+	@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
+	<div class="modal" tabindex="-1" role="dialog" id="approval-modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Aprobar instructor</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+
+					<div class="alert alert-info">Ingresa los datos de los documentos enviados por el instructor.</div>
+
+					<form action="{{ url('admin/instructores/'.$instructor->id.'/aprobar') }}" method="POST" id="approve-form">
+						@csrf
+						<div class="form-group">
+							<label>Tipo de documento</label>
+							<select name="identification_type" class="form-control">
+								<option value="dni">DNI</option>
+								<option value="passport">Pasaporte</option>
+							</select>
+							@if ($errors->approval->has('identification_type'))
+					        <span class="invalid-feedback" role="alert" style="display: block;">
+					            <strong>{{ $errors->approval->first('identification_type') }}</strong>
+					        </span>
+					    	@endif
+						</div>
+						<div class="form-group">
+							<label>Número de documento</label>
+							<input type="text" class="form-control" name="identification_number">
+							@if ($errors->approval->has('identification_number'))
+					        <span class="invalid-feedback" role="alert" style="display: block;">
+					            <strong>{{ $errors->approval->first('identification_number') }}</strong>
+					        </span>
+					    	@endif
+						</div>
+					</form>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+					<button type="button" class="btn btn-primary" onclick="$('#approve-form').submit();">Confirmar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal" tabindex="-1" role="dialog" id="reject-docs-modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Rechazar documentación</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+
+					<form action="{{ url('admin/instructores/'.$instructor->id.'/rechazar_doc') }}" method="POST" id="reject-docs-form">
+						@csrf
+						<div class="form-group">
+							<label>Motivo del rechazo de documentación</label>
+							<input type="text" class="form-control" name="reason">
+							@if ($errors->doc_rejectal->has('reason'))
+					        <span class="invalid-feedback" role="alert" style="display: block;">
+					            <strong>{{ $errors->doc_rejectal->first('reason') }}</strong>
+					        </span>
+					    	@endif
+						</div>
+					</form>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+					<button type="button" class="btn btn-primary" onclick="$('#reject-docs-form').submit();">Confirmar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	@endif
+
+@endif
+
+
+
+@endsection
+
+
 @section('content')
 
 	<!-- Breadcrumbs-->
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-        <li class="breadcrumb-item active">Lista de instructores</li>
-        <li class="breadcrumb-item active">Detalles de instructor</li>
-      </ol>
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+			<li class="breadcrumb-item active">Lista de instructores</li>
+			<li class="breadcrumb-item active">Detalles de instructor</li>
+		</ol>
+
+		@if($instructor != null)
+
+		<div class="box_general padding_bottom">
+			
+			@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
+			<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#approval-modal">Aprobar instructor</button>
+			<button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#reject-docs-modal">Rechazar documentación</button>
+			@endif
+
+
+		</div>
+
       	<div class="row">
       		<div class="col-md-6">
 				<div class="box_general padding_bottom">
@@ -63,7 +171,11 @@
 							<div class="col-lg-3">
 								<label><strong>Fotos certif.</strong></label><br/>
 								@if($instructor->approvalDocsSent())
-									{{ $instructor->professional_cert_imgs }}
+
+									@foreach( explode(',', $instructor->professional_cert_imgs) as $img_path )
+										<a href="{{ Storage::url($img_path) }}" target="_blank">Imágen</a><br/>
+									@endforeach
+
 								@else
 									-
 								@endif
@@ -73,7 +185,11 @@
 							<div class="col-lg-3">
 								<label><strong>Fotos documento</strong></label><br/>
 								@if($instructor->approvalDocsSent())
-									{{ $instructor->identification_imgs }}
+
+									@foreach( explode(',', $instructor->identification_imgs) as $img_path )
+										<a href="{{ Storage::url($img_path) }}" target="_blank">Imágen</a><br/>
+									@endforeach
+
 								@else
 									-
 								@endif
@@ -82,7 +198,7 @@
 							<div class="col-lg-3">
 								<label><strong>Fecha enviado</strong></label><br/>
 								@if($instructor->approvalDocsSent())
-									{{ $instructor->documents_sent_at }}
+									{{ date('d/m/Y H:i:s', strtotime($instructor->documents_sent_at)) }}
 								@else
 									-
 								@endif
@@ -159,6 +275,23 @@
 		</div>
 		<!-- /box_general-->
 
+		@else
+
+		<h3>No se encontró el instructor</h3>
+
+		@endif
+		
+
 @endsection
 
 
+
+@section('custom-js')
+
+@if(!$errors->approval->isEmpty())
+<script>
+$('#approval-modal').modal("show");
+</script>
+@endif
+
+@endsection
