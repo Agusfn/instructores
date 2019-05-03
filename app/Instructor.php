@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\InstructorService;
 use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Notifications\Notifiable;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Instructor extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
+
 
     /**
      * The attributes that are not mass assignable.
@@ -38,6 +40,28 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
+    /**
+     * Identification type codes (for DB) and names.
+     * @var string[]
+     */
+    public static $identification_types = [
+        "dni" => "DNI", 
+        "passport" => "Pasaporte"
+    ];
+
+
+    /**
+     * Get name of identification type.
+     * @param  string $code
+     * @return string
+     */
+    public static function idTypeName($code)
+    {
+        return self::$identification_types[$code];
+    }
 
 
 
@@ -79,11 +103,19 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
     /**
-     * Approve instructor.
+     * Approve instructor and create its service
      * @return null
      */
     public function approve()
     {
+
+        $service = InstructorService::create([
+            "number" => InstructorService::generateNumber(),
+            "published" => false,
+            "instructor_id" => $this->id            
+        ]);
+
+
         $this->approved = true;
         $this->approved_at = date("Y-m-d H:i:s");
         $this->save();
@@ -111,6 +143,7 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne("App\InstructorService");
     }
+
 
 
 }

@@ -9,6 +9,9 @@
     <meta name="author" content="Ansonika">
     <title>Instructores | Ski & Snowboard</title>
 
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Favicons-->
     <link rel="shortcut icon" href="{{ asset('resources/img/favicon.png') }}" type="image/x-icon">
     <link rel="apple-touch-icon" type="image/x-icon" href="{{ asset('resources/img/apple-touch-icon-57x57-precomposed.png') }}">
@@ -21,6 +24,7 @@
 
     <!-- BASE CSS -->
     <link href="{{ asset('resources/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('resources/vendor/font-awesome-4.7.0/css/font-awesome.min.css') }}">
     <link href="{{ asset('resources/css/style.css') }}" rel="stylesheet">
 	<link href="{{ asset('resources/css/vendors.css') }}" rel="stylesheet">
 

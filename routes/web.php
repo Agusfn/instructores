@@ -59,10 +59,16 @@ Route::post("instructor/registro", "Instructor\Auth\RegisterController@register"
 Route::get("instructor/panel/cuenta", "Instructor\AccountDetailsController@index")->name("instructor.account");
 Route::get("instructor/panel/cuenta/password", "Instructor\AccountDetailsController@showChangePasswordForm");
 Route::post("instructor/panel/cuenta/password", "Instructor\AccountDetailsController@changePassword");
-
+Route::post("instructor/panel/cuenta/cambiar_tel", "Instructor\AccountDetailsController@changePhone");
 Route::post("instructor/panel/cuenta/verificar", "Instructor\AccountDetailsController@sendVerifyInfo");
+
 Route::get("instructor/panel/servicio", "Instructor\ServiceDetailsController@index")->name("instructor.service");
+Route::post("instructor/panel/servicio/agregar_fechas", "Instructor\ServiceDetailsController@addDateRange");
+Route::post("instructor/panel/servicio/eliminar_fechas", "Instructor\ServiceDetailsController@removeDateRange");
+
 Route::get("instructor/panel/reservas", "Instructor\ReservationsController@showList")->name("instructor.reservations");
+
+
 Route::get("instructor/panel/saldo", "Instructor\AccountBalanceController@index")->name("instructor.balance");
 
 

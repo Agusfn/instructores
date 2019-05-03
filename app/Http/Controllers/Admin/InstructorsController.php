@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use Validator;
 use App\Instructor;
 use Illuminate\Http\Request;
+use Mail\InstructorApproved;
+use Mail\InstructorDocsRejected;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class InstructorsController extends Controller
@@ -54,7 +57,7 @@ class InstructorsController extends Controller
 		$instructor->fill($request->only("identification_type", "identification_number"));
 		$instructor->save();
 
-		// send mail
+		//Mail::to($instructor)->send(new InstructorApproved($instructor));
 
 		return redirect()->back();
 	}
@@ -81,7 +84,7 @@ class InstructorsController extends Controller
 
 		$instructor->rejectDocs();
 
-		// send mail
+		//Mail::to($instructor)->send(new InstructorDocsRejected($instructor));
 
 		return redirect()->back();
 	}

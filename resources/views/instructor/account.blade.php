@@ -63,8 +63,9 @@
 									<span style="font-size:12px">(<a href="javascript:void(0);" onclick="$(this).closest('div').hide();$('#change-phone-form').show();">cambiar</a>)</span>
 								</div>
 							
-								<form id="change-phone-form" style="display: none" method="POST" action="">
-									<input type="text" value="{{ $instructor->phone_number }}" class="form-control form-control-sm" style="width: 150px; display: inline-block;">
+								<form id="change-phone-form" style="display: none" method="POST" action="{{ url('instructor/panel/cuenta/cambiar_tel') }}">
+									@csrf
+									<input type="text" value="{{ $instructor->phone_number }}" name="phone_number" class="form-control form-control-sm" style="width: 150px; display: inline-block;">
 									<button type="submit" class="btn btn-primary btn-sm">Modificar</button>
 								</form>
 								@else
@@ -76,7 +77,7 @@
 							<td><strong>Tipo de documento</strong></td>
 							<td>
 								@if($instructor->isApproved())
-								{{ $instructor->identification_type }}
+								{{ App\Instructor::idTypeName($instructor->identification_type) }}
 								@else
 								-
 								@endif

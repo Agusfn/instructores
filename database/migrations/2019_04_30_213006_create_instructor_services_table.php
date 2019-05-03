@@ -15,17 +15,17 @@ class CreateInstructorServicesTable extends Migration
     {
         Schema::create('instructor_services', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('number');
+            $table->unsignedInteger('number');
+            $table->boolean('published');
             $table->unsignedBigInteger('instructor_id');
-            $table->string('title');
-            $table->text('description');
-            $table->string('pictures');
-            $table->string('working_days');
-            $table->decimal('high_season_price', 8, 2);
-            $table->decimal('mid_season_price', 8, 2);
-            $table->decimal('low_season_price', 8, 2);
+            $table->string('title')->nullable();
+            $table->text('description')->nullable();
+            $table->string('pictures')->nullable();
+            $table->integer('work_hour_start')->nullable();
+            $table->integer('work_hour_end')->nullable();
+            $table->timestamps();
 
-
+            
             $table->foreign('instructor_id')->references('id')->on('instructors');
         });
     }

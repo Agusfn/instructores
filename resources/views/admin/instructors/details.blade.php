@@ -24,21 +24,22 @@
 						@csrf
 						<div class="form-group">
 							<label>Tipo de documento</label>
-							<select name="identification_type" class="form-control">
-								<option value="dni">DNI</option>
-								<option value="passport">Pasaporte</option>
+							<select name="identification_type" class="form-control{{ $errors->approval->has('identification_type') ? ' is-invalid' : '' }}">
+								@foreach(App\Instructor::$identification_types as $code => $name)
+								<option value="{{ $code }}">{{ $name }}</option>
+								@endforeach
 							</select>
 							@if ($errors->approval->has('identification_type'))
-					        <span class="invalid-feedback" role="alert" style="display: block;">
+					        <span class="invalid-feedback" role="alert">
 					            <strong>{{ $errors->approval->first('identification_type') }}</strong>
 					        </span>
 					    	@endif
 						</div>
 						<div class="form-group">
 							<label>Número de documento</label>
-							<input type="text" class="form-control" name="identification_number">
+							<input type="text" class="form-control{{ $errors->approval->has('identification_number') ? ' is-invalid' : '' }}" name="identification_number">
 							@if ($errors->approval->has('identification_number'))
-					        <span class="invalid-feedback" role="alert" style="display: block;">
+					        <span class="invalid-feedback" role="alert">
 					            <strong>{{ $errors->approval->first('identification_number') }}</strong>
 					        </span>
 					    	@endif
@@ -70,7 +71,7 @@
 						@csrf
 						<div class="form-group">
 							<label>Motivo del rechazo de documentación</label>
-							<input type="text" class="form-control" name="reason">
+							<input type="text" class="form-control{{ $errors->doc_rejectal->has('reason') ? ' is-invalid' : '' }}" name="reason">
 							@if ($errors->doc_rejectal->has('reason'))
 					        <span class="invalid-feedback" role="alert" style="display: block;">
 					            <strong>{{ $errors->doc_rejectal->first('reason') }}</strong>
@@ -196,12 +197,19 @@
 							</div>
 
 							<div class="col-lg-3">
-								<label><strong>Fecha enviado</strong></label><br/>
-								@if($instructor->approvalDocsSent())
-									{{ date('d/m/Y H:i:s', strtotime($instructor->documents_sent_at)) }}
+								@if(!$instructor->isApproved())
+									<label><strong>Fecha enviados</strong></label><br/>
+									@if($instructor->approvalDocsSent())
+										{{ date('d/m/Y H:i:s', strtotime($instructor->documents_sent_at)) }}
+									@else
+										-
+									@endif
 								@else
-									-
+									<label><strong>Fecha aprobado</strong></label><br/>
+									{{ date('d/m/Y', strtotime($instructor->approved_at)) }}
 								@endif
+
+
 							</div>
 						</div>
 
@@ -209,7 +217,7 @@
 							<div class="col-lg-3">
 								<label><strong>Tipo documento</strong></label><br/>
 								@if($instructor->isApproved())
-									{{ $instructor->identification_type }}
+									{{ App\Instructor::idTypeName($instructor->identification_type) }}
 								@else
 									-
 								@endif
@@ -288,10 +296,16 @@
 
 @section('custom-js')
 
-@if(!$errors->approval->isEmpty())
+
 <script>
+@if(!$errors->approval->isEmpty())
 $('#approval-modal').modal("show");
-</script>
 @endif
+
+@if(!$errors->doc_rejectal->isEmpty())
+$('#reject-docs-modal').modal("show");
+@endif
+</script>
+
 
 @endsection

@@ -13,12 +13,20 @@ class AccountDetailsController extends Controller
 {
 
 
+	/**
+	 * [__construct description]
+	 */
 	public function __construct()
 	{
 		$this->middleware("auth:instructor");
 	}
     
 
+
+	/**
+	 * [index description]
+	 * @return [type] [description]
+	 */
 	public function index()
 	{
 		return view("instructor.account")->with("instructor", Auth::user());
@@ -26,12 +34,22 @@ class AccountDetailsController extends Controller
 
 
 
+	/**
+	 * [showChangePasswordForm description]
+	 * @return [type] [description]
+	 */
 	public function showChangePasswordForm()
 	{
 		return view("instructor.change-password");
 	}
 
 
+
+	/**
+	 * [changePassword description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function changePassword(Request $request)
 	{
 		
@@ -58,7 +76,31 @@ class AccountDetailsController extends Controller
 	}
 
 
+	/**
+	 * [changePhone description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function changePhone(Request $request)
+	{
 
+		$request->validate([
+			"phone_number" => "required|between:5,20|regex:/^[0-9+ -]*$/"
+		]);
+
+		Auth::user()->phone_number = $request->input("phone_number");
+		Auth::user()->save();
+
+		return redirect()->back();
+	}
+
+
+
+	/**
+	 * [sendVerifyInfo description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function sendVerifyInfo(Request $request)
 	{
 
@@ -68,7 +110,7 @@ class AccountDetailsController extends Controller
 		];
 
 		Validator::make($request->all(), [
-            'phone_number' => 'required',
+            'phone_number' => 'required|between:5,20|regex:/^[0-9+ -]*$/',
             'identification_imgs' => 'required|max:2',
             'identification_imgs.*' => 'required|mimes:png,jpeg,bmp|max:5120',
             'certificate_imgs' => 'required|size:2',
