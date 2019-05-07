@@ -17,6 +17,14 @@ class ServiceDateRange extends Model
 
 
 
+	/**
+	 * Get the instructor service that owns this date range
+	 * @return App\InstructorService
+	 */
+	public function service()
+	{
+		return $this->belongsTo("App\InstructorService", "instructor_service_id");
+	}
 
 
 

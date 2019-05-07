@@ -103,31 +103,32 @@
 					<p>Necesitamos verificar tu identidad y certificación para que puedas empezar a ofrecer tus servicios.</p>
 					<div class="form-group">
 						<label>Fotos de ambas caras del DNI, o una foto del pasaporte</label>
-						<input type="file" style="display: block;" name="identification_imgs[]" multiple="multiple">
+						<input type="file" style="display: block;" name="identification_imgs[]" multiple="multiple" accept="image/*">
 					    @if ($errors->has('identification_imgs'))
 					        <span class="invalid-feedback" role="alert" style="display: block;">
 					            <strong>{{ $errors->first('identification_imgs') }}</strong>
 					        </span>
 					    @elseif ($errors->has('identification_imgs.*'))
 					        <span class="invalid-feedback" role="alert" style="display: block;">
-					            <strong>Sólo se pueden subir imágenes y de hasta 5MB cada una.</strong>
+					            <strong>Sólo se pueden subir imágenes JPG y PNG, de hasta 5MB cada una.</strong>
 					        </span>
 					    @endif
 			        </span>
 					</div>
 					<div class="form-group">
 						<label>Fotos de ambas caras del certificado profesional</label>
-						<input type="file" style="display: block;" name="certificate_imgs[]" multiple="multiple">
+						<input type="file" style="display: block;" name="certificate_imgs[]" multiple="multiple" accept="image/*">
 					    @if ($errors->has('certificate_imgs'))
 					        <span class="invalid-feedback" role="alert" style="display: block;">
 					            <strong>{{ $errors->first('certificate_imgs') }}</strong>
 					        </span>
-					    @elseif ($errors->has('identification_imgs.*'))
+					    @elseif ($errors->has('certificate_imgs.*'))
 					        <span class="invalid-feedback" role="alert" style="display: block;">
-					            <strong>Sólo se pueden subir imágenes y de hasta 5MB cada una.</strong>
+					            <strong>Sólo se pueden subir imágenes JPG y PNG, de hasta 5MB cada una.</strong>
 					        </span>
 					    @endif
 					</div>
+					@if(!$instructor->phone_number)
 					<div class="form-group">
 						<label>Número de teléfono</label>
 						<input type="text" class="form-control" name="phone_number" style="max-width: 400px">
@@ -137,6 +138,7 @@
 					        </span>
 					    @endif
 					</div>
+					@endif
 
 					<button type="submit" class="btn btn-primary">Enviar</button>
 				</form>

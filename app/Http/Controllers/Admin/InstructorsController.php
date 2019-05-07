@@ -10,6 +10,8 @@ use Mail\InstructorDocsRejected;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
+
 
 class InstructorsController extends Controller
 {
@@ -79,8 +81,11 @@ class InstructorsController extends Controller
 			return redirect()->back()->withErrors($validator, 'doc_rejectal')->withInput();
 		}
 
-		$file_paths = array_merge(explode(",", $instructor->identification_imgs), explode(",", $instructor->professional_cert_imgs));
-		Storage::delete($file_paths);
+		$fileNames = array_merge(explode(",", $instructor->identification_imgs), explode(",", $instructor->professional_cert_imgs));
+		foreach($fileNames as $fileName) {
+			Storage::disk("local")->delete("instructor_documents/".$instructor->id."/".$fileName);
+		}
+		
 
 		$instructor->rejectDocs();
 
@@ -89,6 +94,21 @@ class InstructorsController extends Controller
 		return redirect()->back();
 	}
 
+
+
+	public function displayDocumentImg(Request $request, $id, $filename)
+	{	
+		$storagePath = "instructor_documents/".$id."/".$filename;
+		
+		if(Storage::disk("local")->exists($storagePath)) {
+			$imageContent = Storage::disk("local")->get($storagePath);
+			return Image::make($imageContent)->response();
+		}
+		else {
+			return abort(404);
+		}
+
+	}
 
 
 }

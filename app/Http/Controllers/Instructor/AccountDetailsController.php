@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Instructor;
 
 use \Hash;
 use Validator;
+use App\Helpers\Images;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class AccountDetailsController extends Controller
 {
@@ -110,30 +112,33 @@ class AccountDetailsController extends Controller
 		];
 
 		Validator::make($request->all(), [
-            'phone_number' => 'required|between:5,20|regex:/^[0-9+ -]*$/',
+            'phone_number' => 'between:5,20|regex:/^[0-9+ -]*$/',
             'identification_imgs' => 'required|max:2',
-            'identification_imgs.*' => 'required|mimes:png,jpeg,bmp|max:5120',
+            'identification_imgs.*' => 'required|mimes:png,jpeg|max:5120',
             'certificate_imgs' => 'required|size:2',
-            'certificate_imgs.*' => 'required|mimes:png,jpeg,bmp|max:5120',
+            'certificate_imgs.*' => 'required|mimes:png,jpeg|max:5120',
         ], $messages)->validate();
 
 
 		$instructor = Auth::user();
 
-        $cert_imgs = [];
-        foreach($request->file("certificate_imgs") as $file) {
-        	$cert_imgs[] = Storage::putFile('instructor_files/'.$instructor->id, $file);
+        $certImgNames = [];
+        foreach($request->file("certificate_imgs") as $file)  {
+        	$image = Images::toJpgAndResize(Image::make($file), 1920, 1080);
+        	$certImgNames[] = basename(Images::saveImgWithRandName("local", "instructor_documents/".$instructor->id, $image));
         }
 
-        $id_imgs = [];
+        $idImgNames = [];
         foreach($request->file("identification_imgs") as $file) {
-        	$id_imgs[] = Storage::putFile('instructor_files/'.$instructor->id, $file);
+        	$image = Images::toJpgAndResize(Image::make($file), 1920, 1080);
+        	$idImgNames[] = basename(Images::saveImgWithRandName("local", "instructor_documents/".$instructor->id, $image));
         }
 
+        if($request->has("phone_number"))
+        	$instructor->phone_number = $request->input("phone_number");
         
-        $instructor->identification_imgs = implode(",", $id_imgs);
-        $instructor->professional_cert_imgs = implode(",", $cert_imgs);
-        $instructor->phone_number = $request->input("phone_number");
+        $instructor->identification_imgs = implode(",", $idImgNames);
+        $instructor->professional_cert_imgs = implode(",", $certImgNames);
         $instructor->documents_sent_at = date("Y-m-d  H:i:s");
         $instructor->save();
 

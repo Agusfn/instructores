@@ -37,24 +37,71 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
-        $this->mapWebRoutes();
+        $this->mapPublicWebRoutes();
+        $this->mapAdminWebRoutes();
+        $this->mapInstructorWebRoutes();
+        $this->mapUserWebRoutes();
 
         //
     }
 
     /**
-     * Define the "web" routes for the application.
+     * Define the public "web" routes for the application.
      *
      * These routes all receive session state, CSRF protection, etc.
      *
      * @return void
      */
-    protected function mapWebRoutes()
+    protected function mapPublicWebRoutes()
     {
         Route::middleware('web')
              ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
+             ->group(base_path('routes/web/public.php'));
     }
+
+    /**
+     * Define the admin "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapAdminWebRoutes()
+    {
+        Route::middleware('web')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/web/admin.php'));
+    }
+
+    /**
+     * Define the instructor "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapInstructorWebRoutes()
+    {
+        Route::middleware('web')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/web/instructor.php'));
+    }
+
+
+    /**
+     * Define the user "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapUserWebRoutes()
+    {
+        Route::middleware('web')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/web/user.php'));
+    }
+
 
     /**
      * Define the "api" routes for the application.

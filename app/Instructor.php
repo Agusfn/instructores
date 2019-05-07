@@ -112,7 +112,9 @@ class Instructor extends Authenticatable implements MustVerifyEmail
         $service = InstructorService::create([
             "number" => InstructorService::generateNumber(),
             "published" => false,
-            "instructor_id" => $this->id            
+            "instructor_id" => $this->id,
+            "work_hour_start" => 9,
+            "work_hour_end" => 17       
         ]);
 
 
@@ -123,7 +125,7 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
     /**
-     * Reject the documents sent for approval.
+     * Reject the documents sent for approval. Telephone is left unchanged.
      * @return null
      */
     public function rejectDocs()

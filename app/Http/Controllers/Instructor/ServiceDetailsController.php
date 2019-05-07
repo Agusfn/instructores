@@ -5,39 +5,50 @@ namespace App\Http\Controllers\Instructor;
 use Validator;
 use App\ServiceDateRange;
 use App\Helpers\Dates;
+use App\Helpers\Images;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ServiceDetailsController extends Controller
 {
     
 
-
+	/**
+	 * [__construct description]
+	 */
 	public function __construct()
 	{
-		$this->middleware("auth:instructor");
+		$this->middleware("auth:instructor")->only("index");
+		$this->middleware("instructor.approved")->except("index");
 	}
     
 
 
+	/**
+	 * [index description]
+	 * @return [type] [description]
+	 */
 	public function index()
 	{
 		$instructor = Auth::user();
 
 		return view("instructor.service")->with([
-			"approved" => $instructor->isApproved(),
 			"instructor" => $instructor,
 			"service" => $instructor->service
 		]);			
 	}
 
 
-
+	/**
+	 * [addDateRange description]
+	 * @param Request $request [description]
+	 */
 	public function addDateRange(Request $request)
 	{
 		$instructor = Auth::user();
-		$response = [];
 
 		$validator = Validator::make($request->all(), [
 			"date_start" => "required|regex:/^\d{4}-\d{2}-\d{2}$/|date", // regex is to avoid inputting different date formats.
@@ -49,75 +60,140 @@ class ServiceDetailsController extends Controller
 		$date_end = $request->date_end;
 
 		
-		if(!$instructor->isApproved()) { // if it's approved, then it has an InstructorService associated
-			$response["error_msg"] = "El instructor no está aprobado y no puede ofrecer sus servicios.";
-		}
-        else if ($validator->fails()) {
-        	$response["error_msg"] = "Las fechas deben ser válidas y el precio debe ser numérico.";
+		if ($validator->fails()) {
+			return response($validator->messages()->first(), 422);
         }
         else if($date_start < date("Y-m-d")) {
-        	$response["error_msg"] = "La fecha 'desde' no puede ser anterior a hoy.";
+        	return response("La fecha 'desde' no puede ser anterior a hoy.", 422);
         } 
         else if(Dates::getYear($date_start) != Dates::getYear($date_end)) {
-        	$response["error_msg"] = "Ambas fechas deben ser del mismo año.";
+        	return response("Ambas fechas deben ser del mismo año.", 422);
 		}
 		else if(!$instructor->service->hasRangeAvailable($date_start, $date_end)) {
-			$response["error_msg"] = "Alguna de las fechas del rango ingresado ya pertenece a otro rango.";
+			return response("Alguna de las fechas del rango ingresado ya pertenece a otro rango.", 422);
 		}
-		else
-		{
+		
 
-			$dateRange = ServiceDateRange::create([
-				"instructor_service_id" => $instructor->service->id,
-				"date_start" => $date_start,
-				"date_end" => $date_end,
-				"price_per_block" => $request->block_price
-			]);
+		$dateRange = ServiceDateRange::create([
+			"instructor_service_id" => $instructor->service->id,
+			"date_start" => $date_start,
+			"date_end" => $date_end,
+			"price_per_block" => $request->block_price
+		]);
 
-			$response["range_id"] = $dateRange->id;
-
-		}
-
-
-		if(isset($response["error_msg"]))
-			$response["success"] = false;
-		else
-			$response["success"] = true;
-
-
-		return response()->json($response);
-
-
+		return response()->json(["range_id" => $dateRange->id]);
 	}
 
 
-
+	/**
+	 * [removeDateRange description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function removeDateRange(Request $request)
 	{
 		$instructor = Auth::user();
-		$response = [];
 
+		$validator = Validator::make($request->all(), [
+			"range_id" => "required|integer",
+		]);
 
-		if(!$request->filled("range_id") || !is_int($request->range_id)) {
-			$response["error_msg"] = "Id rango de fechas incorrecto.";
+		if ($validator->fails()) {
+			return response($validator->messages()->first(), 422);
+        }
+	
+		$dateRange = ServiceDateRange::find($request->range_id);
+
+		if(!$dateRange || $dateRange->service->instructor->id != $instructor->id) {
+			return response("Rango de fechas a eliminar inexistente.", 422);
 		}
-		else if(!$instructor->isApproved()) { // if it's approved, then it has an InstructorService associated
-			$response["error_msg"] = "El instructor no está aprobado y no puede ofrecer sus servicios.";
-		}
-		else
-		{
-			$dateRange = ServiceDateRange::find($request->id);
 
-		}
-
-
-		if(isset($response["error_msg"]))
-			$response["success"] = false;
-		else
-			$response["success"] = true;
-
-		return response()->json($response);
+		$dateRange->delete();
+		return response(200);
 	}
 
+
+
+	/**
+	 * [uploadImage description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function uploadImage(Request $request) 
+	{
+		$instructor = Auth::user();
+
+		$validator = Validator::make($request->all(), [
+			"file" => "required|file|mimes:jpeg,png|max:4096"
+		]);
+
+		if ($validator->fails()) {
+			return response($validator->messages()->first(), 422);
+        }
+        else if($instructor->service->images_json != null && sizeof($instructor->service->images()) >= 5) {
+        	return response("Se alcanzó la cantidad máxima de imágenes subidas.", 422);
+        }
+
+        $imgNames = $instructor->service->addImage($request->file("file"));
+
+		return response()->json(["img" => $imgNames]);
+	}
+
+
+
+
+	/**
+	 * [deleteImage description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function deleteImage(Request $request)
+	{
+		$instructor = Auth::user();
+
+		$validator = Validator::make($request->all(), [
+			"file_name" => "required|string"
+		]);
+
+		if ($validator->fails()) {
+			return response($validator->messages()->first(), 422);
+        }
+        if(!$instructor->service->hasImage($request->file_name)) {
+        	return response("The image file name provided is invalid.", 422);
+        }
+
+        $instructor->service->removeImage($request->file_name);
+
+        return response("OK",200);
+
+	}
     
+
+
+
+	/**
+	 * [saveChanges description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function saveChanges(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			"title" => "required|string|min:10",
+			"description" => "required|string|min:10",
+			"work_hour_start" => "required|int|min:9|max:15|lt:work_hour_end",
+			"work_hour_end" => "required|int|min:11|max:17"
+		])->validate();
+
+		$instructor = Auth::user();
+
+		$instructor->service->fill($request->all());
+		$instructor->service->save();
+
+		return redirect()->back();
+	}
+
+
+
+
 }

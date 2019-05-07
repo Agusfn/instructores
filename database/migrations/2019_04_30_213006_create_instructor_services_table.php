@@ -20,9 +20,9 @@ class CreateInstructorServicesTable extends Migration
             $table->unsignedBigInteger('instructor_id');
             $table->string('title')->nullable();
             $table->text('description')->nullable();
-            $table->string('pictures')->nullable();
-            $table->integer('work_hour_start')->nullable();
-            $table->integer('work_hour_end')->nullable();
+            $table->text('images_json')->nullable();
+            $table->integer('work_hour_start');
+            $table->integer('work_hour_end');
             $table->timestamps();
 
             

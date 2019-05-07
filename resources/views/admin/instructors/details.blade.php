@@ -173,8 +173,8 @@
 								<label><strong>Fotos certif.</strong></label><br/>
 								@if($instructor->approvalDocsSent())
 
-									@foreach( explode(',', $instructor->professional_cert_imgs) as $img_path )
-										<a href="{{ Storage::url($img_path) }}" target="_blank">Imágen</a><br/>
+									@foreach(explode(',', $instructor->professional_cert_imgs) as $fileName)
+										<a href="{{ route('admin.instructors.documents', ['id' => $instructor->id, 'filename' => $fileName]) }}" target="_blank">Imágen</a><br/>
 									@endforeach
 
 								@else
@@ -187,8 +187,8 @@
 								<label><strong>Fotos documento</strong></label><br/>
 								@if($instructor->approvalDocsSent())
 
-									@foreach( explode(',', $instructor->identification_imgs) as $img_path )
-										<a href="{{ Storage::url($img_path) }}" target="_blank">Imágen</a><br/>
+									@foreach(explode(',', $instructor->identification_imgs) as $fileName)
+										<a href="{{ route('admin.instructors.documents', ['id' => $instructor->id, 'filename' => $fileName]) }}" target="_blank">Imágen</a><br/>
 									@endforeach
 
 								@else

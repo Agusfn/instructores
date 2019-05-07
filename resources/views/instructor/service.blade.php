@@ -2,7 +2,23 @@
 
 
 @section('custom-css')
-<link href="{{ asset('resources/vendor/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
+	@if($instructor->isApproved())
+	<link href="{{ asset('resources/vendor/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('resources/vendor/nouislider/nouislider.min.css') }}" rel="stylesheet">
+	<style>
+	.dz-image img {
+		width: 100%;
+		height: 100%
+	}
+	.dropzone .dz-preview:hover .dz-image img {
+	  -webkit-filter: blur(0px);
+	  filter: blur(0px); 
+	}
+	.dz-details {
+		display: none;
+	}
+	</style>
+	@endif
 @endsection
 
 
@@ -21,25 +37,41 @@
 
 			<div class="col-9">
 
-				@if(Auth::user()->isApproved())
+				@if($instructor->isApproved())
 
 				<h5 style="margin-bottom: 20px">Información del servicio</h5>
 
 				<div class="form-group">
 					<label>Título del servicio/clases brindadas</label>
-					<input type="text" class="form-control" placeholder="Ej: Clases de Snowboard para todas las edades">
+					<input type="text" name="title" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}" form="service-details" placeholder="Ej: Clases de Snowboard para todas las edades" value="{{ old('title') ?: $service->title }}">
+				    @if ($errors->has('title'))
+				        <span class="invalid-feedback" role="alert">
+				            <strong>{{ $errors->first('title') }}</strong>
+				        </span>
+				    @endif
 				</div>
 				<div class="form-group">
 					<label>Descripción</label>
-					<textarea class="form-control"></textarea>
+					<textarea name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" form="service-details">{{ old('description') ?: $service->description }}</textarea>
+				    @if ($errors->has('description'))
+				        <span class="invalid-feedback" role="alert">
+				            <strong>{{ $errors->first('description') }}</strong>
+				        </span>
+				    @endif
 				</div>
 
 				<div class="form-group">
 					<label>Imágenes de presentación</label>
-					<form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
+					<form action="{{ url('instructor/panel/servicio/subir_imagen') }}" method="POST" enctype="multipart/form-data" class="dropzone" id="img-dropzone">
+						@csrf
+						<div class="fallback">
+							<input name="file" type="file" multiple />
+						</div>
+					</form>
 				</div>
 
-				<form>
+				<form method="POST" action="{{ url('instructor/panel/servicio/guardar_cambios') }}" id="service-details">
+					@csrf
 					<h5 style="margin: 30px 0">Disponibilidad y precios</h5>
 
 
@@ -71,13 +103,17 @@
 						</tbody>
 					</table>
 
-					<div class="form-group">
-
+					<h6>Horario de disponibilidad diario</h6>
+					<div style="height: 100px;padding-top: 45px;width: 300px">
+						<div id="hour_slider"></div>
 					</div>
+					<input type="hidden" name="work_hour_start" value="{{ $service->work_hour_start }}">
+					<input type="hidden" name="work_hour_end" value="{{ $service->work_hour_end }}">
 
 
-					<button type="submit" class="btn btn-primary">Publicar servicio</button>
-					
+					<div class="clearix" style="margin-top: 50px">
+						<button type="submit" class="btn btn-primary" style="float: right;">Guardar cambios</button>
+					</div>
 
 				</form>
 
@@ -98,207 +134,19 @@
 
 
 @section('custom-js')
-<script src="{{ asset('resources/vendor/dropzone/min/dropzone.min.js') }}"></script>
-
-
-<script>
-
-
-
-
-$(document).ready(function() {
-	
-	
-	$("#btn_submit_range").click(function() {
-
-		if(!validate_range_form())
-			return;
-
-		var date_start = $("#date_start").val();
-		var date_end = $("#date_end").val();
-		var block_price = $("#block_price").val();
-
-		$.ajax({
-
-			type: "POST",
-
-			url: "{{ url('instructor/panel/servicio/agregar_fechas') }}",
-
-			headers: {
-				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		    },
-
-			data: {
-				date_start: date_start, 
-				date_end: date_end, 
-				block_price: block_price
-			},
-
-			beforeSend: function() {
-				disable_range_form_btn();
-			},
-
-			complete: function() {
-				enable_range_form_btn();
-			},
-
-			success: function(response) {
-				console.log(response); // debug
-
-				if(response.success) {
-					insert_date_range_row(date_start, date_end, block_price, response.range_id);
-				} else {
-					alert(response.error_msg);
-				}
-				
-			},
-
-			error: function (jqXhr, textStatus, errorMessage) {
-		       console.log(errorMessage);
-		    }
-
-		});
-
-	});
-
-
-	$(".delete-range-btn").click(function() {
-
-		var range_id = $(this).attr("data-range-id");
-
-		alert(range_id);
-
-		
-		$.ajax({
-
-			type: "POST",
-
-			url: "{{ url('instructor/panel/servicio/eliminar_fechas') }}",
-
-			headers: {
-				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		    },
-
-			data: {
-				date_start: date_start, 
-				date_end: date_end, 
-				block_price: block_price
-			},
-
-			beforeSend: function() {
-				disable_range_form_btn();
-			},
-
-			complete: function() {
-				enable_range_form_btn();
-			},
-
-			success: function(response) {
-				console.log(response); // debug
-
-				if(response.success) {
-					insert_date_range_row(date_start, date_end, block_price, response.range_id);
-				} else {
-					alert(response.error_msg);
-				}
-				
-			},
-
-			error: function (jqXhr, textStatus, errorMessage) {
-		       console.log(errorMessage);
-		    }
-
-		});
-
-
-
-
-	});
-
-
-});
-
-
-
-function validate_range_form()
-{
-	
-	var valid_date = /^\d{4}-\d{2}-\d{2}$/;
-
-	if(!valid_date.test($("#date_start").val()) || !valid_date.test($("#date_end").val())) {
-		alert("Ingresa fechas válidas.");
-		return false;
-	}
-
-
-	var date_start = new Date($("#date_start").val());
-	var date_end = new Date($("#date_end").val());
-	var today = new Date();
-	today.setHours(0,0,0,0);
-
-	if(isNaN(date_start.getTime()) || isNaN(date_end.getTime())) {
-		alert("Ingresa fechas válidas.");
-		return false;
-	}
-
-	if(date_end < date_start) {
-		alert("La fecha 'hasta' debe ser antes o igual a la fecha 'desde'.");
-		return false;
-	}
-
-	if(date_start < today) {
-		alert("La fecha 'desde' no puede ser anterior a hoy.");
-		return false;
-	}
-
-	if(date_start.getYear() != date_end.getYear()) {
-		alert("Ambas fechas deben ser del mismo año.");
-		return false;
-	}
-
-
-	var block_price = $("#block_price").val();
-	if(block_price == "" || isNaN(block_price)) {
-		alert("Ingresa un precio numérico válido.");
-		return false;
-	}
-
-	return true;
-}
-
-
-
-function disable_range_form_btn()
-{
-	$("#btn_submit_range").prop("disabled", true);
-	$("#btn_submit_range i").removeClass("fa-plus");
-	$("#btn_submit_range i").addClass("fa-spinner fa-spin");
-}
-
-
-function enable_range_form_btn()
-{
-	$("#btn_submit_range").prop("disabled", false);
-	$("#btn_submit_range i").addClass("fa-plus");
-	$("#btn_submit_range i").removeClass("fa-spinner fa-spin");
-}
-
-
-function insert_date_range_row(date_start, date_end, block_price, range_id)
-{
-	var html = `
-	<tr>
-		<td>`+ date_start +`</td>
-		<td>` + date_end + `</td>
-		<td>` + block_price + `</td>
-		<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="` + range_id + `"><i class="fa fa-times" aria-hidden="true"></i></button></td>
-	</tr>`;
-
-	$("#insert-form-row input").val("");
-
-	$("#insert-form-row").before(html);
-}
-
-</script>
-
+	@if($instructor->isApproved())
+	<script src="{{ asset('resources/vendor/dropzone/min/dropzone.min.js') }}"></script>
+	<script src="{{ asset('resources/vendor/nouislider/nouislider.min.js') }}"></script>
+	<script src="{{ asset('resources/js/wNumb.js') }}"></script>
+	<script src="{{ asset('resources/js/instructor-service-pg.js') }}"></script>
+	<script>
+		var app_url = "{{ config('app.url').'/' }}";
+		var img_dir = "{{ config('filesystems.disks.public.url').'/img/service/'.$service->number.'/' }}";
+		@if($instructor->service->images_json != null)
+		var uploaded_imgs = {!! $instructor->service->images_json !!};
+		@else
+		var uploaded_imgs = [];
+		@endif
+	</script>
+	@endif
 @endsection
