@@ -5,7 +5,14 @@
 	@if($instructor->isApproved())
 	<link href="{{ asset('resources/vendor/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('resources/vendor/nouislider/nouislider.min.css') }}" rel="stylesheet">
+	<link href="{{ asset('resources/css/skins/square/blue.css') }}" rel="stylesheet">
 	<style>
+	.noUi-connect {
+		background: #2489c5;
+	}
+	.noUi-pips-horizontal {
+		max-height: 53px;
+	}
 	.dz-image img {
 		width: 100%;
 		height: 100%
@@ -35,7 +42,7 @@
 
 			@include('instructor.panel-nav-layout')
 
-			<div class="col-9">
+			<div class="col-md-9">
 
 				@if($instructor->isApproved())
 
@@ -51,11 +58,21 @@
 				    @endif
 				</div>
 				<div class="form-group">
-					<label>Descripción</label>
-					<textarea name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" form="service-details">{{ old('description') ?: $service->description }}</textarea>
+					<label>Descripción&nbsp;&nbsp;&nbsp;<i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Escribe una introducción personal e información de las clases brindadas para que los interesados puedan conocer tu servicio."></i></label>
+					<textarea name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" form="service-details" style="height: 130px;">{{ old('description') ?: $service->description }}</textarea>
 				    @if ($errors->has('description'))
 				        <span class="invalid-feedback" role="alert">
 				            <strong>{{ $errors->first('description') }}</strong>
+				        </span>
+				    @endif
+				</div>
+
+				<div class="form-group">
+					<label>Características&nbsp;&nbsp;&nbsp;<i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Ingresa características que quieras resaltar de las clases brindadas, separandolas con saltos de linea."></i></label>
+					<textarea name="features" class="form-control{{ $errors->has('features') ? ' is-invalid' : '' }}" form="service-details" style="height: 130px;" placeholder="Ej:&#10;Todos los niveles&#10;Todas las edades">{{ $service->features }}</textarea>
+				    @if ($errors->has('features'))
+				        <span class="invalid-feedback" role="alert">
+				            <strong>{{ $errors->first('features') }}</strong>
 				        </span>
 				    @endif
 				</div>
@@ -103,12 +120,26 @@
 						</tbody>
 					</table>
 
-					<h6>Horario de disponibilidad diario</h6>
-					<div style="height: 100px;padding-top: 45px;width: 300px">
-						<div id="hour_slider"></div>
+					
+					<div class="row">
+
+						<div class="col-md-5">
+
+							<h6>Horario de disponibilidad diario</h6>
+							<div style="padding: 45px 0;">
+								<div id="hour_slider"></div>
+							</div>
+							<div style="margin-top: 20px">
+								<input type="checkbox" id="separate-working-hours" autocomplete="off" @if($service->hasSplitWorkHours()) checked @endif>
+								<label for="separate-working-hours" style="cursor: pointer;margin-left: 10px;">Dividir en dos partes</label>
+							</div>
+
+							<input type="hidden" name="work_hours" value="{{ $service->work_hours }}" autocomplete="off">
+
+						</div>
+
 					</div>
-					<input type="hidden" name="work_hour_start" value="{{ $service->work_hour_start }}">
-					<input type="hidden" name="work_hour_end" value="{{ $service->work_hour_end }}">
+
 
 
 					<div class="clearix" style="margin-top: 50px">
@@ -138,6 +169,7 @@
 	<script src="{{ asset('resources/vendor/dropzone/min/dropzone.min.js') }}"></script>
 	<script src="{{ asset('resources/vendor/nouislider/nouislider.min.js') }}"></script>
 	<script src="{{ asset('resources/js/wNumb.js') }}"></script>
+	<script src="{{ asset('resources/js/icheck.min.js') }}"></script>
 	<script src="{{ asset('resources/js/instructor-service-pg.js') }}"></script>
 	<script>
 		var app_url = "{{ config('app.url').'/' }}";

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Instructor;
 
 use Validator;
+
 use App\ServiceDateRange;
 use App\Helpers\Dates;
 use App\Helpers\Images;
 use Illuminate\Http\Request;
+use App\Rules\InstructorWorkHours;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -178,11 +180,12 @@ class ServiceDetailsController extends Controller
 	 */
 	public function saveChanges(Request $request)
 	{
+		//dd($request);
 		$validator = Validator::make($request->all(), [
 			"title" => "required|string|min:10",
 			"description" => "required|string|min:10",
-			"work_hour_start" => "required|int|min:9|max:15|lt:work_hour_end",
-			"work_hour_end" => "required|int|min:11|max:17"
+			"features" => "required|string",
+			"work_hours" => ["required", "string", new InstructorWorkHours]
 		])->validate();
 
 		$instructor = Auth::user();

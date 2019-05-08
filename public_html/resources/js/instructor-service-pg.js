@@ -1,6 +1,11 @@
 Dropzone.autoDiscover = false;
+var hourSlider = document.getElementById('hour_slider');
+
 
 $(document).ready(function() {
+
+	$('[data-toggle="tooltip"]').tooltip();
+
 
 	var imgDropzone = new Dropzone("#img-dropzone", {
 		paramName: "file",
@@ -96,37 +101,23 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 
-	var hourSlider = document.getElementById('hour_slider');
-
-	noUiSlider.create(hourSlider, {
-	    range: {
-	        'min': 9,
-	        'max': 17
-	    },
-	    step: 2,
-	    start: [
-	    	$("input[name=work_hour_start").val(), 
-	    	$("input[name=work_hour_end").val()
-    	],
-	    margin: 2,
-	    connect: true,
-	    direction: 'ltr',
-	    orientation: 'horizontal',
-	    behaviour: 'tap-drag',
-	    tooltips: true,
-	    format: wNumb({
-	        decimals: 0
-	    }),
-	    pips: {
-	        mode: 'steps',
-	        stepped: true,
-	        density: 25
-	    }
+	$('#separate-working-hours').iCheck({
+		checkboxClass: 'icheckbox_square-blue',
+		radioClass: 'iradio_square-blue',
+		increaseArea: '20%' // optional
 	});
 
-	hourSlider.noUiSlider.on('update', function (values, handle) {
-	    $("input[name=work_hour_start").val(values[0]);
-	    $("input[name=work_hour_end").val(values[1]);
+	var work_hours = $("input[name=work_hours").val().split(",");
+	create_hour_slider(work_hours[0], work_hours[1], work_hours[2], work_hours[3]);
+
+	$("#separate-working-hours").on("ifChecked", function(event) {
+		hourSlider.noUiSlider.destroy();
+		create_hour_slider(9, 11, 13, 17);
+	});
+
+	$("#separate-working-hours").on("ifUnchecked", function(event) {
+		hourSlider.noUiSlider.destroy();
+		create_hour_slider(9, 17);
 	});
 
 });
@@ -309,4 +300,48 @@ function insert_date_range_row(date_start, date_end, block_price, range_id)
 	$("#insert-form-row input").val("");
 
 	$("#insert-form-row").before(html);
+}
+
+
+
+function create_hour_slider(start1, end1, start2 = null, end2 = null)
+{
+	
+	var options = {
+	    range: {
+	        'min': 9,
+	        'max': 17
+	    },
+	    step: 2,
+	    margin: 2,
+	    direction: 'ltr',
+	    orientation: 'horizontal',
+	    behaviour: 'tap-drag',
+	    tooltips: true,
+	    format: wNumb({
+	        decimals: 0
+	    }),
+	    pips: {
+	        mode: 'steps',
+	        stepped: true,
+	        density: 25
+	    }
+	};
+
+	if(!start2 && !end2) {
+		options.start = [start1, end1];
+		options.connect = true;
+	} 
+	else {
+		options.start = [start1, end1, start2, end2];
+		options.connect = [false, true, false, true, false];
+	}
+
+	noUiSlider.create(hourSlider, options);
+
+	hourSlider.noUiSlider.on('update', function (values, handle) {
+		console.log(values.join(","));
+	    $("input[name=work_hours").val(values.join(","));
+	});
+
 }

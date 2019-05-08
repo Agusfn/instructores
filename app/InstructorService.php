@@ -17,7 +17,7 @@ class InstructorService extends Model
      *
      * @var array
      */
-	protected $fillable = ["title", "description", "work_hour_start", "work_hour_end"];
+	protected $fillable = ["title", "description", "features", "work_hours"];
 
 
 
@@ -219,6 +219,17 @@ class InstructorService extends Model
 	}
 
 
+
+	public function imageUrls()
+	{
+		$urls = [];
+		foreach($this->images() as $image) {
+			$urls[] = Storage::url("img/service/".$this->number."/".$image["name"]);
+		}
+		return $urls;
+	}
+
+
 	/**
 	 * Check whether the instructor service has certain image by file name
 	 * @param  string  $imageName
@@ -234,5 +245,31 @@ class InstructorService extends Model
 		}
 		return false;
 	}
+
+
+	/**
+	 * [hasSplitWorkHours description]
+	 * @return boolean [description]
+	 */
+	public function hasSplitWorkHours()
+	{
+		$hours = explode(",", $this->work_hours);
+		if(sizeof($hours) == 4)
+			return true;
+
+		return false;
+	}
+
+
+
+	/**
+	 * [featuresArray description]
+	 * @return [type] [description]
+	 */
+	public function featuresArray()
+	{
+		return preg_split("/\r\n|\n|\r/", $this->features);
+	}
+
 
 }

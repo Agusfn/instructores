@@ -20,7 +20,7 @@ Route::get("preguntas-frecuentes", "HomeController@faq")->name("faq");
 Route::get("ser-instructor", "HomeController@becomeInstructor")->name("become-instructor");
 
 
-Route::get("instructor/{service_number}", "InstructorServiceController@showDetails")->name("service-page");
+Route::get("clases/{service_number}", "InstructorServiceController@showDetails")->name("service-page");
 
 
 

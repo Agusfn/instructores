@@ -113,8 +113,7 @@ class Instructor extends Authenticatable implements MustVerifyEmail
             "number" => InstructorService::generateNumber(),
             "published" => false,
             "instructor_id" => $this->id,
-            "work_hour_start" => 9,
-            "work_hour_end" => 17       
+            "work_hours" => "9,17",     
         ]);
 
 

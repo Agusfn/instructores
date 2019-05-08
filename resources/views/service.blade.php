@@ -3,15 +3,24 @@
 
 @section('content')
 
-        <section class="hero_in hotels_detail">
+        <section class="hero_in hotels_detail" 
+        @if(isset($instructorService->imageUrls()[0]))
+        style="background-position: center center; background-size: cover; background-repeat: no-repeat; background-image: url('{{ $instructorService->imageUrls()[0] }}'); "
+        @endif
+        >
             <div class="wrapper">
                 <div class="container">
                     <h1 class="fadeInUp"><span></span>Perfil</h1>
                 </div>
                 <span class="magnific-gallery">
-                    <a href="{{ asset('resources/img/gallery/hotel_list_1.jpg') }}" class="btn_photos" title="Photo title" data-effect="mfp-zoom-in">Ver fotos</a>
-                    <a href="{{ asset('resources/img/gallery/hotel_list_2.jpg') }}" title="Photo title" data-effect="mfp-zoom-in"></a>
-                    <a href="{{ asset('resources/img/gallery/hotel_list_3.jpg') }}" title="Photo title" data-effect="mfp-zoom-in"></a>
+
+                    @foreach($instructorService->imageUrls() as $url)
+                        @if($loop->first)
+                        <a href="{{ $url }}" class="btn_photos" title="Photo title" data-effect="mfp-zoom-in">Ver fotos</a>
+                        @else
+                        <a href="{{ $url }}" title="Photo title" data-effect="mfp-zoom-in"></a>
+                        @endif
+                    @endforeach
                 </span>
             </div>
         </section>
@@ -32,23 +41,24 @@
                     <div class="col-lg-8">
                         <section id="description">
                             <h2>Descripción</h2>
-                            <p>Per consequat adolescens ex, cu nibh commune <strong>temporibus vim</strong>, ad sumo viris eloquentiam sed. Mea appareat omittantur eloquentiam ad, nam ei quas oportere democritum. Prima causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam, cetero inermis vel ut. An sit illum euismod facilisis, tamquam vulputate pertinacia eum at.</p>
-                            <p>Cum et probo menandri. Officiis consulatu pro et, ne sea sale invidunt, sed ut sint <strong>blandit</strong> efficiendi. Atomorum explicari eu qui, est enim quaerendum te. Quo harum viris id. Per ne quando dolore evertitur, pro ad cibo commune.</p>
+                            <p>{!! nl2br(e($instructorService->description)) !!}</p>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <ul class="bullets">
-                                        <li>Dolorem mediocritatem</li>
-                                        <li>Mea appareat</li>
-                                        <li>Prima causae</li>
-                                        <li>Singulis indoctum</li>
+                                        @foreach($instructorService->featuresArray() as $feature)
+                                            @if($loop->odd)
+                                            <li>{{ $feature }}</li>
+                                            @endif
+                                        @endforeach
                                     </ul>
                                 </div>
                                 <div class="col-lg-6">
                                     <ul class="bullets">
-                                        <li>Timeam inimicus</li>
-                                        <li>Oportere democritum</li>
-                                        <li>Cetero inermis</li>
-                                        <li>Pertinacia eum</li>
+                                        @foreach($instructorService->featuresArray() as $feature)
+                                            @if($loop->even)
+                                            <li>{{ $feature }}</li>
+                                            @endif
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
