@@ -109,12 +109,13 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     public function approve()
     {
 
-        $service = InstructorService::create([
-            "number" => InstructorService::generateNumber(),
-            "published" => false,
-            "instructor_id" => $this->id,
-            "work_hours" => "9,17",     
-        ]);
+        $service = new InstructorService(); 
+
+        $service->number = InstructorService::generateNumber();
+        $service->published = false;
+        $service->instructor_id = $this->id;
+        $service->work_hours = "9,17";   
+        $service->save();
 
 
         $this->approved = true;

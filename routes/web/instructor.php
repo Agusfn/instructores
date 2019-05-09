@@ -25,6 +25,8 @@ Route::get("instructor/panel/cuenta", "Instructor\AccountDetailsController@index
 Route::get("instructor/panel/cuenta/password", "Instructor\AccountDetailsController@showChangePasswordForm");
 Route::post("instructor/panel/cuenta/password", "Instructor\AccountDetailsController@changePassword");
 Route::post("instructor/panel/cuenta/cambiar_tel", "Instructor\AccountDetailsController@changePhone");
+Route::post("instructor/panel/cuenta/img_perfil", "Instructor\AccountDetailsController@changeProfilePic");
+Route::post("instructor/panel/cuenta/cambiar_instagram", "Instructor\AccountDetailsController@changeInstagram");
 Route::post("instructor/panel/cuenta/verificar", "Instructor\AccountDetailsController@sendVerifyInfo");
 
 // Service

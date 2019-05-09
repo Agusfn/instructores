@@ -18,7 +18,6 @@ class CreateInstructorServicesTable extends Migration
             $table->unsignedInteger('number');
             $table->boolean('published');
             $table->unsignedBigInteger('instructor_id');
-            $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->text('features')->nullable();
             $table->text('images_json')->nullable();

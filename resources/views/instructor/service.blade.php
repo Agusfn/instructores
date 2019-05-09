@@ -48,15 +48,7 @@
 
 				<h5 style="margin-bottom: 20px">Información del servicio</h5>
 
-				<div class="form-group">
-					<label>Título del servicio/clases brindadas</label>
-					<input type="text" name="title" class="form-control{{ $errors->has('title') ? ' is-invalid' : '' }}" form="service-details" placeholder="Ej: Clases de Snowboard para todas las edades" value="{{ old('title') ?: $service->title }}">
-				    @if ($errors->has('title'))
-				        <span class="invalid-feedback" role="alert">
-				            <strong>{{ $errors->first('title') }}</strong>
-				        </span>
-				    @endif
-				</div>
+
 				<div class="form-group">
 					<label>Descripción&nbsp;&nbsp;&nbsp;<i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Escribe una introducción personal e información de las clases brindadas para que los interesados puedan conocer tu servicio."></i></label>
 					<textarea name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" form="service-details" style="height: 130px;">{{ old('description') ?: $service->description }}</textarea>
@@ -147,7 +139,6 @@
 					</div>
 
 				</form>
-
 				@else
 				<div class="alert alert-warning">
 					Tu cuenta no ha sido aprobada aún. Para empezar a ofrecer tus servicios debés verificar tu documentación de identidad y certificación.

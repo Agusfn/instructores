@@ -20,9 +20,11 @@ class CreateInstructorsTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('phone_number')->nullable();
+            $table->string('profile_picture')->nullable();
+            $table->string('instagram_username')->nullable();
             $table->string("identification_imgs")->nullable();
             $table->string('professional_cert_imgs')->nullable();
-            $table->string('phone_number')->nullable();
             $table->timestamp('documents_sent_at')->nullable();
             $table->boolean('approved');
             $table->timestamp('approved_at')->nullable();

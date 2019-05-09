@@ -97,6 +97,54 @@ class AccountDetailsController extends Controller
 	}
 
 
+	/**
+	 * [changeProfilePic description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function changeProfilePic(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			"profile_pic" => "required|file|mimes:jpeg|max:5120"
+		]);
+
+		if($validator->fails()) {
+			return response($validator->messages()->first(), 422);
+		}
+
+		$instructor = Auth::user();
+
+
+		$fileName = basename(Storage::putFile("img/instructors", $request->file("profile_pic")));
+
+		$instructor->profile_picture = $fileName;
+		$instructor->save();
+
+		return response("OK", 200);
+	}
+
+
+
+	/**
+	 * [changeInstagram description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function changeInstagram(Request $request)
+	{
+		$request->validate([
+			"instagram_username" => "required|string|max:30|regex:/^[\w\d._]{1,30}$/"
+		]);
+
+		$instructor = Auth::user();
+
+		$instructor->instagram_username = $request->instagram_username;
+		$instructor->save();
+
+		return back();
+	}
+
+
 
 	/**
 	 * [sendVerifyInfo description]
@@ -112,16 +160,18 @@ class AccountDetailsController extends Controller
 		];
 
 		Validator::make($request->all(), [
-            'phone_number' => 'between:5,20|regex:/^[0-9+ -]*$/',
             'identification_imgs' => 'required|max:2',
             'identification_imgs.*' => 'required|mimes:png,jpeg|max:5120',
             'certificate_imgs' => 'required|size:2',
             'certificate_imgs.*' => 'required|mimes:png,jpeg|max:5120',
         ], $messages)->validate();
 
-
 		$instructor = Auth::user();
 
+		if(!$instructor->phone_number || !$instructor->profile_picture)
+			return redirect()->back()->withErrors(["msg", "Instructor does not have number and profile picture."]);
+
+		
         $certImgNames = [];
         foreach($request->file("certificate_imgs") as $file)  {
         	$image = Images::toJpgAndResize(Image::make($file), 1920, 1080);
@@ -133,9 +183,6 @@ class AccountDetailsController extends Controller
         	$image = Images::toJpgAndResize(Image::make($file), 1920, 1080);
         	$idImgNames[] = basename(Images::saveImgWithRandName("local", "instructor_documents/".$instructor->id, $image));
         }
-
-        if($request->has("phone_number"))
-        	$instructor->phone_number = $request->input("phone_number");
         
         $instructor->identification_imgs = implode(",", $idImgNames);
         $instructor->professional_cert_imgs = implode(",", $certImgNames);

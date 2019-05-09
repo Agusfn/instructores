@@ -17,7 +17,7 @@ class InstructorService extends Model
      *
      * @var array
      */
-	protected $fillable = ["title", "description", "features", "work_hours"];
+	protected $fillable = ["description", "features", "work_hours"];
 
 
 

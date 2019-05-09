@@ -1,20 +1,42 @@
 @extends('layouts.main')
 
 
+@section('custom-css')
+<style type="text/css">
+.profile-pic {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 20px;
+    border-top-left-radius: 50% 50%;
+    border-top-right-radius: 50% 50%;
+    border-bottom-right-radius: 50% 50%;
+    border-bottom-left-radius: 50% 50%;
+}
+
+</style>
+
+@endsection
+
+
 @section('content')
 
         <section class="hero_in hotels_detail" 
-        @if(isset($instructorService->imageUrls()[0]))
-        style="background-position: center center; background-size: cover; background-repeat: no-repeat; background-image: url('{{ $instructorService->imageUrls()[0] }}'); "
+        @if(isset($service->imageUrls()[0]))
+        style="background-position: center center; background-size: cover; background-repeat: no-repeat; background-image: url('{{ $service->imageUrls()[0] }}'); "
         @endif
         >
             <div class="wrapper">
                 <div class="container">
-                    <h1 class="fadeInUp"><span></span>Perfil</h1>
+                    <h1 class="fadeInUp">
+                        @if($instructor->profile_picture)
+                        <img src="{{ Storage::url('img/instructors/'.$instructor->profile_picture) }}" class="profile-pic">
+                        @endif
+                        <span></span>Perfil
+                    </h1>
                 </div>
                 <span class="magnific-gallery">
 
-                    @foreach($instructorService->imageUrls() as $url)
+                    @foreach($service->imageUrls() as $url)
                         @if($loop->first)
                         <a href="{{ $url }}" class="btn_photos" title="Photo title" data-effect="mfp-zoom-in">Ver fotos</a>
                         @else
@@ -41,11 +63,11 @@
                     <div class="col-lg-8">
                         <section id="description">
                             <h2>Descripción</h2>
-                            <p>{!! nl2br(e($instructorService->description)) !!}</p>
+                            <p>{!! nl2br(e($service->description)) !!}</p>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <ul class="bullets">
-                                        @foreach($instructorService->featuresArray() as $feature)
+                                        @foreach($service->featuresArray() as $feature)
                                             @if($loop->odd)
                                             <li>{{ $feature }}</li>
                                             @endif
@@ -54,7 +76,7 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <ul class="bullets">
-                                        @foreach($instructorService->featuresArray() as $feature)
+                                        @foreach($service->featuresArray() as $feature)
                                             @if($loop->even)
                                             <li>{{ $feature }}</li>
                                             @endif
@@ -63,10 +85,13 @@
                                 </div>
                             </div>
                             <!-- /row -->
+
+                            @if($instructor->instagram_username)
                             <hr>
-                            <h3>Cuenta de Instagram</h3>
-                            <div id="instagram-feed-hotel" class="clearfix"></div>
+                            <h3>Cuenta de Instagram</h3>                            
+                            <div id="instagram-feed" class="clearfix"></div>
                             <hr>
+                            @endif
                             
                         
                         </section>
@@ -301,13 +326,14 @@
     <!-- INPUT QUANTITY  -->
     <script src="{{ asset('resources/js/input_qty.js') }}"></script>
     
+    @if($instructor->instagram_username)
     <!-- INSTAGRAM FEED  -->
     <script>
     $(window).on('load', function(){
             "use strict";
             $.instagramFeed({
-                'username': 'hotelwailea',
-                'container': "#instagram-feed-hotel",
+                'username': '{{ $instructor->instagram_username }}',
+                'container': "#instagram-feed",
                 'display_profile': false,
                 'display_biography': false,
                 'display_gallery': true,
@@ -320,5 +346,6 @@
             });
         });
     </script>
+    @endif
 
 @endsection

@@ -11,9 +11,15 @@ class InstructorServiceController extends Controller
 
 	public function showDetails($service_number)
 	{
-		$instructorService = InstructorService::findByNumber($service_number);
+		$service = InstructorService::findByNumber($service_number);
 
-		return view("service")->with("instructorService", $instructorService);
+		if(!$service)
+			return redirect()->route("home");
+
+		return view("service")->with([
+			"service" => $service,
+			"instructor" => $service->instructor
+		]);
 	}
 
 

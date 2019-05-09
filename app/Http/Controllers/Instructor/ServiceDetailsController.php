@@ -182,7 +182,6 @@ class ServiceDetailsController extends Controller
 	{
 		//dd($request);
 		$validator = Validator::make($request->all(), [
-			"title" => "required|string|min:10",
 			"description" => "required|string|min:10",
 			"features" => "required|string",
 			"work_hours" => ["required", "string", new InstructorWorkHours]
