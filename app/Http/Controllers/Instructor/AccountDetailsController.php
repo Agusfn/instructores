@@ -114,6 +114,9 @@ class AccountDetailsController extends Controller
 
 		$instructor = Auth::user();
 
+		if($instructor->profile_picture) {
+			Storage::delete("img/instructors/".$instructor->profile_picture);
+		}
 
 		$fileName = basename(Storage::putFile("img/instructors", $request->file("profile_pic")));
 

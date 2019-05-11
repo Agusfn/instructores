@@ -46,7 +46,7 @@
 
 				@if($instructor->isApproved())
 
-				<h5 style="margin-bottom: 20px">Información del servicio</h5>
+				<h5 style="margin-bottom: 20px">Información del servicio <span style="font-size:15px">(<a href="{{ url('clases/'.$service->number) }}" target="_blank">ver pag</a>)</span></h5>
 
 
 				<div class="form-group">

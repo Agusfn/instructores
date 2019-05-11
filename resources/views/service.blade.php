@@ -13,6 +13,43 @@
     border-bottom-left-radius: 50% 50%;
 }
 
+#date-picker-input {
+    background-color: inherit;
+}
+
+#hour-selection {
+    width: 100%;
+}
+#hour-selection .btn {
+    width:25%;
+}
+
+.daterangepicker {
+    width: auto;
+}
+
+.daterangepicker .calendar.left.single {
+    max-width: none
+}
+
+.daterangepicker .calendar-table td, .daterangepicker .calendar-table th {
+    min-width: 45px;
+    width: 45px;
+    height: 45px;
+    font-size: 13px;
+    cursor: inherit;
+}
+
+.daterangepicker .calendar-table td.available {
+    cursor: pointer;
+}
+
+.date-min-price {
+    font-size:8px;
+    line-height: 13px;
+    color: #308ad5;
+}
+
 </style>
 
 @endsection
@@ -256,8 +293,17 @@
                             </div>
 
                             <div class="form-group">
-                                <input class="form-control" type="text" name="dates" placeholder="Fecha..">
+                                <input class="form-control" type="text" name="dates" id="date-picker-input" readonly="true" autocomplete="off" placeholder="Fecha..">
                                 <i class="icon_calendar"></i>
+                            </div>
+
+                            <div class="form-group" style="text-align: center;">
+                                <div class="btn-group btn-group-sm" id="hour-selection" role="group">
+                                    <button type="button" class="btn btn-secondary">9-11hs</button>
+                                    <button type="button" class="btn btn-secondary">11-13hs</button>
+                                    <button type="button" class="btn btn-secondary">13-15hs</button>
+                                    <button type="button" class="btn btn-secondary">15-17hs</button>
+                                </div>
                             </div>
 
                             <div class="panel-dropdown">
@@ -299,53 +345,37 @@
 
 @section('custom-js')
 
-    <!-- Map -->
-    <!--script src="http://maps.googleapis.com/maps/api/js"></script-->
-    <script src="{{ asset('resources/js/map_single_hotel.js') }}"></script>
-    <script src="{{ asset('resources/js/infobox.js') }}"></script>
-    
-    <!-- DATEPICKER  -->
-    <script>
-    $(function() {
-      $('input[name="dates"]').daterangepicker({
-          autoUpdateInput: false,
-          opens: 'left',
-          locale: {
-              cancelLabel: 'Clear'
-          }
-      });
-      $('input[name="dates"]').on('apply.daterangepicker', function(ev, picker) {
-          $(this).val(picker.startDate.format('MM-DD-YY') + ' > ' + picker.endDate.format('MM-DD-YY'));
-      });
-      $('input[name="dates"]').on('cancel.daterangepicker', function(ev, picker) {
-          $(this).val('');
-      });
-    });
-    </script>
-    
-    <!-- INPUT QUANTITY  -->
-    <script src="{{ asset('resources/js/input_qty.js') }}"></script>
-    
-    @if($instructor->instagram_username)
-    <!-- INSTAGRAM FEED  -->
-    <script>
-    $(window).on('load', function(){
-            "use strict";
-            $.instagramFeed({
-                'username': '{{ $instructor->instagram_username }}',
-                'container': "#instagram-feed",
-                'display_profile': false,
-                'display_biography': false,
-                'display_gallery': true,
-                'get_raw_json': false,
-                'callback': null,
-                'styling': true,
-                'items': 12,
-                'items_per_row': 6,
-                'margin': 1 
-            });
+<!-- Map -->
+<!--script src="http://maps.googleapis.com/maps/api/js"></script-->
+<script src="{{ asset('resources/js/map_single_hotel.js') }}"></script>
+<script src="{{ asset('resources/js/infobox.js') }}"></script>
+<script src="{{ asset('resources/js/service-public-pg.js') }}"></script>
+
+
+
+<!-- INPUT QUANTITY  -->
+<script src="{{ asset('resources/js/input_qty.js') }}"></script>
+
+@if($instructor->instagram_username)
+<!-- INSTAGRAM FEED  -->
+<script>
+$(window).on('load', function(){
+        "use strict";
+        $.instagramFeed({
+            'username': '{{ $instructor->instagram_username }}',
+            'container': "#instagram-feed",
+            'display_profile': false,
+            'display_biography': false,
+            'display_gallery': true,
+            'get_raw_json': false,
+            'callback': null,
+            'styling': true,
+            'items': 12,
+            'items_per_row': 6,
+            'margin': 1 
         });
-    </script>
-    @endif
+    });
+</script>
+@endif
 
 @endsection
