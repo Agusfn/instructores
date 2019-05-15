@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Lib\Helpers;
 
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;

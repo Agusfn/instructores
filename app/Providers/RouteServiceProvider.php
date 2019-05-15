@@ -37,10 +37,10 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->mapApiRoutes();
 
-        $this->mapPublicWebRoutes();
         $this->mapAdminWebRoutes();
         $this->mapInstructorWebRoutes();
         $this->mapUserWebRoutes();
+        $this->mapPublicWebRoutes();
 
         //
     }

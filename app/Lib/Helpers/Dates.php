@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Lib\Helpers;
 
 use \DateTime;
 use \DateInterval;

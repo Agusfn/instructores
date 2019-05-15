@@ -3,9 +3,11 @@ var DATE_FORMAT = "DD/MM/YYYY";
 
 $(document).ready(function() {
 
+
+
 	$('#date-picker-input').daterangepicker({
-		minDate: '15/06/2019', // limite inferior, deberia ser cuando inicia la temporada del año corriente, o el dia de la fecha si ya inició
-		maxDate: '15/09/2019', // limite superior, deberia ser cuando termina la temporada
+		minDate: pickerStartDate(),
+		maxDate: activity_end,
 		autoUpdateInput: false,
 		singleDatePicker: true,
 		opens: 'left',
@@ -14,21 +16,24 @@ $(document).ready(function() {
 			cancelLabel: 'Clear'
 		}
 	});
+
 	var drp = $('#date-picker-input').data('daterangepicker');
 
 
-	// Obtenemos por ajax los días no disponibles
-	var unavailableDates = {
-		5: [15,20,26,27,28], // 0: enero, 1: febrero... 11: diciembre
-		6: [5,9,22,30],
-		7: [7,12,19,29],
-		8: [1,4,6,7,10,15]
-	};
+	var calendar;
+
+	fetchCalendarData(function(calendar_resp) {
+
+		calendar = calendar_resp;
+
+		var init_date = getFirstAvailableDate();
+		drp.setEndDate(init_date);
+		drp.setStartDate(init_date);
+	});
 
 
-	var init_date = getFirstAvailableDate();
-	drp.setEndDate(init_date);
-	drp.setStartDate(init_date);
+
+
 
 
 
@@ -46,42 +51,53 @@ $(document).ready(function() {
 	$("#date-picker-input").on("show.daterangepicker", function(ev, picker) {
 		updateDatePicker();
 	});
+	$("body").on("mousedown", ".date-min-price", function() {
+		$(this).parent().trigger("mousedown");
+	});
 
 
 
 	$('#date-picker-input').on('apply.daterangepicker', function(ev, picker) {
-		$(this).val(picker.startDate.format('DD/MM/YYYY'));
+
+		var date = picker.startDate;
+
+		$(this).val(date.format('DD/MM/YYYY'));
+
+		var dayData = calendar[date.month()+1][date.date()];
+
+		if(typeof dayData !== 'undefined')
+		{
+			if(dayData.available)
+			{
+				$("#price-per-block").text("$"+Math.round(dayData.ppb));
+
+				for(var i=0; i<4; i++) {
+					$("#hour-block-"+i).prop("disabled", !dayData["blocks_available"][i]);
+				}
+			}
+		}
+		
+
 	});
 
 	$('#date-picker-input').on('cancel.daterangepicker', function(ev, picker) {
 		$(this).val('');
 	});
 
-	/*$("body").on("mousedown", ".daterangepicker .calendar .next.available", function() {
-		//console.log(drp.leftCalendar.month.month());
-		alert(1);
-	});*/
 
 
 
 
 
-	/*$("body").on("mousedown", ".daterangepicker .calendar .next.available", function() {
-		console.log(drp);
-	});*/
-
-
-
-	// Removes dates from datepicker belonging to other months, and disables unavailable dates, 
-	// and then makes ajax to populate available dates with min price per day.
+	// Removes dates from datepicker belonging to other months, populates prices, and disables unavailable dates.
 	function updateDatePicker()
 	{
 		trimExternalDates();
-
-		disableUnavailableDates();
-
-		displayMinimumPrices();
+		addPricesAndDisableOccupied();
 	}
+
+
+
 
 
 	// Removes the dates belonging to the previous and the next month from the date calendar, removing whole rows if these 
@@ -119,99 +135,85 @@ $(document).ready(function() {
 
 	}
 
-	
-	// Disables the date elements whose dates are unavailable.
-	function disableUnavailableDates()
+
+	function addPricesAndDisableOccupied()
 	{
 
-		var month = drp.leftCalendar.month.month();
+		var month = drp.leftCalendar.month.month() + 1;
 
 		drp.container.find(".calendar.left table tbody td").each(function(index, elem) {
 
 			if($(elem).hasClass("date-deleted"))
 				return; // continue loop
 
-			var dayOfMonth = parseInt(elem.innerText);
+			var day = parseInt(elem.innerText);
 
-			if(unavailableDates[month].includes(dayOfMonth)) {
-				$(elem).removeClass("available").addClass("off disabled");
-			}
-
-		});
-	}
-
-
-
-	function displayMinimumPrices()
-	{	
-		//var month = drp.leftCalendar.month.month();
-		// <request takes place here>
-		
-		var minPricesPerDay = {
-			1: 3235,
-			2: 1245,
-			3: 1558,
-			4: false,
-			5: false,
-			6: false,
-			7: 2405,
-			8: 3245,
-			9: 6945,
-		};
-
-
-		assignCalendarPrices(minPricesPerDay);
-	}
-
-
-
-	function assignCalendarPrices(prices)
-	{
-		var dayOfMonth;
-		
-		drp.container.find(".calendar.left table tbody td").each(function(index, elem) {
-
-			if($(elem).hasClass("date-deleted"))
-				return; // continue loop
-
-			dayOfMonth = parseInt(elem.innerText);
-
-			if(dayOfMonth in prices) {
-
-				if(prices[dayOfMonth] !== false) {
-					$(elem).html(dayOfMonth + "<div class='date-min-price'>" + prices[dayOfMonth] + "</div>");
-				}
+			if(typeof calendar[month][day] !== 'undefined') // some days at the beginning and end of the datepicker may not be in the array.
+			{
+				if(calendar[month][day].available == true) {
+					$(elem).html(day + "<div class='date-min-price'>$" + kFormatter(calendar[month][day]["ppb"]) + "</div>");
+				} 
 				else {
-					$(elem).addClass("off disabled").removeClass("available").html(dayOfMonth + "<div class='date-min-price'>&nbsp;</div>"); // should already be disabled, but gets disabled in case it got unavailable after page load.
+					$(elem).removeClass("available").addClass("off disabled")
+					.html(day + "<div class='date-min-price' style='visibility:hidden'>.</div>");
 				}
-				
-			} else {
-				$(elem).html(dayOfMonth + "<div class='date-min-price'>&nbsp;</div>");
+
 			}
 
 		});
+
+	}
+
+
+	function fetchCalendarData(callback)
+	{
+		$.ajax({
+
+			type: "POST",
+			url: app_url + "instructor/"+serv_number+"/calendar",
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+
+			success: function(response) {
+				console.log(response); // debug
+				callback(response);
+			},
+
+			error: function (jqXhr, textStatus, errorMessage) {
+				alert("An error ocurred requesting the availability calendar.");
+		    }
+		});
+
 	}
 
 
 	function getFirstAvailableDate() {
 
-		var date = drp.minDate;
-		
-		while(date <= drp.maxDate) {
-
-			if(!unavailableDates[date.month()].includes(date.date())) {
-				return date.format(DATE_FORMAT);
+		for(var monthIndex in calendar)
+		{
+			for(var dayIndex in calendar[monthIndex]) 
+			{
+				if(calendar[monthIndex][dayIndex].available)
+					return dayIndex+"/"+monthIndex+"/"+moment().year();
 			}
-
-			date = date.add(1, "days");
-
 		}
 
-		return drp.minDate.format(DATE_FORMAT);
 	}
 
 
 
+	function pickerStartDate()
+	{
+		if(moment() < moment(activity_start, DATE_FORMAT)) {
+			return activity_start;
+		}
+		return moment().format(DATE_FORMAT);
+	}
+
 });
 
 
+function kFormatter(num) {
+    return Math.abs(num) > 999 ? Math.sign(num)*((Math.abs(num)/1000).toFixed(1)) + 'k' : Math.sign(num)*Math.abs(num)
+}

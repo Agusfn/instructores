@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Instructor;
 
 use \Hash;
 use Validator;
-use App\Helpers\Images;
+use App\Lib\Helpers\Images;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;

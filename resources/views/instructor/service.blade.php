@@ -35,8 +35,6 @@
 	
 	<section class="hero_in general start_bg_zoom"></section>
 	<div class="container margin_60">
-		
-
 
 		<div class="row">
 
@@ -126,9 +124,24 @@
 								<label for="separate-working-hours" style="cursor: pointer;margin-left: 10px;">Dividir en dos partes</label>
 							</div>
 
-							<input type="hidden" name="work_hours" value="{{ $service->work_hours }}" autocomplete="off">
+							<input type="hidden" name="worktime_hour_start" value="{{ $service->worktime_hour_start }}" autocomplete="off">
+							<input type="hidden" name="worktime_hour_end" value="{{ $service->worktime_hour_end }}" autocomplete="off">
+							<input type="hidden" name="worktime_alt_hour_start" value="{{ $service->worktime_alt_hour_start }}" autocomplete="off">
+							<input type="hidden" name="worktime_alt_hour_end" value="{{ $service->worktime_alt_hour_end }}" autocomplete="off">
 
 						</div>
+
+						<div class="col-md-2"></div>
+
+						<div class="col-md-5">
+							
+							<div style="margin-top: 20px">
+								<input type="checkbox" id="allow-group-classes" autocomplete="off" name="allow_groups" @if($service->allows_groups) checked @endif>
+								<label for="allow-group-classes" style="cursor: pointer;margin-left: 10px;">Permitir clases grupales</label>
+							</div>
+
+						</div>
+
 
 					</div>
 

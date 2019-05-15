@@ -101,14 +101,27 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 
+	$('#allow-group-classes').iCheck({
+		checkboxClass: 'icheckbox_square-blue',
+		radioClass: 'iradio_square-blue',
+		increaseArea: '20%' // optional
+	});
+
+
 	$('#separate-working-hours').iCheck({
 		checkboxClass: 'icheckbox_square-blue',
 		radioClass: 'iradio_square-blue',
 		increaseArea: '20%' // optional
 	});
 
-	var work_hours = $("input[name=work_hours").val().split(",");
-	create_hour_slider(work_hours[0], work_hours[1], work_hours[2], work_hours[3]);
+	
+	create_hour_slider(
+		$("input[name=worktime_hour_start").val(), 
+		$("input[name=worktime_hour_end").val(), 
+		$("input[name=worktime_alt_hour_start").val(), 
+		$("input[name=worktime_alt_hour_end").val()
+	);
+
 
 	$("#separate-working-hours").on("ifChecked", function(event) {
 		hourSlider.noUiSlider.destroy();
@@ -328,11 +341,12 @@ function create_hour_slider(start1, end1, start2 = null, end2 = null)
 	    }
 	};
 
+
 	if(!start2 && !end2) {
 		options.start = [start1, end1];
 		options.connect = true;
 	} 
-	else {
+	else {	
 		options.start = [start1, end1, start2, end2];
 		options.connect = [false, true, false, true, false];
 	}
@@ -340,8 +354,20 @@ function create_hour_slider(start1, end1, start2 = null, end2 = null)
 	noUiSlider.create(hourSlider, options);
 
 	hourSlider.noUiSlider.on('update', function (values, handle) {
-		console.log(values.join(","));
-	    $("input[name=work_hours").val(values.join(","));
+
+		if(values.length == 2) {
+			$("input[name=worktime_hour_start").val(values[0]);
+			$("input[name=worktime_hour_end").val(values[1]);
+			$("input[name=worktime_alt_hour_start").val("");
+			$("input[name=worktime_alt_hour_end").val("");
+		}
+		else if(values.length == 4) {
+			$("input[name=worktime_hour_start").val(values[0]);
+			$("input[name=worktime_hour_end").val(values[1]);
+			$("input[name=worktime_alt_hour_start").val(values[2]);
+			$("input[name=worktime_alt_hour_end").val(values[3]);
+		}
+
 	});
 
 }

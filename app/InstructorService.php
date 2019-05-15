@@ -2,22 +2,27 @@
 
 namespace App;
 
-use App\Helpers\Dates;
-use App\Helpers\Images;
+
+use Carbon\CarbonPeriod;
+use App\Lib\Reservations;
+use App\Lib\Helpers\Dates;
+use App\Lib\BookingIndexes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
+use App\Lib\InstructorService\DescriptionImages;
+
 
 class InstructorService extends Model
 {
 
+	use DescriptionImages;
 
     /**
      * 
      *
      * @var array
      */
-	protected $fillable = ["description", "features", "work_hours"];
+	protected $fillable = ["description", "features", "worktime_hour_start", "worktime_hour_end", "worktime_alt_hour_start", "worktime_alt_hour_end"];
 
 
 
@@ -60,12 +65,35 @@ class InstructorService extends Model
 
 	/**
 	 * Get the date ranges associated with this service.
-	 * @return App\ServiceDateRange[]
+	 * @return Illuminate\Database\Eloquent\Collection
 	 */
 	public function dateRanges()
 	{
 		return $this->hasMany("App\ServiceDateRange");
 	}
+
+
+	/**
+	 * [reservations description]
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function reservations()
+	{
+		return $this->hasMany("App\Reservation");
+	}
+
+
+
+	/**
+	 * Get instructor service images as array of assoc array with "img" and "thumbnail"
+	 * @return array
+	 */
+	public function images()
+	{
+		return json_decode($this->images_json, true);
+	}
+
+
 
 
 	/**
@@ -102,159 +130,14 @@ class InstructorService extends Model
 
 
 
-	/**
-	 * Saves an image and thumbnail in storage and saves the file names in the entity's pictures property
-	 * 
-	 * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile $file
-	 * @return array 	img file names
-	 */
-	public function addImage($file)
-	{
-		$savePath = "img/service/".$this->number;
-		$fileName = rand().".jpg";
-		$thumbnailFileName = Images::appendToImgName($fileName, "-thumbnail");
-
-        $image = Images::toJpgAndResize(Image::make($file), 1920, 1080);
-        $thumbnail = clone $image;
-        $thumbnail->fit(200);
-
-		Storage::put($savePath."/".$fileName, $image->stream());
-		Storage::put($savePath."/".$thumbnailFileName, $thumbnail->stream());
-
-		$this->addImageToJson($fileName, $thumbnailFileName);
-
-		return [
-			"name" => $fileName,
-			"thumbnail_name" => $thumbnailFileName
-		];
-	}
-
 
 	/**
-	 * Remove image (and thumbnail) from disk and from image json property
-	 * @param  string $fileName
-	 * @return null
-	 */
-	public function removeImage($fileName)
-	{
-		$savePath = "img/service/".$this->number;
-
-		Storage::delete([
-			$savePath."/".$fileName, 
-			$savePath."/".Images::appendToImgName($fileName, "-thumbnail")
-		]);
-
-		$this->removeImageFromJson($fileName);
-	}
-
-
-
-
-	/**
-	 * Adds an image to the instructor service
-	 * They are stored in default driver (public): storage/app/public/img/service/<number>/ (accessed with symlink)
-	 * 
-	 * @param string $fileName
-	 * 
-	 */
-	public function addImageToJson($fileName, $thumbnailFileName)
-	{
-
-		$image = [
-			"name" => $fileName,
-			"thumbnail_name" => $thumbnailFileName
-		];
-
-		if(!$this->images_json) {
-			$this->images_json = json_encode([$image]);
-		} 
-		else {
-			$images = $this->images();
-			$images[] = $image;
-			$this->images_json = json_encode($images);
-		}
-		$this->save();
-	}
-
-
-
-	/**
-	 * Remove an image from the images json property of this instructor service
-	 * @param  string $fileName
-	 * @return null
-	 */
-	public function removeImageFromJson($fileName)
-	{
-		$images = $this->images();
-
-		if($images == null)
-			return;
-
-		for($i=0; $i<sizeof($images); $i++) 
-		{
-			if($images[$i]["name"] == $fileName) {
-				unset($images[$i]);
-				$images = array_values($images);
-			}
-		}
-
-		if(sizeof($images) == 0)
-			$this->images_json = null;
-		else
-			$this->images_json = json_encode($images);
-
-		$this->save();
-	}
-
-
-
-
-	/**
-	 * Get instructor service images as array of assoc array with "img" and "thumbnail"
-	 * @return string
-	 */
-	public function images()
-	{
-		return json_decode($this->images_json, true);
-	}
-
-
-
-	public function imageUrls()
-	{
-		$urls = [];
-		foreach($this->images() as $image) {
-			$urls[] = Storage::url("img/service/".$this->number."/".$image["name"]);
-		}
-		return $urls;
-	}
-
-
-	/**
-	 * Check whether the instructor service has certain image by file name
-	 * @param  string  $imageName
+	 * Check whether the instructor service has its working hours split in half: not consecutive from beginning to end.
 	 * @return boolean
-	 */
-	public function hasImage($fileName)
-	{
-		$images = $this->images();
-		foreach($images as $image)
-		{
-			if($image["name"] == $fileName)
-				return true;
-		}
-		return false;
-	}
-
-
-	/**
-	 * [hasSplitWorkHours description]
-	 * @return boolean [description]
 	 */
 	public function hasSplitWorkHours()
 	{
-		$hours = explode(",", $this->work_hours);
-		if(sizeof($hours) == 4)
+		if($this->worktime_alt_hour_start && $this->worktime_alt_hour_end)
 			return true;
 
 		return false;
@@ -269,6 +152,122 @@ class InstructorService extends Model
 	public function featuresArray()
 	{
 		return preg_split("/\r\n|\n|\r/", $this->features);
+	}
+
+
+	/**
+	 * Check whether an hour range is included in the working hours range set by the instructor.
+	 * @param  int $hour_start
+	 * @param  int $hour_end
+	 * @return boolean
+	 */
+	public function hourRangeWithinWorkingHours($hour_start, $hour_end)
+	{
+		if(!$this->hasSplitWorkHours()) {
+
+			if($this->worktime_hour_start <= $hour_start && $this->worktime_hour_end >= $hour_end) {
+				return true;
+			}
+		}
+		else {
+			
+			if(($this->worktime_hour_start <= $hour_start && $this->worktime_hour_end >= $hour_end) ||
+				($this->worktime_alt_hour_start <= $hour_start && $this->worktime_alt_hour_end >= $hour_end)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
+
+	public function rebuildAvailabilityIndexes()
+	{
+
+	}
+
+
+	/**
+	 * Rebuilds the booking calendar json (stored in booking_calendar_json).
+	 * The json stores, for each day of each month of activity, the price per block and the availability of each block.
+	 * This json will serve as a pre-processed index for the datepicker on the service page.
+	 * 
+	 * @return null
+	 */
+	public function rebuildJsonBookingCalendar()
+	{
+		$calendar = BookingIndexes::buildBookingCalendar($this);
+
+		$this->booking_calendar_json = json_encode($calendar);
+		$this->save();
+	}
+
+
+
+	/**
+	 * Gets the booking calendar as an array, adapted for use on the date picker. 
+	 * The calendar gets trimmed to only include whether a day is available and, if so, its price per block.
+	 * 
+	 * @return array
+	 */
+	public function getAvailabilityAndPricePerDay()
+	{
+		$calendar = json_decode($this->booking_calendar_json, true);
+
+		foreach($calendar as $monthIndex => $monthData) {
+
+			foreach($monthData as $dayIndex => $dayData) {
+
+				unset($calendar[$monthIndex][$dayIndex]["working_day"]);
+
+				if(!$dayData["available"]) {
+					unset($calendar[$monthIndex][$dayIndex]["ppb"]);
+					unset($calendar[$monthIndex][$dayIndex]["blocks_available"]);
+				}
+
+			}
+
+		}
+
+		return $calendar;
+	}
+
+
+	/**
+	 * Deletes all the unavailable dates registries of this service and creates them all again with the data of the json calendar.
+	 * Makes an index of all the days that the instructor doesn't/can't offer their service WITHIN the annual activity period (season).
+	 * The index will be used exclusively for the search function.
+	 * This method has to be called every time a reservation is made/cancelled, or each time the instructor makes a change to its working time tables.
+	 * 
+	 * @return null
+	 */
+	public function rebuildAvailableDates()
+	{
+		
+		DB::table("service_unavailable_dates")->where("instructor_service_id", $this->id)->delete();
+
+		
+		$calendar = json_decode($this->booking_calendar_json, true);
+
+		foreach($calendar as $monthIndex => $monthData) {
+
+			foreach($monthData as $dayIndex => $dayData) {
+
+				if($dayData["available"] == false) {
+
+					DB::table("service_unavailable_dates")->insert([
+						"instructor_service_id" => $this->id,
+						"date" => date("Y")."-".$monthIndex."-".$dayIndex
+					]);
+
+				}
+
+			}
+
+		}
+
+
 	}
 
 

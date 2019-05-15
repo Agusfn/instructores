@@ -24,4 +24,17 @@ class InstructorServiceController extends Controller
 
 
 
+	public function fetchJsonCalendar($service_number)
+	{
+		$service = InstructorService::findByNumber($service_number);
+
+		if(!$service)
+			return response("Invalid service number.", 422);
+
+		return response()->json($service->getAvailabilityAndPricePerDay());
+
+	}
+
+
+
 }

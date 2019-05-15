@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Lib\Reservations;
 use App\InstructorService;
 use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
@@ -108,15 +109,13 @@ class Instructor extends Authenticatable implements MustVerifyEmail
      */
     public function approve()
     {
-
         $service = new InstructorService(); 
 
         $service->number = InstructorService::generateNumber();
-        $service->published = false;
         $service->instructor_id = $this->id;
-        $service->work_hours = "9,17";   
+        $service->worktime_hour_start = Reservations::DAILY_ACTIVITY_START_TIME;
+        $service->worktime_hour_end = Reservations::DAILY_ACTIVITY_END_TIME;
         $service->save();
-
 
         $this->approved = true;
         $this->approved_at = date("Y-m-d H:i:s");

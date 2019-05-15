@@ -20,8 +20,8 @@ Route::get("preguntas-frecuentes", "HomeController@faq")->name("faq");
 Route::get("ser-instructor", "HomeController@becomeInstructor")->name("become-instructor");
 
 
-Route::get("clases/{service_number}", "InstructorServiceController@showDetails")->name("service-page");
-
+Route::get("instructor/{service_number}", "InstructorServiceController@showDetails")->name("service-page");
+Route::post("instructor/{service_number}/calendar", "InstructorServiceController@fetchJsonCalendar");
 
 
 Route::get('email/verificar', 'Auth\VerificationController@show')->name('verification.notice');

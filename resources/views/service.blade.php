@@ -45,7 +45,7 @@
 }
 
 .date-min-price {
-    font-size:8px;
+    font-size:9px;
     line-height: 13px;
     color: #308ad5;
 }
@@ -288,7 +288,7 @@
                     <aside class="col-lg-4" id="sidebar">
                         <div class="box_detail booking">
                             <div class="price">
-                                <span>$3.000<small>/persona</small></span>
+                                <span><span id="price-per-block"></span><small>/ bloque 2hs</small></span>
                                 <div class="score"><span>Excelente<em>350 votos</em></span><strong>9.6</strong></div>
                             </div>
 
@@ -299,10 +299,10 @@
 
                             <div class="form-group" style="text-align: center;">
                                 <div class="btn-group btn-group-sm" id="hour-selection" role="group">
-                                    <button type="button" class="btn btn-secondary">9-11hs</button>
-                                    <button type="button" class="btn btn-secondary">11-13hs</button>
-                                    <button type="button" class="btn btn-secondary">13-15hs</button>
-                                    <button type="button" class="btn btn-secondary">15-17hs</button>
+                                    <button type="button" class="btn btn-secondary" id="hour-block-0">9-11hs</button>
+                                    <button type="button" class="btn btn-secondary" id="hour-block-1">11-13hs</button>
+                                    <button type="button" class="btn btn-secondary" id="hour-block-2">13-15hs</button>
+                                    <button type="button" class="btn btn-secondary" id="hour-block-3">15-17hs</button>
                                 </div>
                             </div>
 
@@ -345,19 +345,23 @@
 
 @section('custom-js')
 
-<!-- Map -->
+
+
 <!--script src="http://maps.googleapis.com/maps/api/js"></script-->
 <script src="{{ asset('resources/js/map_single_hotel.js') }}"></script>
 <script src="{{ asset('resources/js/infobox.js') }}"></script>
+<script src="{{ asset('resources/js/input_qty.js') }}"></script>
 <script src="{{ asset('resources/js/service-public-pg.js') }}"></script>
 
+<script>
+var activity_start = "{{ App\Lib\Reservations::getCurrentYearActivityStart()->format('d/m/Y') }}";
+var activity_end = "{{ App\Lib\Reservations::getCurrentYearActivityEnd()->format('d/m/Y') }}";
+var app_url = "{{ config('app.url').'/' }}";
+var serv_number = {{ $service->number }};
+</script>
 
-
-<!-- INPUT QUANTITY  -->
-<script src="{{ asset('resources/js/input_qty.js') }}"></script>
 
 @if($instructor->instagram_username)
-<!-- INSTAGRAM FEED  -->
 <script>
 $(window).on('load', function(){
         "use strict";
@@ -377,5 +381,6 @@ $(window).on('load', function(){
     });
 </script>
 @endif
+
 
 @endsection

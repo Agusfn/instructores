@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Instructor;
 use Validator;
 
 use App\ServiceDateRange;
-use App\Helpers\Dates;
-use App\Helpers\Images;
+use App\Lib\Reservations;
+use App\Lib\Helpers\Dates;
+use App\Lib\Helpers\Images;
 use Illuminate\Http\Request;
-use App\Rules\InstructorWorkHours;
+//use App\Rules\InstructorWorkHours;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -184,13 +185,29 @@ class ServiceDetailsController extends Controller
 		$validator = Validator::make($request->all(), [
 			"description" => "required|string|min:10",
 			"features" => "required|string",
-			"work_hours" => ["required", "string", new InstructorWorkHours]
+			"worktime_hour_start" => "required|integer",
+			"worktime_hour_end" => "required|integer",
+			"worktime_alt_hour_start" => "nullable|integer|gt:worktime_hour_end",
+			"worktime_alt_hour_end" => "nullable|integer"
 		])->validate();
+
+		if(!Reservations::validHourWorkingPeriod((int)$request->worktime_hour_start, (int)$request->worktime_hour_end) || 
+			($request->filled("worktime_alt_hour_start") && 
+			!Reservations::validHourWorkingPeriod((int)$request->worktime_alt_hour_start, (int)$request->worktime_alt_hour_end))
+		)
+			return redirect()->back()->withErrors("Invalid working hours.");
+
 
 		$instructor = Auth::user();
 
+
 		$instructor->service->fill($request->all());
+		$instructor->service->allows_groups = $request->has("allow_groups");
 		$instructor->service->save();
+
+		// Poner esto ultimo en un task asi se hace mas rapido dsps
+		$instructor->service->rebuildJsonBookingCalendar();
+		$instructor->service->rebuildAvailableDates();
 
 		return redirect()->back();
 	}
