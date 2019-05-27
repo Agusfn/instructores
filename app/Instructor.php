@@ -147,4 +147,10 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
 
+    public function balanceMovements()
+    {
+        return $this->hasMany("App\InstructorBalanceMovement");
+    }
+
+
 }

@@ -36,7 +36,9 @@
 </head>
 
 <body>
-		
+	
+	
+	
 	<div id="page">
 		
 		@include('layouts.header')
@@ -103,6 +105,11 @@
 	
 	<div id="toTop"></div><!-- Back to top button -->
 	
+
+	@yield('body-end')
+
+
+
 	<!-- COMMON SCRIPTS -->
     <script src="{{ asset('resources/js/jquery-2.2.4.min.js') }}"></script>
     <script src="{{ asset('resources/js/common_scripts.js') }}"></script>
@@ -110,6 +117,7 @@
 	<script src="{{ asset('resources/assets/validate.js') }}"></script>
 
 	@yield('custom-js')
+
 
 </body>
 </html>

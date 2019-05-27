@@ -111,6 +111,96 @@ Clases para discapacitados",
         ]);
 
 
+        DB::table('reservations')->insert([
+            "code" => "3A3ZY2BV2N5",
+            "user_id" => 1,
+            "instructor_service_id" => 1,
+            "status" => "payment-pending",
+            "reserved_date" => "2019-08-15",
+            "reserved_time_start" => 9,
+            "reserved_time_end" => 11,
+            "persons_ammount" => 1,
+            "instructor_pay" => 2000,
+            "service_fee" => 400,
+            "final_price" => 2400,
+            "payment_proc_fee" => 100,
+            "instructor_movement_id" => null
+        ]);
+
+        DB::table('reservations')->insert([
+            "code" => "HFA5WKXTYAC",
+            "user_id" => 1,
+            "instructor_service_id" => 1,
+            "status" => "pending-confirmation",
+            "reserved_date" => "2019-08-10",
+            "reserved_time_start" => 9,
+            "reserved_time_end" => 15,
+            "persons_ammount" => 1,
+            "instructor_pay" => 4000,
+            "service_fee" => 400,
+            "final_price" => 4400,
+            "payment_proc_fee" => 200,
+            "instructor_movement_id" => null
+        ]);
+
+
+        DB::table('reservations')->insert([
+            "code" => "FT0GB5XT2G0",
+            "user_id" => 1,
+            "instructor_service_id" => 1,
+            "status" => "confirmed",
+            "reserved_date" => "2019-07-18",
+            "reserved_time_start" => 11,
+            "reserved_time_end" => 15,
+            "persons_ammount" => 1,
+            "instructor_pay" => 1500,
+            "service_fee" => 400,
+            "final_price" => 1900,
+            "payment_proc_fee" => 120,
+            "instructor_movement_id" => null
+        ]);
+
+
+
+        DB::table('reservations')->insert([
+            "code" => "LJ60FFWZ0RP",
+            "user_id" => 1,
+            "instructor_service_id" => 1,
+            "status" => "confirmed",
+            "reserved_date" => "2019-07-15",
+            "reserved_time_start" => 11,
+            "reserved_time_end" => 15,
+            "persons_ammount" => 1,
+            "instructor_pay" => 1500,
+            "service_fee" => 400,
+            "final_price" => 1900,
+            "payment_proc_fee" => 120,
+            "instructor_movement_id" => null
+        ]);
+
+
+        DB::table('instructor_balance_movements')->insert([
+            "instructor_id" => 1,
+            "motive" => "payment",
+            "collection_id" => null,
+            "reservation_id" => 1,
+            "date" => "2019-05-20 12:38:00",
+            "net_ammount" => 2000.80,
+            "created_at" => "2019-05-20 12:38:00",
+            "updated_at" => "2019-05-20 12:38:00"
+        ]);
+
+        DB::table('instructor_balance_movements')->insert([
+            "instructor_id" => 1,
+            "motive" => "collection",
+            "collection_id" => 1,
+            "reservation_id" => null,
+            "date" => "2019-05-21 13:00:00",
+            "net_ammount" => -542.20,
+            "created_at" => "2019-05-21 13:00:00",
+            "updated_at" => "2019-05-21 13:00:00"
+        ]);
+
 
     }
 }

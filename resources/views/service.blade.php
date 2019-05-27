@@ -2,56 +2,7 @@
 
 
 @section('custom-css')
-<style type="text/css">
-.profile-pic {
-    width: 200px;
-    height: 200px;
-    margin-bottom: 20px;
-    border-top-left-radius: 50% 50%;
-    border-top-right-radius: 50% 50%;
-    border-bottom-right-radius: 50% 50%;
-    border-bottom-left-radius: 50% 50%;
-}
-
-#date-picker-input {
-    background-color: inherit;
-}
-
-#hour-selection {
-    width: 100%;
-}
-#hour-selection .btn {
-    width:25%;
-}
-
-.daterangepicker {
-    width: auto;
-}
-
-.daterangepicker .calendar.left.single {
-    max-width: none
-}
-
-.daterangepicker .calendar-table td, .daterangepicker .calendar-table th {
-    min-width: 45px;
-    width: 45px;
-    height: 45px;
-    font-size: 13px;
-    cursor: inherit;
-}
-
-.daterangepicker .calendar-table td.available {
-    cursor: pointer;
-}
-
-.date-min-price {
-    font-size:9px;
-    line-height: 13px;
-    color: #308ad5;
-}
-
-</style>
-
+<link rel="stylesheet" type="text/css" href="{{ asset('resources/css/service-public-pg.css') }}">
 @endsection
 
 
@@ -95,10 +46,22 @@
                     </ul>
                 </div>
             </nav>
+
             <div class="container margin_60_35">
+
+                @if($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>{{ $errors->first() }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                @endif
+
                 <div class="row">
                     <div class="col-lg-8">
                         <section id="description">
+
                             <h2>Descripción</h2>
                             <p>{!! nl2br(e($service->description)) !!}</p>
                             <div class="row">
@@ -292,45 +255,55 @@
                                 <div class="score"><span>Excelente<em>350 votos</em></span><strong>9.6</strong></div>
                             </div>
 
-                            <div class="form-group">
-                                <input class="form-control" type="text" name="dates" id="date-picker-input" readonly="true" autocomplete="off" placeholder="Fecha..">
-                                <i class="icon_calendar"></i>
-                            </div>
-
-                            <div class="form-group" style="text-align: center;">
-                                <div class="btn-group btn-group-sm" id="hour-selection" role="group">
-                                    <button type="button" class="btn btn-secondary" id="hour-block-0">9-11hs</button>
-                                    <button type="button" class="btn btn-secondary" id="hour-block-1">11-13hs</button>
-                                    <button type="button" class="btn btn-secondary" id="hour-block-2">13-15hs</button>
-                                    <button type="button" class="btn btn-secondary" id="hour-block-3">15-17hs</button>
+                            <form method="GET" action="{{ url('reservar/'.$service->number) }}" id="book-form">
+                                <div class="form-group">
+                                    <input class="form-control" type="text" name="date" id="date-picker-input" readonly="true" autocomplete="off" placeholder="Fecha..">
+                                    <i class="icon_calendar"></i>
                                 </div>
-                            </div>
 
-                            <div class="panel-dropdown">
-                                <a href="#">Personas<span class="qtyTotal">1</span></a>
-                                <div class="panel-dropdown-content right">
-                                    <div class="qtyButtons">
-                                        <label>Adultos</label>
-                                        <input type="text" name="qtyInput" value="1">
-                                    </div>
-                                    <div class="qtyButtons">
-                                        <label>Chicos</label>
-                                        <input type="text" name="qtyInput" value="0">
+                                <div class="form-group" id="hour-selection" style="display: none">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-secondary" id="hour-block-0" data-hour-block="0">9-11hs</button>
+                                        <button type="button" class="btn btn-secondary" id="hour-block-1" data-hour-block="1">11-13hs</button>
+                                        <button type="button" class="btn btn-secondary" id="hour-block-2" data-hour-block="2">13-15hs</button>
+                                        <button type="button" class="btn btn-secondary" id="hour-block-3" data-hour-block="3">15-17hs</button>
                                     </div>
                                 </div>
+
+                                <div class="panel-dropdown">
+                                    <a href="#">Personas<span class="qtyTotal">1</span></a>
+                                    <div class="panel-dropdown-content right">
+                                        <div class="qtyButtons">
+                                            <label>Cantidad</label>
+                                            <input type="text" name="persons" class="qtyInput" value="1" data-max="@if($service->allows_groups) {{ $service->max_group_size }} @else 1 @endif" data-min="1" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" name="t_start" value="">
+                                <input type="hidden" name="t_end" value="">
+                                <input type="hidden" name="last_price" value="">
+                            </form>
+
+                            <div class="total-summary">
+                                
+                                <table class="table table-borderless table-sm">
+                                    <tbody></tbody>
+                                </table>
+
                             </div>
 
                             
-                            </div>
-                            <a href="cart-1.html" class=" add_top_30 btn_1 full-width purchase">Reservar</a>
-                            
-                            <div class="text-center"><small>No se carga dinero en esta etapa</small></div>
                         </div>
-                        <ul class="share-buttons">
+                        <button type="button" id="book-btn" class="add_top_30 btn_1 full-width purchase">Reservar</button>
+                            
+                        <div class="text-center"><small>No se carga dinero en esta etapa</small></div>
+                        
+                        <!--ul class="share-buttons">
                             <li><a class="fb-share" href="#0"><i class="social_facebook"></i> Compartir</a></li>
                             
                             <li><a class="gplus-share" href="#0"><i class="social_googleplus"></i> Compartir</a></li>
-                        </ul>
+                        </ul-->
                     </aside>
                 </div>
                 <!-- /row -->
@@ -358,6 +331,7 @@ var activity_start = "{{ App\Lib\Reservations::getCurrentYearActivityStart()->fo
 var activity_end = "{{ App\Lib\Reservations::getCurrentYearActivityEnd()->format('d/m/Y') }}";
 var app_url = "{{ config('app.url').'/' }}";
 var serv_number = {{ $service->number }};
+var group_discounts = {!! json_encode($service->getGroupDiscounts()) !!};
 </script>
 
 

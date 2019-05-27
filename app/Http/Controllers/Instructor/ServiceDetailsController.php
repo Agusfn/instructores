@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Instructor;
 use Validator;
 
 use App\ServiceDateRange;
-use App\Lib\Reservations;
-use App\Lib\Helpers\Dates;
+
+
 use App\Lib\Helpers\Images;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 //use App\Rules\InstructorWorkHours;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use App\Http\Validators\Instructor\CreateDateRange;
+use App\Http\Validators\Instructor\UpdateServiceData;
+
 
 class ServiceDetailsController extends Controller
 {
@@ -45,47 +49,68 @@ class ServiceDetailsController extends Controller
 	}
 
 
+
+	public function pause()
+	{
+		$instructor = Auth::user();
+
+		if($instructor->isApproved() && $instructor->service->published) {
+
+			$instructor->service->published = false;
+			$instructor->service->save();
+		}
+
+		return redirect()->back();
+	}
+
+
+
+	public function activate()
+	{
+		$instructor = Auth::user();
+
+		if($instructor->isApproved() && !$instructor->service->published) {
+
+			if($instructor->service->canBePublished()) {
+
+				$instructor->service->published = true;
+				$instructor->service->save();
+			}
+			else {
+				return redirect()->back()->withErrors(["cant_activate" => "Debes ingresar una descripción, características, y al menos una foto y un rango de días de trabajo."]);
+			}
+		}
+
+		return redirect()->back();
+	}
+
+
+
 	/**
 	 * [addDateRange description]
 	 * @param Request $request [description]
 	 */
 	public function addDateRange(Request $request)
 	{
-		$instructor = Auth::user();
-
-		$validator = Validator::make($request->all(), [
-			"date_start" => "required|regex:/^\d{4}-\d{2}-\d{2}$/|date", // regex is to avoid inputting different date formats.
-			"date_end" => "required|regex:/^\d{4}-\d{2}-\d{2}$/|date|after_or_equal:date_start",
-			"block_price" => "required|numeric"
-		]);
-
-		$date_start = $request->date_start;
-		$date_end = $request->date_end;
-
 		
-		if ($validator->fails()) {
+		$validator = new CreateDateRange($request);
+
+		if($validator->fails()) 
 			return response($validator->messages()->first(), 422);
-        }
-        else if($date_start < date("Y-m-d")) {
-        	return response("La fecha 'desde' no puede ser anterior a hoy.", 422);
-        } 
-        else if(Dates::getYear($date_start) != Dates::getYear($date_end)) {
-        	return response("Ambas fechas deben ser del mismo año.", 422);
-		}
-		else if(!$instructor->service->hasRangeAvailable($date_start, $date_end)) {
-			return response("Alguna de las fechas del rango ingresado ya pertenece a otro rango.", 422);
-		}
 		
+
+		$instructor = Auth::user();
 
 		$dateRange = ServiceDateRange::create([
 			"instructor_service_id" => $instructor->service->id,
-			"date_start" => $date_start,
-			"date_end" => $date_end,
+			"date_start" => $request->date_start,
+			"date_end" => $request->date_end,
 			"price_per_block" => $request->block_price
 		]);
 
 		return response()->json(["range_id" => $dateRange->id]);
 	}
+
 
 
 	/**
@@ -181,33 +206,25 @@ class ServiceDetailsController extends Controller
 	 */
 	public function saveChanges(Request $request)
 	{
-		//dd($request);
-		$validator = Validator::make($request->all(), [
-			"description" => "required|string|min:10",
-			"features" => "required|string",
-			"worktime_hour_start" => "required|integer",
-			"worktime_hour_end" => "required|integer",
-			"worktime_alt_hour_start" => "nullable|integer|gt:worktime_hour_end",
-			"worktime_alt_hour_end" => "nullable|integer"
-		])->validate();
 
-		if(!Reservations::validHourWorkingPeriod((int)$request->worktime_hour_start, (int)$request->worktime_hour_end) || 
-			($request->filled("worktime_alt_hour_start") && 
-			!Reservations::validHourWorkingPeriod((int)$request->worktime_alt_hour_start, (int)$request->worktime_alt_hour_end))
-		)
-			return redirect()->back()->withErrors("Invalid working hours.");
+		$validator = new UpdateServiceData($request);
+
+		if($validator->fails()){ 
+			return redirect()->back()->withErrors($validator->messages());
+		}
+
+		$service = Auth::user()->service;
 
 
-		$instructor = Auth::user();
+		$service->fill($request->all());
+		$service->allows_groups = $request->has("allow_groups");
 
+		$service->save();
 
-		$instructor->service->fill($request->all());
-		$instructor->service->allows_groups = $request->has("allow_groups");
-		$instructor->service->save();
 
 		// Poner esto ultimo en un task asi se hace mas rapido dsps
-		$instructor->service->rebuildJsonBookingCalendar();
-		$instructor->service->rebuildAvailableDates();
+		$service->rebuildJsonBookingCalendar();
+		$service->rebuildUnavailableDatesIndex();
 
 		return redirect()->back();
 	}

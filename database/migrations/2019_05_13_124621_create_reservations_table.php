@@ -19,7 +19,7 @@ class CreateReservationsTable extends Migration
             $table->string('code');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('instructor_service_id');
-            $table->integer('status');
+            $table->string('status');
             $table->date('reserved_date');
             $table->integer('reserved_time_start');
             $table->integer('reserved_time_end');
@@ -27,14 +27,14 @@ class CreateReservationsTable extends Migration
             $table->decimal('final_price', 8, 2);
             $table->decimal('instructor_pay', 8, 2);
             $table->decimal('service_fee', 8, 2);
-            $table->decimal('payment_proc_fee', 8, 2);
-            $table->unsignedBigInteger('instructor_movement_id');
+            $table->decimal('payment_proc_fee', 8, 2)->nullable();
+            $table->unsignedBigInteger('instructor_movement_id')->nullable();
 
             $table->timestamps();
 
 
+            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('instructor_service_id')->references('id')->on('instructor_services');
-            // **make constraint of user id and instructor movement when tables exist **
         });
     }
 

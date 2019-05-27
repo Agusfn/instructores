@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateServiceAvailableDatesTable extends Migration
+class CreateServiceUnavailableDatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -31,6 +31,6 @@ class CreateServiceAvailableDatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('service_available_dates');
+        Schema::dropIfExists('service_unavailable_dates');
     }
 }

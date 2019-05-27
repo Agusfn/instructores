@@ -167,18 +167,32 @@ class Reservations
 
 
 	/**
-	 * Convert a time block number to an hour range. Eg: 1 => [11, 13]
-	 * @param  int $blockNumber
+	 * Convert a range of time block numbers to a hour range.
+	 * Eg: blocks 1, 2 => [11, 15]
+	 * @param  int[] $blockNumbers
 	 * @return int[]
 	 */
-	public static function blockToHourRange($blockNumber)
+	public static function blockRangeToHourRange($blockStart, $blockEnd)
 	{
-		$startTime = self::DAILY_ACTIVITY_START_TIME + $blockNumber * self::RESERVATION_BLOCK_LENGTH;
-		$endTime = $startTime + self::RESERVATION_BLOCK_LENGTH;
+		
+		$startTime = self::DAILY_ACTIVITY_START_TIME + $blockStart * self::RESERVATION_BLOCK_LENGTH;
+		$endTime = self::DAILY_ACTIVITY_START_TIME + $blockEnd * self::RESERVATION_BLOCK_LENGTH + self::RESERVATION_BLOCK_LENGTH;
 
 		return [$startTime, $endTime];
 	}
 
+
+
+	/**
+	 * Convert one or more time block numbers to a readable hour range.
+	 * @param  int[] $blockNumbers
+	 * @return string
+	 */
+	public static function blocksToReadableHourRange($blockStart, $blockEnd)
+	{
+		$hourRange = self::blockRangeToHourRange($blockStart, $blockEnd);
+		return $hourRange[0]."-".$hourRange[1]."hs";
+	}
 
 
 }

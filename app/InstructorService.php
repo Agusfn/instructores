@@ -22,7 +22,20 @@ class InstructorService extends Model
      *
      * @var array
      */
-	protected $fillable = ["description", "features", "worktime_hour_start", "worktime_hour_end", "worktime_alt_hour_start", "worktime_alt_hour_end"];
+	protected $fillable = [
+		"description", 
+		"features", 
+		"worktime_hour_start", 
+		"worktime_hour_end", 
+		"worktime_alt_hour_start", 
+		"worktime_alt_hour_end",
+		"max_group_size",
+		"person2_discount",
+		"person3_discount",
+		"person4_discount",
+		"person5_discount",
+		"person6_discount"
+	];
 
 
 
@@ -40,14 +53,18 @@ class InstructorService extends Model
 	}
 
 
+
 	/**
-	 * Find InstructorService by number
+	 * Find active (published) InstructorService by number
 	 * @param  int $number
 	 * @return null|InstructorService
 	 */
-	public static function findByNumber($number)
+	public static function findActiveByNumber($number)
 	{
-		return self::where("number", $number)->first();
+		return self::where([
+			"number" => $number,
+			"published" => true
+		])->first();
 	}
 
 
@@ -95,16 +112,71 @@ class InstructorService extends Model
 
 
 
+	/**
+	 * [featuresArray description]
+	 * @return [type] [description]
+	 */
+	public function featuresArray()
+	{
+		return preg_split("/\r\n|\n|\r/", $this->features);
+	}
+
+
 
 	/**
-	 * Check if a certain date range doesn't have any of its dates included in another range, for a certain service.
+	 * Check whether this service has the necessary information in order to be published.
+	 * The information is: description, features, at least 1 image, and at least 1 date range.
+	 * 
+	 * @return boolean
+	 */
+	public function canBePublished()
+	{
+		if(!$this->description || !$this->features)
+			return false;
+
+		if(!$this->images_json || sizeof($this->images()) < 1)
+			return false;
+
+		if($this->dateRanges->count() == 0)
+			return false;
+
+		return true;
+	}
+
+
+
+	/**
+	 * Return an array indicating the percentage of discount for each additional person in the same reservation. 
+	 * The key of the array is the person number, and the value is the discount percentage 0-100.
+	 * @return array
+	 */
+	public function getGroupDiscounts()
+	{
+		$discounts = [1 => 0];
+
+		if(!$this->allows_groups)
+			return $discounts;
+
+		else {
+			for($i=2; $i<=$this->max_group_size; $i++) {
+				$discounts[$i] = floatval($this->{"person".$i."_discount"});
+			}
+		}
+
+		return $discounts;
+	}
+
+
+
+	/**
+	 * Checks if a service is not offered in any of the days within a date range.
 	 * Start and end dates must belong to the same year.
 	 * 
 	 * @param  string  $date_start Y-m-d
 	 * @param  string  $date_end   Y-m-d
 	 * @return boolean
 	 */
-	public function hasRangeAvailable($dateStart, $dateEnd)
+	public function isNotOfferedWithinDates($dateStart, $dateEnd)
 	{
 		
 		if(Dates::getYear($dateStart) != Dates::getYear($dateEnd)) {
@@ -130,6 +202,37 @@ class InstructorService extends Model
 
 
 
+	/**
+	 * Obtain the working date range to which a certain date belongs (if it exists)
+	 * @param  Carbon\Carbon  $date
+	 * @return ServiceDateRange|null
+	 */
+	public function getWorkingRangeOfDate($date)
+	{
+		return $this->dateRanges()->where([
+			["date_start", "<=", $date->format("Y-m-d")],
+			["date_end", ">=", $date->format("Y-m-d")]
+		])->first();
+	}
+
+
+
+	/**
+	 * [getPricePerBlockOnDate description]
+	 * @param  Carbon\Carbon $date
+	 * @return float
+	 */
+	public function getPricePerBlockOnDate($date)
+	{
+		$dateRange = $this->getWorkingRangeOfDate($date);
+
+		if(!$dateRange)
+			return null;
+
+		return floatval($dateRange->price_per_block);
+	}
+
+
 
 	/**
 	 * Check whether the instructor service has its working hours split in half: not consecutive from beginning to end.
@@ -144,15 +247,6 @@ class InstructorService extends Model
 	}
 
 
-
-	/**
-	 * [featuresArray description]
-	 * @return [type] [description]
-	 */
-	public function featuresArray()
-	{
-		return preg_split("/\r\n|\n|\r/", $this->features);
-	}
 
 
 	/**
@@ -180,6 +274,76 @@ class InstructorService extends Model
 	}
 
 
+	/**
+	 * Check if this service has a given hour range of a given date occupied by other active reservation/s.
+	 * 
+	 * @param  Carbon\Carbon $date      
+	 * @param  int $hour_start
+	 * @param  int $hour_end 
+	 * @return boolean
+	 */
+	public function hasTimeOccupiedByReservation($date, $hour_start, $hour_end)
+	{
+		
+		if(!Reservations::validHourWorkingPeriod($hour_start, $hour_end))
+			throw new \Exception("Invalid working hour period.");
+
+		$reservations = $this->reservations()->active()
+			->where("reserved_date", $date->format("Y-m-d"))
+			->where(function ($query) use ($hour_start, $hour_end) {
+
+				$query->where("reserved_time_start", $hour_start)
+					->orWhere("reserved_time_end", $hour_end)
+					->orWhere([
+						["reserved_time_start", ">", $hour_start],
+						["reserved_time_start", "<",  $hour_end]
+					])
+					->orWhere([
+						["reserved_time_end", ">", $hour_start],
+						["reserved_time_end", "<",  $hour_end]
+					])
+					->orWhere([
+						["reserved_time_start", "<", $hour_start],
+						["reserved_time_end", ">",  $hour_end]
+					]);
+
+			});
+
+
+		if($reservations->count() > 0)
+			return true;
+
+		return false;
+	}
+
+
+
+	/**
+	 * Check whether this service has an available period of hours of a certain date to be reserved/booked.
+	 * 
+	 * @param  Carbon\Carbon  $date
+	 * @param  int  $hour_start
+	 * @param  int  $hour_end
+	 * @return boolean
+	 */
+	public function isPeriodAvailableForReserving($date, $hour_start, $hour_end)
+	{
+		
+		if($this->getWorkingRangeOfDate($date) == null) // check if the instructor works that day
+			return false;
+		
+		if(!$this->hourRangeWithinWorkingHours($hour_start, $hour_end)) // check if the instructor works in those hours
+			return false;
+
+		if($this->hasTimeOccupiedByReservation($date, $hour_start, $hour_end)) // no existing reservations placed during the given time and date
+			return false;
+		
+		return true;
+	}
+
+
+
+
 
 
 	public function rebuildAvailabilityIndexes()
@@ -190,7 +354,7 @@ class InstructorService extends Model
 
 	/**
 	 * Rebuilds the booking calendar json (stored in booking_calendar_json).
-	 * The json stores, for each day of each month of activity, the price per block and the availability of each block.
+	 * The json stores, for each day of each month of activity of the current year, the price per block and the availability of each block.
 	 * This json will serve as a pre-processed index for the datepicker on the service page.
 	 * 
 	 * @return null
@@ -206,8 +370,8 @@ class InstructorService extends Model
 
 
 	/**
-	 * Gets the booking calendar as an array, adapted for use on the date picker. 
-	 * The calendar gets trimmed to only include whether a day is available and, if so, its price per block.
+	 * Gets a reduced booking calendar as an array, adapted for use on the date picker. 
+	 * The calendar includes only the availability and the block price for each day.
 	 * 
 	 * @return array
 	 */
@@ -242,7 +406,7 @@ class InstructorService extends Model
 	 * 
 	 * @return null
 	 */
-	public function rebuildAvailableDates()
+	public function rebuildUnavailableDatesIndex()
 	{
 		
 		DB::table("service_unavailable_dates")->where("instructor_service_id", $this->id)->delete();
@@ -269,6 +433,10 @@ class InstructorService extends Model
 
 
 	}
+
+
+
+
 
 
 }

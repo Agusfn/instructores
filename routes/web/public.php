@@ -11,8 +11,6 @@
 |
 */
 
-//Auth::routes();
-
 
 
 Route::get("/", "HomeController@index")->name("home");
@@ -22,6 +20,13 @@ Route::get("ser-instructor", "HomeController@becomeInstructor")->name("become-in
 
 Route::get("instructor/{service_number}", "InstructorServiceController@showDetails")->name("service-page");
 Route::post("instructor/{service_number}/calendar", "InstructorServiceController@fetchJsonCalendar");
+
+
+Route::get("reservar/{service_number}", "ReservationsController@previewReservation");
+Route::post("reservar/{service_number}/confirmar", "ReservationsController@reservationForm");
+Route::get("reservar/{service_number}/confirmar", "ReservationsController@redirectToService");
+Route::post("reservar/{service_number}/procesar", "ReservationsController@processReservation");
+Route::get("reservar/resultado/{reservation_code}", "ReservationsController@showStatus");
 
 
 Route::get('email/verificar', 'Auth\VerificationController@show')->name('verification.notice');

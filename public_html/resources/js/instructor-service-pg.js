@@ -65,17 +65,8 @@ $(document).ready(function() {
 
 				data: { file_name: file.name_in_server },
 
-				beforeSend: function() {
-					
-				},
-
-				complete: function() {
-					
-				},
-
 				success: function(response) {
 					console.log(response); // debug
-					
 				},
 
 				error: function (jqXhr, textStatus, errorMessage) {
@@ -90,9 +81,6 @@ $(document).ready(function() {
 		file.previewElement.remove();
 	});
 
-
-
-
 });
 
 
@@ -104,8 +92,30 @@ $(document).ready(function() {
 	$('#allow-group-classes').iCheck({
 		checkboxClass: 'icheckbox_square-blue',
 		radioClass: 'iradio_square-blue',
-		increaseArea: '20%' // optional
+		increaseArea: '20%'
 	});
+
+	$("#allow-group-classes").on("ifChecked", function(event) {
+		$("#max-group-size").parent().show();
+		$("#max-group-size").trigger("change");
+	});
+
+	$("#allow-group-classes").on("ifUnchecked", function(event) {
+		$("#person2-discount, #person3-discount, #person4-discount, #person5-discount, #person6-discount, #max-group-size").parent().hide();
+	});
+
+	$("#max-group-size").change(function() {
+
+		$("#person2-discount, #person3-discount, #person4-discount, #person5-discount, #person6-discount").parent().hide();
+
+		var max_persons = $(this).val();
+
+		for(var i=2; i<=max_persons; i++) {
+			$("#person"+i+"-discount").parent().show();
+		}
+	});
+
+
 
 
 	$('#separate-working-hours').iCheck({

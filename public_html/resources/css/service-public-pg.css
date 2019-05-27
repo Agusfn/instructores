@@ -1,0 +1,55 @@
+.profile-pic {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 20px;
+    border-top-left-radius: 50% 50%;
+    border-top-right-radius: 50% 50%;
+    border-bottom-right-radius: 50% 50%;
+    border-bottom-left-radius: 50% 50%;
+}
+
+#date-picker-input {
+    background-color: inherit;
+}
+
+#hour-selection {
+    text-align: center;
+}
+
+#hour-selection > div {
+    width: 100%;
+}
+#hour-selection .btn {
+    width:25%;
+}
+
+#hour-selection .btn.hour-selected {
+    background-color: #444;
+    border-color: #666;
+}
+
+.daterangepicker {
+    width: auto;
+}
+
+.daterangepicker .calendar.left.single {
+    max-width: none
+}
+
+.daterangepicker .calendar-table td, .daterangepicker .calendar-table th {
+    min-width: 45px;
+    width: 45px;
+    height: 45px;
+    font-size: 13px;
+    cursor: inherit;
+}
+
+.daterangepicker .calendar-table td.available {
+    cursor: pointer;
+}
+
+.date-min-price {
+    font-size:9px;
+    line-height: 13px;
+    color: #308ad5;
+}

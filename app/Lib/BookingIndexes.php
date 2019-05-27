@@ -54,7 +54,7 @@ class BookingIndexes
 	{
 		$calendar = [];
 
-		$seasonReservations = self::$service->reservations()->withinCurrentSeason()->orderBy("reserved_date", "asc")->get();
+		$seasonReservations = self::$service->reservations()->active()->withinCurrentSeason()->orderBy("reserved_date", "asc")->get();
 		
 		foreach($seasonReservations as $reservation) {		
 
@@ -114,7 +114,7 @@ class BookingIndexes
 
 				for($hourBlock=0; $hourBlock<Reservations::blocksPerDay(); $hourBlock++)
 				{
-					$hours = Reservations::blockToHourRange($hourBlock);
+					$hours = Reservations::blockRangeToHourRange($hourBlock, $hourBlock);
 
 					if(self::$service->hourRangeWithinWorkingHours($hours[0], $hours[1])) {
 

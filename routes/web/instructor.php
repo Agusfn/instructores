@@ -37,10 +37,12 @@ Route::post("instructor/panel/servicio/eliminar_fechas", "Instructor\ServiceDeta
 Route::post("instructor/panel/servicio/subir_imagen", "Instructor\ServiceDetailsController@uploadImage");
 Route::post("instructor/panel/servicio/eliminar_imagen", "Instructor\ServiceDetailsController@deleteImage");
 Route::post("instructor/panel/servicio/guardar_cambios", "Instructor\ServiceDetailsController@saveChanges");
-
+Route::post("instructor/panel/servicio/pausar", "Instructor\ServiceDetailsController@pause");
+Route::post("instructor/panel/servicio/activar", "Instructor\ServiceDetailsController@activate");
 
 // Reservations
 Route::get("instructor/panel/reservas", "Instructor\ReservationsController@showList")->name("instructor.reservations");
+Route::get("instructor/panel/reservas/{reservation_code}", "Instructor\ReservationsController@details");
 
 
 

@@ -11,7 +11,7 @@ class InstructorServiceController extends Controller
 
 	public function showDetails($service_number)
 	{
-		$service = InstructorService::findByNumber($service_number);
+		$service = InstructorService::findActiveByNumber($service_number);
 
 		if(!$service)
 			return redirect()->route("home");
@@ -26,7 +26,7 @@ class InstructorServiceController extends Controller
 
 	public function fetchJsonCalendar($service_number)
 	{
-		$service = InstructorService::findByNumber($service_number);
+		$service = InstructorService::findActiveByNumber($service_number);
 
 		if(!$service)
 			return response("Invalid service number.", 422);

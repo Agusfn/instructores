@@ -25,7 +25,13 @@ class CreateInstructorServicesTable extends Migration
             $table->integer('worktime_hour_end');
             $table->integer('worktime_alt_hour_start')->nullable();
             $table->integer('worktime_alt_hour_end')->nullable();
-            $table->boolean('allows_groups')->default(true);
+            $table->boolean('allows_groups')->default(false);
+            $table->integer('max_group_size')->default(6);
+            $table->decimal('person2_discount', 4, 2)->default(0);
+            $table->decimal('person3_discount', 4, 2)->default(0);
+            $table->decimal('person4_discount', 4, 2)->default(0);
+            $table->decimal('person5_discount', 4, 2)->default(0);
+            $table->decimal('person6_discount', 4, 2)->default(0);
             $table->text('booking_calendar_json')->nullable();
             $table->timestamps();
 

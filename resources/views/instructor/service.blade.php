@@ -24,6 +24,11 @@
 	.dz-details {
 		display: none;
 	}
+
+	#person2-discount, #person3-discount, #person4-discount, #person5-discount, #person6-discount {
+		display: inline-block; 
+		width: 80px
+	}
 	</style>
 	@endif
 @endsection
@@ -44,7 +49,41 @@
 
 				@if($instructor->isApproved())
 
-				<h5 style="margin-bottom: 20px">Información del servicio <span style="font-size:15px">(<a href="{{ url('clases/'.$service->number) }}" target="_blank">ver pag</a>)</span></h5>
+
+				@if($errors->has('person2_discount') || $errors->has('person3_discount') || $errors->has('person4_discount') || $errors->has('person5_discount') || $errors->has('person6_discount'))
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+					Ingresa todos los valores de descuento grupal correctamente, entre 0 y 100.
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				@endif
+
+				@if($errors->has('cant_activate'))
+				<div class="alert alert-warning alert-dismissible fade show" role="alert">
+					{{ $errors->first('cant_activate') }}
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				@endif
+
+				<h5 style="margin-bottom: 20px">
+					Información del servicio <span style="font-size:15px">(<a href="{{ url('instructor/'.$service->number) }}" target="_blank">ver pag</a>)</span>
+
+					@if($service->published)
+					<form style="float:right;" action="{{ url('instructor/panel/servicio/pausar') }}" method="POST">
+						@csrf
+						<button class="btn btn-default">Pausar publicación</button>
+					</form>
+					@else
+					<form style="float:right;" action="{{ url('instructor/panel/servicio/activar') }}" method="POST">
+						@csrf
+						<button class="btn btn-info">Activar publicación</button>
+					</form>
+					@endif
+					
+				</h5>
 
 
 				<div class="form-group">
@@ -135,11 +174,40 @@
 
 						<div class="col-md-5">
 							
-							<div style="margin-top: 20px">
+							<div class="form-group" style="margin-top: 20px">
 								<input type="checkbox" id="allow-group-classes" autocomplete="off" name="allow_groups" @if($service->allows_groups) checked @endif>
 								<label for="allow-group-classes" style="cursor: pointer;margin-left: 10px;">Permitir clases grupales</label>
 							</div>
-
+							<div class="form-group" @if(!$service->allows_groups) style="display: none" @endif>
+								<label>Cantidad máx. personas</label>
+								<select class="form-control" name="max_group_size" id="max-group-size" autocomplete="off">
+									<option @if($service->max_group_size == 2) selected @endif>2</option>
+									<option @if($service->max_group_size == 3) selected @endif>3</option>
+									<option @if($service->max_group_size == 4) selected @endif>4</option>
+									<option @if($service->max_group_size == 5) selected @endif>5</option>
+									<option @if($service->max_group_size == 6) selected @endif>6</option>
+								</select>
+							</div>
+							<div class="form-group" @if(!$service->allows_groups) style="display: none" @endif>
+								<label>Descuento 2da persona</label><br/>
+								<input type="text" class="form-control" name="person2_discount" id="person2-discount" value="{{ $service->person2_discount }}">&nbsp;&nbsp;%
+							</div>
+							<div class="form-group" @if(!$service->allows_groups || $service->max_group_size < 3) style="display: none" @endif>
+								<label>Descuento 3er persona</label><br/>
+								<input type="text" class="form-control" name="person3_discount" id="person3-discount" value="{{ $service->person3_discount }}">&nbsp;&nbsp;%
+							</div>
+							<div class="form-group"@if(!$service->allows_groups || $service->max_group_size < 4) style="display: none" @endif>
+								<label>Descuento 4ta persona</label><br/>
+								<input type="text" class="form-control" name="person4_discount" id="person4-discount" value="{{ $service->person4_discount }}">&nbsp;&nbsp;%
+							</div>
+							<div class="form-group"@if(!$service->allows_groups || $service->max_group_size < 5) style="display: none" @endif>
+								<label>Descuento 5ta persona</label><br/>
+								<input type="text" class="form-control" name="person5_discount" id="person5-discount" value="{{ $service->person5_discount }}">&nbsp;&nbsp;%
+							</div>
+							<div class="form-group"@if(!$service->allows_groups || $service->max_group_size < 6) style="display: none" @endif>
+								<label>Descuento 6ta persona</label><br/>
+								<input type="text" class="form-control" name="person6_discount" id="person6-discount" value="{{ $service->person6_discount }}">&nbsp;&nbsp;%
+							</div>
 						</div>
 
 

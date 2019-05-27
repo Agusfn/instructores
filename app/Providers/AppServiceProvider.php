@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
 
-        // Guest only used in front end
+        // Guest only used in front office
         Blade::if('guest', function () {
             return !Auth::guard("user")->check() && !Auth::guard("instructor")->check();
         });
