@@ -47,4 +47,7 @@ Route::get("instructor/panel/reservas/{reservation_code}", "Instructor\Reservati
 
 
 // Balance
-Route::get("instructor/panel/saldo", "Instructor\AccountBalanceController@index")->name("instructor.balance");
+Route::get("instructor/panel/cobros", "Instructor\PaymentsController@index")->name("instructor.payments");
+
+Route::post("instructor/panel/cobros/url_asoc_mp", "Instructor\PaymentsController@redirectToMpAssocUrl");
+Route::get("instructor/panel/cobros/asociar_cuenta_mp", "Instructor\PaymentsController@associateMpAccount");

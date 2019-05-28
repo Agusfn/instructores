@@ -72,6 +72,14 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     }
 
 
+
+    public function mpAccount()
+    {
+        return $this->hasOne("App\InstructorMpAccount");
+    }
+
+
+
     public function sendWelcomeAndVerificationEmail()
     {
         return Mail::to($this)->send(new UserWelcomeEmail($this));

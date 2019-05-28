@@ -11,7 +11,7 @@
 			<a class="nav-link {{ request()->is('*/reservas') ? 'active' : '' }}" href="{{ url('instructor/panel/reservas') }}">Mis reservas</a>
 		</li>
 		<li class="nav-item">
-			<a class="nav-link {{ request()->is('*/saldo') ? 'active' : '' }}" href="{{ url('instructor/panel/saldo') }}">Mi saldo</a>
+			<a class="nav-link {{ request()->is('*/cobros') ? 'active' : '' }}" href="{{ url('instructor/panel/cobros') }}">Mis cobros</a>
 		</li>			
 	</ul>
 
