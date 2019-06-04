@@ -89,7 +89,7 @@
                 <div class="col-lg-4 col-md-6">
                     <a class="box_feat" href="#0">
                         <i class="pe-7s-credit"></i>
-                        <h3>Pagos seguros</h3>
+                        <h3>Pagos seguros con MercadoPago</h3>
                         <p></p>
                     </a>
                 </div>
@@ -122,7 +122,7 @@
                     <div class="col-xl-3 col-lg-6 col-md-6">
                         <a href="#" class="grid_item">
                             <figure>
-                                <div class="score"><strong>8.9</strong></div>
+                                <div class="score"><strong>9.9</strong></div>
                                 <img src="{{ asset('resources/img/hotel_1.jpg') }}" class="img-fluid" alt="">
                                 <div class="info">
                                     <div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div>
