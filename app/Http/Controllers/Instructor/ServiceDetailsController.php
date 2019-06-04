@@ -6,7 +6,7 @@ use Validator;
 
 use App\ServiceDateRange;
 
-
+use Carbon\Carbon;
 use App\Lib\Helpers\Images;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -71,14 +71,21 @@ class ServiceDetailsController extends Controller
 
 		if($instructor->isApproved() && !$instructor->service->published) {
 
-			if($instructor->service->canBePublished()) {
 
-				$instructor->service->published = true;
-				$instructor->service->save();
-			}
-			else {
-				return redirect()->back()->withErrors(["cant_activate" => "Debes ingresar una descripción, características, y al menos una foto y un rango de días de trabajo."]);
-			}
+			if(!$instructor->hasMpAccountAssociated())
+				return redirect()->back()->withErrors([
+					"cant_activate" => 'Para publicar tu servicio debés asociar tu cuenta de MercadoPago primero (en la pestaña "mis cobros").'
+				]);
+
+			if(!$instructor->service->canBePublished())
+				return redirect()->back()->withErrors([
+					"cant_activate" => "Debes ingresar una descripción, características, y al menos una foto y un rango de días de trabajo."
+				]);
+			
+
+			$instructor->service->published = true;
+			$instructor->service->save();
+
 		}
 
 		return redirect()->back();

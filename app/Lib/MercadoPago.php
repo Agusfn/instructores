@@ -4,7 +4,7 @@ namespace App\Lib;
 
 
 use MercadoPago\SDK;
-
+use MercadoPago\Payment;
 
 class MercadoPago
 {
@@ -114,7 +114,6 @@ class MercadoPago
 				"grant_type" => "authorization_code",
 				"code" => $authCode,
 				"redirect_uri" => $redirectUrl
-
 			]
 		];
 
@@ -133,5 +132,77 @@ class MercadoPago
 
 
 
+
+	public static function makeMarketplacePayment($itemName, $externalRef, $total, $payer, $cardToken, $payMethodId, $installments, $issuerId = null)
+	{
+		self::initialize();
+
+		$payment = new MercadoPago\Payment();
+	    $payment->transaction_amount = 117;
+	    $payment->token = "ff8080814c11e237014c1ff593b57b4d";
+	    $payment->application_fee = 123;
+	    $payment->issuer_id = 123;
+	    $payment->description = "Durable Steel Gloves";
+	    $payment->installments = 1;
+	    $payment->statement_descriptor = "INSTRUCTORES.COM.AR";
+	    $payment->payment_method_id = "visa";
+	    $payment->payer = array(
+	    	"email" => "michele_barrows@gmail.com"
+	    );
+	    // Save and posting the payment
+	    $payment->save();
+	    //...
+	    // Print the payment status
+	    echo $payment->status;
+
+	}
+
+
+
+
+	public static function testAdvPayment()
+	{
+		self::initialize();
+
+		$data = [
+
+			"application_id" => self::APP_ID,
+			"payments" => [
+				[
+					"payment_method_id" => "",
+					"payment_type_id" => "",
+					"token" => "",
+					"transaction_amount" => 100,
+					"installments" => 1,
+					"processing_mode" => "aggregator",
+					"description" => "Item description",
+					"statement_descriptor" => "INSTRUCTORES.COM.AR",
+					"external_reference" => "EXTREF1"
+				]
+			],
+			"disbursements" => [
+				[
+					"amount" => 100,
+					"external_reference" => "EXTREF2",
+					"collector_id" => 1234444, // ID del vendedor
+					"application_fee" => 5.5,
+					//"money_release_days" => 3,
+				]
+			],
+			"payer" => [
+				"email" => "agusfn20@gmail.com"
+			],
+
+
+		];
+
+
+		$payload = [
+			"json_data" => $data
+		];
+		$response = SDK::post("/v1/advanced_payments?access_token=".self::getAccessToken(), $payload);
+
+		dump($response);
+	}
 
 }

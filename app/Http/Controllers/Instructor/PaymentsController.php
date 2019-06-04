@@ -38,7 +38,7 @@ class PaymentsController extends Controller
 	{
 		$instructor = Auth::user();
 
-		if($instructor->mpAccount != null && $instructor->mpAccount->access_token != null)
+		if($instructor->hasMpAccountAssociated())
 			return redirect()->route("instructor.payments");
 
 		
@@ -57,7 +57,11 @@ class PaymentsController extends Controller
 	}
 
 
-
+	/**
+	 * [associateMpAccount description]
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
 	public function associateMpAccount(Request $request)
 	{
 		$instructor = Auth::user();
@@ -77,6 +81,10 @@ class PaymentsController extends Controller
 
 		if(!$response) {
 			return redirect()->route("instructor.payments")->withErrors("El código de asociación de cuenta puede que sea incorrecto o haya expirado, intentalo nuevamente.");
+		}
+
+		if(InstructorMpAccount::findByMpUserId($response["body"]["user_id"]) != null) {
+			return redirect()->route("instructor.payments")->withErrors("Esta cuenta de MercadoPago ya está asociada a otra cuenta de instructor.");
 		}
 
 		$instructor->mpAccount->fill([

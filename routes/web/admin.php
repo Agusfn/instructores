@@ -39,3 +39,4 @@ Route::get("admin/reservas", "Admin\ReservationsController@list")->name("admin.r
 
 
 Route::get("admin/opciones", "Admin\SettingsController@index")->name("admin.settings");
+Route::post("admin/opciones", "Admin\SettingsController@save");

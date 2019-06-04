@@ -81,7 +81,7 @@
 							<form id="change-phone-form" style="display: none" method="POST" action="{{ url('instructor/panel/cuenta/cambiar_tel') }}">
 								@csrf
 								<input type="text" value="{{ $instructor->phone_number }}" name="phone_number" class="form-control form-control-sm" style="width: 150px; display: inline-block;">
-								<button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+								<button type="submit" class="btn btn-primary btn-sm">Aplicar</button>
 							</form>
 						</div>
 					</div>
@@ -118,7 +118,7 @@
 
 							@if($instructor->profile_picture)
 							<div style="width: 150px;text-align: center;">
-								<img src="{{ Storage::url('img/instructors/'.$instructor->profile_picture) }}" class="profile-pic"><br/>
+								<img src="{{ $instructor->profilePicUrl() }}" class="profile-pic"><br/>
 								<a href="javascript:void(0);" id="change-profile-pic">Cambiar</a>
 							</div>
 							@endif
@@ -153,7 +153,7 @@
 							<form id="instagram-form" style="display: none" method="POST" action="{{ url('instructor/panel/cuenta/cambiar_instagram') }}">
 								@csrf
 								<input type="text" value="{{ $instructor->instagram_username }}" name="instagram_username" class="form-control form-control-sm" style="width: 150px; display: inline-block;">
-								<button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+								<button type="submit" class="btn btn-primary btn-sm">Aplicar</button>
 							</form>
 
 						</div>
@@ -167,7 +167,7 @@
 					<hr>
 					<h4 style="margin: 20px 0 30px">Verificar cuenta</h4>
 
-					<p>Necesitamos verificar tu identidad y certificación para que puedas empezar a ofrecer tus servicios.</p>
+					<p>Necesitamos verificar tu identidad y tu certificación como instructor para que puedas empezar a ofrecer tus servicios.</p>
 
 					@if($instructor->phone_number && $instructor->profile_picture)
 

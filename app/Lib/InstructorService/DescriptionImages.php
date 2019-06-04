@@ -118,11 +118,18 @@ trait DescriptionImages
 	}
 
 
+	/**
+	 * Returns an array of the service images URLs, both fullsized and thumbnails.
+	 * @return array
+	 */
 	public function imageUrls()
 	{
 		$urls = [];
 		foreach($this->images() as $image) {
-			$urls[] = Storage::url("img/service/".$this->number."/".$image["name"]);
+			$urls[] = [
+				"fullsize" => Storage::url("img/service/".$this->number."/".$image["name"]),
+				"thumbnail" => Storage::url("img/service/".$this->number."/".$image["thumbnail_name"])
+			];
 		}
 		return $urls;
 	}

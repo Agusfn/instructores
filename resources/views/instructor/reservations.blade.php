@@ -55,7 +55,7 @@
 							</td>
 							<td>{{ $reservation->user->name.' '.$reservation->user->surname }}</td>
 							<td>{{ date('d M', strtotime($reservation->reserved_date)).', '.$reservation->reserved_time_start.'-'.$reservation->reserved_time_end.'hs' }}</td>
-							<td>{{ $reservation->persons_ammount }}</td>
+							<td>{{ $reservation->persons_amount }}</td>
 							<td>${{ floatval($reservation->final_price) }}</td>
 						</tr>
 						@endforeach

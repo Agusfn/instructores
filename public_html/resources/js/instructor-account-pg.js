@@ -93,6 +93,7 @@ function sendChangeProfilePicRequest(imgBlob)
 		},
 
 		error: function (jqXhr, textStatus, errorMessage) {
+			console.log(jqXhr);
 			if(jqXhr.status == 422)
 				alert(jqXhr.responseText);
 			else

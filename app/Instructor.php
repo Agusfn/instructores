@@ -97,6 +97,19 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     }
 
 
+    /**
+     * Check whether the instructor has associated its MercadoPago account.
+     * @return boolean
+     */
+    public function hasMpAccountAssociated()
+    {
+        if($this->mpAccount != null && $this->mpAccount->access_token != null)
+            return true;
+
+        return false;
+    }
+
+
 
     /**
      * Check if instructor has sent the documents for their approval.
@@ -160,5 +173,10 @@ class Instructor extends Authenticatable implements MustVerifyEmail
         return $this->hasMany("App\InstructorBalanceMovement");
     }
 
+
+    public function profilePicUrl()
+    {
+        return \Storage::url("img/instructors/".$this->profile_picture);
+    }
 
 }

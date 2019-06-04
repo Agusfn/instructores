@@ -23,7 +23,7 @@ class CreateReservationsTable extends Migration
             $table->date('reserved_date');
             $table->integer('reserved_time_start');
             $table->integer('reserved_time_end');
-            $table->integer('persons_ammount');
+            $table->integer('persons_amount');
             $table->decimal('final_price', 8, 2);
             $table->decimal('instructor_pay', 8, 2);
             $table->decimal('service_fee', 8, 2);

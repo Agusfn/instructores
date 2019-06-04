@@ -32,8 +32,11 @@ class InstructorsController extends Controller
 
 	public function details($id)
 	{
-		$instructor = Instructor::find($id);
-		return view("admin.instructors.details")->with("instructor", $instructor);
+		$instructor = Instructor::with("service")->find($id);
+		return view("admin.instructors.details")->with([
+			"instructor" => $instructor,
+			"service" => $instructor->service
+		]);
 	}
 
 

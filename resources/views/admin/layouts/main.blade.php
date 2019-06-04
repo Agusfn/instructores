@@ -29,7 +29,7 @@
   <link href="{{ asset('resources/admin/vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
   <!-- Your custom styles -->
   <link href="{{ asset('resources/admin/css/custom.css') }}" rel="stylesheet">
-  @yield('css')
+  @yield('custom-css')
 	
 </head>
 

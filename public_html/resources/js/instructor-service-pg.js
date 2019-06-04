@@ -89,7 +89,7 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 
-	$('#allow-group-classes').iCheck({
+	$('#allow-adults, #allow-kids, #instruct-ski, #instruct-snowboard, #separate-working-hours, #allow-group-classes').iCheck({
 		checkboxClass: 'icheckbox_square-blue',
 		radioClass: 'iradio_square-blue',
 		increaseArea: '20%'
@@ -97,32 +97,27 @@ $(document).ready(function() {
 
 	$("#allow-group-classes").on("ifChecked", function(event) {
 		$("#max-group-size").parent().show();
+		$("#group-discounts-table").show();
 		$("#max-group-size").trigger("change");
 	});
 
 	$("#allow-group-classes").on("ifUnchecked", function(event) {
-		$("#person2-discount, #person3-discount, #person4-discount, #person5-discount, #person6-discount, #max-group-size").parent().hide();
+		$("#group-discounts-table").hide();
+		$("#max-group-size").parent().hide();
 	});
 
 	$("#max-group-size").change(function() {
 
-		$("#person2-discount, #person3-discount, #person4-discount, #person5-discount, #person6-discount").parent().hide();
+		$("#group-discounts-table tbody tr").hide();
 
 		var max_persons = $(this).val();
 
 		for(var i=2; i<=max_persons; i++) {
-			$("#person"+i+"-discount").parent().show();
+			$("#person"+i+"-discount").closest("tr").show();
 		}
 	});
 
 
-
-
-	$('#separate-working-hours').iCheck({
-		checkboxClass: 'icheckbox_square-blue',
-		radioClass: 'iradio_square-blue',
-		increaseArea: '20%' // optional
-	});
 
 	
 	create_hour_slider(
@@ -250,7 +245,7 @@ $(document).ready(function() {
 function validate_range_form()
 {
 	
-	var valid_date = /^\d{4}-\d{2}-\d{2}$/;
+	var valid_date = /^\d{2}\/\d{2}\/\d{4}$/;
 
 	if(!valid_date.test($("#date_start").val()) || !valid_date.test($("#date_end").val())) {
 		alert("Ingresa fechas válidas.");

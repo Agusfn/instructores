@@ -1,6 +1,19 @@
 @extends('admin.layouts.main')
 
 
+@section('custom-css')
+<style type="text/css">
+	.profile-pic
+	{
+		width: 100%;
+		border-top-left-radius: 50% 50%;
+		border-top-right-radius: 50% 50%;
+		border-bottom-right-radius: 50% 50%;
+		border-bottom-left-radius: 50% 50%;
+	}
+</style>
+@endsection
+
 
 @section('body-start')
 
@@ -93,8 +106,9 @@
 @endif
 
 
-
 @endsection
+
+
 
 
 @section('content')
@@ -125,34 +139,49 @@
 						<h2 class="d-inline-block">Datos personales y de la cuenta</h2>
 					</div>
 					<div class="list_general">
-						
-						<div class="row" style="margin-bottom: 20px">
-							<div class="col-lg-2">
-								<label><strong>ID</strong></label><br/>
-								{{ $instructor->id }}
-							</div>
 
-							<div class="col-lg-5">
-								<label><strong>Nombre y apellido</strong></label><br/>
-								{{ $instructor->name.' '.$instructor->surname }}
-							</div>
-
-							<div class="col-lg-5">
-								<label><strong>E-mail</strong></label><br/>
-								{{ $instructor->email }}
-							</div>
-						</div>
-						
-						<div class="row" style="margin-bottom: 20px">
-							<div class="col-lg-6">
-								<label><strong>Nro tel</strong></label><br/>
-								@if($instructor->phone_number)
-									{{ $instructor->phone_number }}
+						<div class="row" style="margin: 20px 0 40px 0">
+							<div class="col-lg-3">
+								@if($instructor->profile_picture)
+									<img src="{{ $instructor->profilePicUrl() }}" class="profile-pic">
 								@else
-									-
+									<img src="{{ asset('resources/admin/img/avatar.jpg') }}" class="profile-pic">
 								@endif
 							</div>
+
+							<div class="col-lg-9">
+								<div class="row" style="margin-bottom: 20px">
+									<div class="col-lg-6">
+										<label><strong>Nombre y apellido</strong></label><br/>
+										{{ $instructor->name.' '.$instructor->surname }}
+									</div>
+									<div class="col-lg-6">
+										<label><strong>E-mail</strong></label><br/>
+										{{ $instructor->email }}
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-6">
+										<label><strong>Nro tel</strong></label><br/>
+										@if($instructor->phone_number)
+											{{ $instructor->phone_number }}
+										@else
+											-
+										@endif
+									</div>
+									<div class="col-lg-6">
+										<label><strong>Cta instagram</strong></label><br/>
+										@if($instructor->instagram_username)
+										<a href="https://instagram.com/{{ $instructor->instagram_username }}" target="_blank">{{ $instructor->instagram_username }}</a>
+										@else
+										-
+										@endif
+									</div>
+								</div>
+							</div>
 						</div>
+
 
 						<div class="row" style="margin-bottom: 20px">
 							<div class="col-lg-3">
@@ -166,9 +195,7 @@
 								@else
 									<span class="badge badge-success">Aprobado</span>
 								@endif
-								
 							</div>
-
 							<div class="col-lg-3">
 								<label><strong>Fotos certif.</strong></label><br/>
 								@if($instructor->approvalDocsSent())
@@ -180,9 +207,7 @@
 								@else
 									-
 								@endif
-								
 							</div>
-
 							<div class="col-lg-3">
 								<label><strong>Fotos documento</strong></label><br/>
 								@if($instructor->approvalDocsSent())
@@ -195,7 +220,6 @@
 									-
 								@endif
 							</div>
-
 							<div class="col-lg-3">
 								@if(!$instructor->isApproved())
 									<label><strong>Fecha enviados</strong></label><br/>
@@ -208,8 +232,6 @@
 									<label><strong>Fecha aprobado</strong></label><br/>
 									{{ date('d/m/Y', strtotime($instructor->approved_at)) }}
 								@endif
-
-
 							</div>
 						</div>
 
@@ -265,13 +287,119 @@
       		<div class="col-md-6">
 				<div class="box_general padding_bottom">
 					<div class="header_box">
-						<h2 class="d-inline-block">Detalles del servicio</h2>
+						<h2 class="d-inline-block">Detalles del servicio 
+							@if($instructor->isApproved())
+							<a target="_blank" href="{{ route('service-page', $service->number) }}"><i style="font-size: 17px" class="fa fa-link" aria-hidden="true"></i></a>
+							@endif
+						</h2>
 					</div>
 					<div class="list_general">
 						
 						@if($instructor->isApproved())
 
+						<div class="row" style="margin-bottom: 15px">
+							<div class="col-lg-4">
+								<label><strong>Estado:</strong></label> 
+								@if($service->published)
+								<span class="badge badge-success" style="font-size: 14px">Activo</span>
+								@else
+								<span class="badge badge-secondary" style="font-size: 14px">Inactivo</span>
+								@endif
+							</div>
+							<div class="col-lg-4">
+								<label><strong>Nro servicio:</strong></label> {{ $service->number }}
+							</div>
+							<div class="col-lg-4">
+								<label><strong>ID servicio:</strong></label> {{ $service->id }}
+							</div>
+						</div>
 
+						<div class="row" style="margin-bottom: 15px">
+							<div class="col-lg-6">
+								<label><strong>Descripción</strong></label>
+								<div class="card">
+									<div class="card-body">
+										{!! nl2br(e($service->description)) !!}
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<label><strong>Características</strong></label>
+								<div class="card">
+									<div class="card-body">
+	                                    <ul class="bullets">
+	                                        @foreach($service->featuresArray() as $feature)
+                                           <li>{{ $feature }}</li>
+	                                        @endforeach
+	                                    </ul>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div>
+							<label><strong>Imágenes:</strong></label>
+							<div style="text-align: center;">
+								@if(sizeof($service->imageUrls()) > 0)
+									@foreach($service->imageUrls() as $imgurl)
+									<a href="{{ $imgurl['fullsize'] }}" target="_blank"><img src="{{ $imgurl['thumbnail'] }}" style="margin-left: 10px" width="120"></a>
+									@endforeach
+								@else
+									No hay imágenes
+								@endif
+							</div>
+						</div>
+
+						<h5 style="margin: 35px 0 25px">Disponibilidad y precios</h3>
+
+						<div style="margin-bottom: 15px">
+							<label><strong>Horarios de trabajo:</strong></label>
+							De {{ $service->worktime_hour_start }} a {{ $service->worktime_hour_end }}hs
+							@if($service->hasSplitWorkHours())
+							y de {{ $service->worktime_alt_hour_start }} a {{ $service->worktime_alt_hour_end }}hs
+							@endif
+						</div>
+
+						<div class="row" style="margin-bottom: 15px">
+							<div class="col-lg-6">
+								<label><strong>Permite clases grupales:</strong></label> @if($service->allows_groups) Sí @else No @endif<br/>
+								@if($service->allows_groups)
+								<label><strong>Max. personas en grupo:</strong></label> {{ $service->max_group_size }}<br/>
+								@endif
+							</div>
+							@if($service->allows_groups)
+							<div class="col-lg-6">
+								<label><strong>Descuentos grupales:</strong></label><br/>
+								@for($i=2; $i <= $service->max_group_size; $i++)
+								{{ $i }}º persona: {{ round($service->{'person'.$i.'_discount'},2) }}%<br/>
+								@endfor
+							</div>
+							@endif
+						</div>
+
+						<h6>Días de trabajo y precios</h6>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Desde</th>
+									<th>Hasta</th>
+									<th>Precio bloque 2hs</th>
+								</tr>
+							</thead>
+							<tbody>
+								@if($service->dateRanges->count() > 0)
+
+									@foreach($service->dateRanges as $dateRange)
+									<tr>
+										<td>{{ $dateRange->date_start->format('d/m/Y') }}</td>
+										<td>{{ $dateRange->date_end->format('d/m/Y') }}</td>
+										<td>${{ round($dateRange->price_per_block, 2) }}</td>
+									</tr>
+									@endforeach
+
+								@endif
+							</tbody>
+						</table>
 						@else
 
 						<div class="alert alert-warning">El instructor no tuvo su documentación verificada aún. No podrá ofrecer sus servicios hasta que la verifique.</div>

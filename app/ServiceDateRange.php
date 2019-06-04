@@ -16,6 +16,16 @@ class ServiceDateRange extends Model
 	protected $guarded = [];
 
 
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        "date_start",
+        "date_end"
+    ];
+
 
 	/**
 	 * Get the instructor service that owns this date range

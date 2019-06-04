@@ -10,7 +10,7 @@
 
         <section class="hero_in hotels_detail" 
         @if(isset($service->imageUrls()[0]))
-        style="background-position: center center; background-size: cover; background-repeat: no-repeat; background-image: url('{{ $service->imageUrls()[0] }}'); "
+        style="background-position: center center; background-size: cover; background-repeat: no-repeat; background-image: url('{{ $service->imageUrls()[0]['fullsize'] }}'); "
         @endif
         >
             <div class="wrapper">
@@ -24,11 +24,11 @@
                 </div>
                 <span class="magnific-gallery">
 
-                    @foreach($service->imageUrls() as $url)
+                    @foreach($service->imageUrls() as $imgurl)
                         @if($loop->first)
-                        <a href="{{ $url }}" class="btn_photos" title="Photo title" data-effect="mfp-zoom-in">Ver fotos</a>
+                        <a href="{{ $imgurl['fullsize'] }}" class="btn_photos" title="Photo title" data-effect="mfp-zoom-in">Ver fotos</a>
                         @else
-                        <a href="{{ $url }}" title="Photo title" data-effect="mfp-zoom-in"></a>
+                        <a href="{{ $imgurl['fullsize'] }}" title="Photo title" data-effect="mfp-zoom-in"></a>
                         @endif
                     @endforeach
                 </span>
