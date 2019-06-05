@@ -17,24 +17,19 @@ class InstructorService extends Model
 
 	use DescriptionImages;
 
+
     /**
      * 
      *
      * @var array
      */
-	protected $fillable = [
-		"description", 
-		"features", 
-		"worktime_hour_start", 
-		"worktime_hour_end", 
-		"worktime_alt_hour_start", 
-		"worktime_alt_hour_end",
-		"max_group_size",
-		"person2_discount",
-		"person3_discount",
-		"person4_discount",
-		"person5_discount",
-		"person6_discount"
+	protected $guarded = [
+		"number",
+		"published",
+		"instructor_id",
+		"instructor_level",
+		"images_json",
+		"booking_calendar_json"
 	];
 
 
@@ -125,7 +120,7 @@ class InstructorService extends Model
 
 	/**
 	 * Check whether this service has the necessary information in order to be published.
-	 * The information is: description, features, at least 1 image, and at least 1 date range.
+	 * The information is: description, features, sport discipline, at least 1 image, at least 1 date range, and type of public.
 	 * 
 	 * @return boolean
 	 */
@@ -134,7 +129,13 @@ class InstructorService extends Model
 		if(!$this->description || !$this->features)
 			return false;
 
+		if(!$this->snowboard_discipline && !$this->ski_discipline)
+			return false;
+
 		if(!$this->images_json || sizeof($this->images()) < 1)
+			return false;
+
+		if(!$this->offered_to_adults && !$this->offered_to_kids)
 			return false;
 
 		if($this->dateRanges->count() == 0)

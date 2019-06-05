@@ -79,15 +79,15 @@ class ServiceDetailsController extends Controller
 
 			if(!$instructor->service->canBePublished())
 				return redirect()->back()->withErrors([
-					"cant_activate" => "Debes ingresar una descripción, características, y al menos una foto y un rango de días de trabajo."
+					"cant_activate" => "Debes ingresar la información de tu servicio (descripción, disciplina, características, alguna foto, un rango de días de trabajo, y público) para activar la publicación."
 				]);
-			
 
 			$instructor->service->published = true;
 			$instructor->service->save();
 
 		}
 
+		request()->session()->flash('activate-success');
 		return redirect()->back();
 	}
 
@@ -108,10 +108,13 @@ class ServiceDetailsController extends Controller
 
 		$instructor = Auth::user();
 
+        $dateStart = Carbon::createFromFormat("d/m/Y", $request->date_start);
+        $dateEnd = Carbon::createFromFormat("d/m/Y", $request->date_end);
+
 		$dateRange = ServiceDateRange::create([
 			"instructor_service_id" => $instructor->service->id,
-			"date_start" => $request->date_start,
-			"date_end" => $request->date_end,
+			"date_start" => $dateStart->format("Y-m-d"),
+			"date_end" => $dateEnd->format("Y-m-d"),
 			"price_per_block" => $request->block_price
 		]);
 
@@ -223,8 +226,21 @@ class ServiceDetailsController extends Controller
 		$service = Auth::user()->service;
 
 
-		$service->fill($request->all());
-		$service->allows_groups = $request->has("allow_groups");
+		$service->fill($request->except([
+			"snowboard_discipline",
+			"ski_discipline",
+			"allow_adults",
+			"allow_kids",
+			"allow_groups",
+		]));
+		
+		$service->fill([
+			"snowboard_discipline" => $request->has("snowboard_discipline"),
+			"ski_discipline" => $request->has("ski_discipline"),
+			"offered_to_adults" => $request->has("allow_adults"),
+			"offered_to_kids" => $request->has("allow_kids"),
+			"allows_groups" => $request->has("allow_groups")
+		]);
 
 		$service->save();
 

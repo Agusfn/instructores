@@ -6,7 +6,6 @@ $(document).ready(function() {
 
 	$('[data-toggle="tooltip"]').tooltip();
 
-
 	var imgDropzone = new Dropzone("#img-dropzone", {
 		paramName: "file",
 		maxFilesize: 4,
@@ -16,28 +15,21 @@ $(document).ready(function() {
 		acceptedFiles: "image/jpeg,image/png",
 
 		init: function() {
-
 			var imgDropzone = this;
-
 			uploaded_imgs.forEach(function(img) {
-
 				var file = { 
 	                status: Dropzone.ADDED,
 	                name_in_server: img.name,
 					imageUrl: img_dir + img.thumbnail_name,
 					accepted: true,
 				};
-
 				imgDropzone.emit("addedfile", file);
 				imgDropzone.emit("thumbnail", file, file.imageUrl);
 				imgDropzone.emit("complete", file);
 				imgDropzone.files.push(file);
-
 			});
 		}
-
 	});
-
 
 	imgDropzone.on("success", function(file, response) {
    		file.name_in_server = response.img.name;
@@ -45,12 +37,10 @@ $(document).ready(function() {
 	    console.log(response);
 	});
 
-
 	imgDropzone.on("error", function(file, response) {
    		console.log(file);
 	    console.log(response);
 	});
-
 
 	imgDropzone.on("removedfile", function(file) {
 		console.log(file);
@@ -118,8 +108,6 @@ $(document).ready(function() {
 	});
 
 
-
-	
 	create_hour_slider(
 		$("input[name=worktime_hour_start").val(), 
 		$("input[name=worktime_hour_end").val(), 
@@ -138,6 +126,42 @@ $(document).ready(function() {
 		create_hour_slider(9, 17);
 	});
 
+
+	$("#submit-form-btn").click(function() {
+
+		// Validate
+		if($("textarea[name=description]").val() == "") {
+			alert("Ingresa una descripción.");
+			return;
+		}
+		 
+		if(!$("#instruct-ski").prop("checked") && !$("#instruct-snowboard").prop("checked")) {
+			alert("Debes brindar clases de al menos una disciplina.");
+			return;
+		}
+
+		if($("textarea[name=features]").val() == "") {
+			alert("Ingresa alguna característica de las clases que ofreces.");
+			return;
+		}
+
+		if(!$("#allow-adults").prop("checked") && !$("#allow-kids").prop("checked")) {
+			alert("Selecciona si brindas clases a adultos, a niños, o a todos.");
+			return;
+		}
+
+		for(var i=2; i<=6; i++) {
+			if(!$.isNumeric($("#person" + i + "-discount").val())) {
+				alert("Ingresa valores numéricos en los porcentajes de descuento.");
+				return;
+			}
+		}
+
+
+		$("#service-details").submit();
+	});
+
+
 });
 
 
@@ -149,8 +173,8 @@ $(document).ready(function() {
 	
 	$("#btn_submit_range").click(function() {
 
-		if(!validate_range_form())
-			return;
+		/*if(!validate_range_form())
+			return;*/
 
 		var date_start = $("#date_start").val();
 		var date_end = $("#date_end").val();
@@ -253,12 +277,13 @@ function validate_range_form()
 	}
 
 
-	var date_start = new Date($("#date_start").val());
-	var date_end = new Date($("#date_end").val());
-	var today = new Date();
-	today.setHours(0,0,0,0);
+	//var date_start = new Date($("#date_start").val());
+	var date_start = moment($("#date_start").val(), "DD/MM/YYYY");
+	var date_end = moment($("#date_end").val(), "DD/MM/YYYY");
+	var today = moment().hour(0).minute(0).second(0).millisecond(0);
+	
 
-	if(isNaN(date_start.getTime()) || isNaN(date_end.getTime())) {
+	if(!date_start.isValid() || !date_end.isValid()) {
 		alert("Ingresa fechas válidas.");
 		return false;
 	}
@@ -269,11 +294,11 @@ function validate_range_form()
 	}
 
 	if(date_start < today) {
-		alert("La fecha 'desde' no puede ser anterior a hoy.");
+		alert("La fecha 'desde' no puede ser anterior o igual a hoy.");
 		return false;
 	}
 
-	if(date_start.getYear() != date_end.getYear()) {
+	if(date_start.year() != date_end.year()) {
 		alert("Ambas fechas deben ser del mismo año.");
 		return false;
 	}
@@ -311,7 +336,7 @@ function insert_date_range_row(date_start, date_end, block_price, range_id)
 	<tr>
 		<td>`+ date_start +`</td>
 		<td>` + date_end + `</td>
-		<td>` + block_price + `</td>
+		<td>$` + block_price + `</td>
 		<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="` + range_id + `"><i class="fa fa-times" aria-hidden="true"></i></button></td>
 	</tr>`;
 

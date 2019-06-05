@@ -22,18 +22,18 @@ class CreateDateRange extends Validator
     	if(parent::fails())
     		return true;
 
-        $dateStart = Carbon::createFromFormat($this->request->date_start, "d/m/Y");
-        $dateEnd = Carbon::createFromFormat($this->request->date_end, "d/m/Y");
+        $dateStart = Carbon::createFromFormat("d/m/Y", $this->request->date_start);
+        $dateEnd = Carbon::createFromFormat("d/m/Y", $this->request->date_end);
 
-        if($dateStart->isBefore(Carbon::now()) {
-            $this->messages->add("date_start", "La fecha 'desde' no puede ser anterior a hoy.");
+        if($dateStart->isBefore(Carbon::now())) {
+            $this->messages->add("date_start", "La fecha 'desde' no puede ser anterior o igual a hoy.");
             return true;
         } 
-        else if(Dates::getYear($dateStart) != Dates::getYear($dateEnd)) {
+        else if($dateStart->year != $dateEnd->year) {
             $this->messages->add("date_start", "Ambas fechas deben ser del mismo año.");
             return true;
         }
-        else if(!Auth::user()->service->isNotOfferedWithinDates($dateStart, $dateEnd)) {
+        else if(!Auth::user()->service->isNotOfferedWithinDates($dateStart->format("Y-m-d"), $dateEnd->format("Y-m-d"))) {
             $this->messages->add("date_start", "Alguna de las fechas del rango ingresado ya pertenece a otro rango.");
             return true;
         }

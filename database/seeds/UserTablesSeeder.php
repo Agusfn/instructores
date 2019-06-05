@@ -46,6 +46,7 @@ class UserTablesSeeder extends Seeder
             'approved_at' => '2019-05-13 12:05:21',
             'identification_type' => 'dni',
             'identification_number' => '12345678',
+            'level' => 5,
         	"balance" => 0,
             'email_verified_at' => '2019-04-25 00:00:00'
         ]);
@@ -56,6 +57,10 @@ class UserTablesSeeder extends Seeder
             "number" => 8617421,
             "published" => true,
             "instructor_id" => 1,
+
+            "snowboard_discipline" => true,
+            "ski_discipline" => false,
+
 
             "description" => "Soy Fulanito, tengo 26, vivo en Bariloche y hago snowboard desde los 10 años. Soy instructor desde hace 6 años.
 
@@ -74,7 +79,10 @@ Clases para discapacitados",
             "images_json" => '[{"name":"2002516588.jpg","thumbnail_name":"2002516588-thumbnail.jpg"},{"name":"414001443.jpg","thumbnail_name":"414001443-thumbnail.jpg"},{"name":"1216263095.jpg","thumbnail_name":"1216263095-thumbnail.jpg"},{"name":"497402672.jpg","thumbnail_name":"497402672-thumbnail.jpg"},{"name":"944462171.jpg","thumbnail_name":"944462171-thumbnail.jpg"}]',
 
             "worktime_hour_start" => 9,
-            "worktime_hour_end" => 17
+            "worktime_hour_end" => 17,
+
+            "offered_to_adults" => true,
+            "offered_to_kids" => true
 
         ]);
 

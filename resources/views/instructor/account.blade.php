@@ -95,11 +95,21 @@
 							@endif
 						</div>
 					</div>
-					<div class="row">
+					<div class="row add_bottom_30">
 						<div class="col-6"><strong>Número de documento</strong></div>
 						<div class="col-6">
 							@if($instructor->isApproved())
 							{{ $instructor->identification_number }}
+							@else
+							-
+							@endif
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-6"><strong>Nivel de instructor</strong></div>
+						<div class="col-6">
+							@if($instructor->isApproved())
+							{{ $instructor->level }}
 							@else
 							-
 							@endif

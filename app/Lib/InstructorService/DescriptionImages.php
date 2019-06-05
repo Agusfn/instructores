@@ -125,11 +125,14 @@ trait DescriptionImages
 	public function imageUrls()
 	{
 		$urls = [];
-		foreach($this->images() as $image) {
-			$urls[] = [
-				"fullsize" => Storage::url("img/service/".$this->number."/".$image["name"]),
-				"thumbnail" => Storage::url("img/service/".$this->number."/".$image["thumbnail_name"])
-			];
+		if($this->images() != null)
+		{
+			foreach($this->images() as $image) {
+				$urls[] = [
+					"fullsize" => Storage::url("img/service/".$this->number."/".$image["name"]),
+					"thumbnail" => Storage::url("img/service/".$this->number."/".$image["thumbnail_name"])
+				];
+			}
 		}
 		return $urls;
 	}

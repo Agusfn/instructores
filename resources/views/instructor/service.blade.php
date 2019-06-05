@@ -45,6 +45,15 @@
 				@if($instructor->isApproved())
 
 
+				@if(\Session::has("activate-success"))
+				<div class="alert alert-success alert-dismissible fade show" role="alert">
+					Tu publicación se ha activado existosamente. Podés verla <a href="{{ route('service-page', $service->number) }}" target="_blank">desde acá</a>.
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				@endif
+
 				@if($errors->has('person2_discount') || $errors->has('person3_discount') || $errors->has('person4_discount') || $errors->has('person5_discount') || $errors->has('person6_discount'))
 				<div class="alert alert-danger alert-dismissible fade show" role="alert">
 					Ingresa todos los valores de descuento grupal correctamente, entre 0 y 100.
@@ -96,11 +105,11 @@
 						<div class="form-group">
 							<label>Disciplinas brindadas</label>
 							<div style="margin-top: 15px">
-								<input type="checkbox" id="instruct-ski" autocomplete="off" name="allow_groups">
+								<input type="checkbox" id="instruct-ski" autocomplete="off" name="ski_discipline" form="service-details" @if($service->ski_discipline) checked @endif>
 								<label for="instruct-ski" style="cursor: pointer;margin-left: 10px;">Ski</label>
 							</div>
 							<div style="margin-top: 15px">
-								<input type="checkbox" id="instruct-snowboard" autocomplete="off" name="allow_groups">
+								<input type="checkbox" id="instruct-snowboard" autocomplete="off" name="snowboard_discipline" form="service-details" @if($service->snowboard_discipline) checked @endif>
 								<label for="instruct-snowboard" style="cursor: pointer;margin-left: 10px;">Snowboard</label>
 							</div>
 						</div>
@@ -188,12 +197,12 @@
 						<div class="col-md-5">
 							
 							<div style="margin-top: 15px">
-								<input type="checkbox" id="allow-adults" autocomplete="off" name="allow_adults">
+								<input type="checkbox" id="allow-adults" autocomplete="off" name="allow_adults" @if($service->offered_to_adults) checked @endif>
 								<label for="allow-adults" style="cursor: pointer;margin-left: 10px;">Permitir clases a adultos</label>
 							</div>
 
 							<div style="margin-top: 15px">
-								<input type="checkbox" id="allow-kids" autocomplete="off" name="allow_kids">
+								<input type="checkbox" id="allow-kids" autocomplete="off" name="allow_kids" @if($service->offered_to_kids) checked @endif>
 								<label for="allow-kids" style="cursor: pointer;margin-left: 10px;">Permitir clases a niños</label>
 							</div>
 
@@ -203,7 +212,7 @@
 							</div>
 							<div class="form-group" @if(!$service->allows_groups) style="display: none" @endif>
 								<label>Cantidad máx. personas</label>
-								<select class="form-control" name="max_group_size" id="max-group-size" autocomplete="off">
+								<select class="form-control" name="max_group_size" id="max-group-size" style="width: 100px" autocomplete="off">
 									<option @if($service->max_group_size == 2) selected @endif>2</option>
 									<option @if($service->max_group_size == 3) selected @endif>3</option>
 									<option @if($service->max_group_size == 4) selected @endif>4</option>
@@ -236,7 +245,7 @@
 
 
 					<div class="clearix" style="margin-top: 50px">
-						<button type="submit" class="btn btn-primary" style="float: right;">Guardar cambios</button>
+						<button type="button" id="submit-form-btn" class="btn btn-primary" style="float: right;">Guardar cambios</button>
 					</div>
 
 				</form>

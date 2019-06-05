@@ -30,6 +30,7 @@ class CreateInstructorsTable extends Migration
             $table->timestamp('approved_at')->nullable();
             $table->string('identification_type')->nullable();
             $table->string('identification_number')->nullable();
+            $table->integer('level')->nullable();
             $table->decimal('balance', 8, 2);
             $table->rememberToken();
             $table->timestamps();

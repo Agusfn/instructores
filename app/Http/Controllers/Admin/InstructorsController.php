@@ -35,7 +35,7 @@ class InstructorsController extends Controller
 		$instructor = Instructor::with("service")->find($id);
 		return view("admin.instructors.details")->with([
 			"instructor" => $instructor,
-			"service" => $instructor->service
+			"service" => $instructor ? $instructor->service : null
 		]);
 	}
 
@@ -51,7 +51,8 @@ class InstructorsController extends Controller
 
 		$validator = Validator::make($request->all(), [
 			"identification_type" => "required|in:dni,passport",
-			"identification_number" => "required|between:5,20|regex:/^[0-9+ -]*$/"
+			"identification_number" => "required|between:5,20|regex:/^[0-9+ -]*$/",
+			"level" => "required|integer|between:1,5"
 		]);
 
 		if($validator->fails()) {
@@ -59,7 +60,11 @@ class InstructorsController extends Controller
 		}
 
 		$instructor->approve();
-		$instructor->fill($request->only("identification_type", "identification_number"));
+		$instructor->fill($request->only([
+			"identification_type", 
+			"identification_number",
+			"level"
+		]));
 		$instructor->save();
 
 		//Mail::to($instructor)->send(new InstructorApproved($instructor));

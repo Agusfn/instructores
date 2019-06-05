@@ -57,6 +57,15 @@
 					        </span>
 					    	@endif
 						</div>
+						<div class="form-group">
+							<label>Nivel de instructor (1-5)</label>
+							<input type="text" class="form-control{{ $errors->approval->has('level') ? ' is-invalid' : '' }}" name="level">
+							@if ($errors->approval->has('level'))
+					        <span class="invalid-feedback" role="alert">
+					            <strong>{{ $errors->approval->first('level') }}</strong>
+					        </span>
+					    	@endif
+						</div>
 					</form>
 
 				</div>
@@ -245,10 +254,19 @@
 								@endif
 							</div>
 
-							<div class="col-lg-4">
+							<div class="col-lg-3">
 								<label><strong>Nro. documento</strong></label><br/>
 								@if($instructor->isApproved())
 									{{ $instructor->identification_number }}
+								@else
+									-
+								@endif
+							</div>
+
+							<div class="col-lg-3">
+								<label><strong>Nivel instructor</strong></label><br/>
+								@if($instructor->isApproved())
+									{{ $instructor->level }}
 								@else
 									-
 								@endif
@@ -315,11 +333,34 @@
 						</div>
 
 						<div class="row" style="margin-bottom: 15px">
+							<div class="col-lg-4">
+								<label><strong>Snowboard:</strong></label> 
+								@if($service->snowboard_discipline)
+								Si
+								@else
+								No
+								@endif
+							</div>
+							<div class="col-lg-4">
+								<label><strong>Ski:</strong></label>
+								@if($service->ski_discipline)
+								Si
+								@else
+								No
+								@endif
+							</div>
+						</div>
+
+						<div class="row" style="margin-bottom: 15px">
 							<div class="col-lg-6">
 								<label><strong>Descripción</strong></label>
 								<div class="card">
 									<div class="card-body">
+										@if($service->description)
 										{!! nl2br(e($service->description)) !!}
+										@else
+										<div style="text-align: center;">-</div>
+										@endif
 									</div>
 								</div>
 							</div>
@@ -327,11 +368,15 @@
 								<label><strong>Características</strong></label>
 								<div class="card">
 									<div class="card-body">
+										@if($service->features)
 	                                    <ul class="bullets">
 	                                        @foreach($service->featuresArray() as $feature)
                                            <li>{{ $feature }}</li>
 	                                        @endforeach
 	                                    </ul>
+                                    	@else
+                                		<div style="text-align: center;">-</div>
+                                    	@endif
 									</div>
 								</div>
 							</div>
@@ -352,12 +397,30 @@
 
 						<h5 style="margin: 35px 0 25px">Disponibilidad y precios</h3>
 
-						<div style="margin-bottom: 15px">
-							<label><strong>Horarios de trabajo:</strong></label>
-							De {{ $service->worktime_hour_start }} a {{ $service->worktime_hour_end }}hs
-							@if($service->hasSplitWorkHours())
-							y de {{ $service->worktime_alt_hour_start }} a {{ $service->worktime_alt_hour_end }}hs
-							@endif
+						<div class="row" style="margin-bottom: 15px">
+							<div class="col-lg-4">
+								<label><strong>Horarios de trabajo:</strong></label>
+								De {{ $service->worktime_hour_start }} a {{ $service->worktime_hour_end }}hs
+								@if($service->hasSplitWorkHours())
+								y de {{ $service->worktime_alt_hour_start }} a {{ $service->worktime_alt_hour_end }}hs
+								@endif
+							</div>
+							<div class="col-lg-4">
+								<label><strong>Clases a adultos:</strong></label>
+								@if($service->offered_to_adults)
+								Si
+								@else
+								No
+								@endif
+							</div>
+							<div class="col-lg-4">
+								<label><strong>Clases a niños:</strong></label>
+								@if($service->offered_to_kids)
+								Si
+								@else
+								No
+								@endif
+							</div>
 						</div>
 
 						<div class="row" style="margin-bottom: 15px">
@@ -377,7 +440,7 @@
 							@endif
 						</div>
 
-						<h6>Días de trabajo y precios</h6>
+						<h6 style="margin-bottom: 20px">Días de trabajo y precios</h6>
 						<table class="table">
 							<thead>
 								<tr>
@@ -388,7 +451,6 @@
 							</thead>
 							<tbody>
 								@if($service->dateRanges->count() > 0)
-
 									@foreach($service->dateRanges as $dateRange)
 									<tr>
 										<td>{{ $dateRange->date_start->format('d/m/Y') }}</td>
@@ -396,7 +458,10 @@
 										<td>${{ round($dateRange->price_per_block, 2) }}</td>
 									</tr>
 									@endforeach
-
+								@else
+								<tr>
+									<td colspan="3" style="text-align: center;">Vacio</td>
+								</tr>
 								@endif
 							</tbody>
 						</table>
