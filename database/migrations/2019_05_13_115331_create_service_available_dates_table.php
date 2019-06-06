@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateServiceUnavailableDatesTable extends Migration
+class CreateServiceAvailableDatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateServiceUnavailableDatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('service_unavailable_dates', function (Blueprint $table) {
+        Schema::create('service_available_dates', function (Blueprint $table) {
             
             $table->unsignedBigInteger('instructor_service_id');
             $table->date('date');
@@ -31,6 +31,6 @@ class CreateServiceUnavailableDatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('service_unavailable_dates');
+        Schema::dropIfExists('service_available_dates');
     }
 }

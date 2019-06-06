@@ -23,12 +23,12 @@
 
 /*botones buscador*/
 
-.custom-search-input-2 input[type='submit'] {
+.custom-search-input-2 button.btn_search {
 	background-color: #299aea;
 }
 
 
-.custom-search-input-2 input[type='submit']:hover {
+.custom-search-input-2 button.btn_search:hover {
 	background-color: darkgray;
 	color: white;
 

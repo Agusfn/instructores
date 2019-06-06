@@ -33,6 +33,8 @@ class InstructorService extends Model
 	];
 
 
+	public $disciplines = ["ski", "snowboard"];
+
 
 	/**
 	 * Generates an unique InstructorService number.
@@ -400,17 +402,17 @@ class InstructorService extends Model
 
 
 	/**
-	 * Deletes all the unavailable dates registries of this service and creates them all again with the data of the json calendar.
-	 * Makes an index of all the days that the instructor doesn't/can't offer their service WITHIN the annual activity period (season).
+	 * Deletes all the available dates registries of this service and creates them all again with the data of the json calendar, WHICH MUST BE UPDATED FIRST.
+	 * Makes an index of all the days that the instructor does offer their service WITHIN the annual activity period (season).
 	 * The index will be used exclusively for the search function.
-	 * This method has to be called every time a reservation is made/cancelled, or each time the instructor makes a change to its working time tables.
+	 * This method has to be called every time a reservation is made or cancelled, or each time the instructor makes a change to its working time tables.
 	 * 
 	 * @return null
 	 */
-	public function rebuildUnavailableDatesIndex()
+	public function rebuildAvailableDatesIndex()
 	{
 		
-		DB::table("service_unavailable_dates")->where("instructor_service_id", $this->id)->delete();
+		DB::table("service_available_dates")->where("instructor_service_id", $this->id)->delete();
 
 		
 		$calendar = json_decode($this->booking_calendar_json, true);
@@ -419,9 +421,9 @@ class InstructorService extends Model
 
 			foreach($monthData as $dayIndex => $dayData) {
 
-				if($dayData["available"] == false) {
+				if($dayData["available"] == true) {
 
-					DB::table("service_unavailable_dates")->insert([
+					DB::table("service_available_dates")->insert([
 						"instructor_service_id" => $this->id,
 						"date" => date("Y")."-".$monthIndex."-".$dayIndex
 					]);

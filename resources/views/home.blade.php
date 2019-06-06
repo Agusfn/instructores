@@ -1,5 +1,28 @@
 @extends('layouts.main')
 
+@section('custom-css')
+<style type="text/css">
+    .discipline-select {
+        height: 50px
+    }
+    .discipline-select > .nice-select {
+        margin: 0;
+        height: 50px !important;
+        border: 0 !important;
+        border-right: 1px solid #d2d8dd !important;
+    }
+    .discipline-select > .nice-select > .list {
+        height: auto;
+    }
+
+    .daterangepicker td.disabled {
+        cursor: default;
+        /*text-decoration: none;*/
+    }
+</style>
+
+@endsection
+
 
 @section('content')
         <section class="hero_single version_2">
@@ -7,17 +30,21 @@
                 <div class="container">
                     <h3>Clases de Ski & Snowboard en Cerro Catedral</h3>
                     <p>Reservas online</p>
-                    <form>
+                    <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <input class="form-control" type="text" placeholder="Ski, Snowboard..">
-                                    <i class="icon-skiing"></i>
+                                    <div class="custom-select-form discipline-select">
+                                        <select class="wide add_bottom_15" name="discipline" autocomplete="off">
+                                            <option value="ski">Ski</option>
+                                            <option value="snowboard">Snowboard</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-lg-3">
                                 <div class="form-group">
-                                    <input class="form-control" type="text" name="dates" placeholder="Fecha">
+                                    <input class="form-control" type="text" name="date" placeholder="Fecha" autocomplete="off">
                                     <i class="icon_calendar"></i>
                                 </div>
                             </div>
@@ -28,18 +55,18 @@
                                         <!-- Quantity Buttons -->
                                         <div class="qtyButtons">
                                             <label>Adultos</label>
-                                            <input type="text" name="qtyInput" value="1">
+                                            <input type="text" class="qtyInput" name="qty_adults" value="1" data-max="6" autocomplete="off">
                                         </div>
                                         <div class="qtyButtons">
                                             <label>Chicos</label>
-                                            <input type="text" name="qtyInput" value="0">
+                                            <input type="text" class="qtyInput" name="qty_kids" value="0" data-max="6" autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-lg-2">
-                                <input type="submit" class="btn_search" value="Buscar" >
+                                <button type="button" class="btn_search" id="search-btn">Buscar</button>
                             </div>
                         </div>
                         <!-- /row -->
@@ -197,20 +224,50 @@
     <!-- DATEPICKER  -->
     <script>
     $(function() {
-      'use strict';
-      $('input[name="dates"]').daterangepicker({
-          autoUpdateInput: false,
-          locale: {
+        'use strict';
+        $('input[name="date"]').daterangepicker({
+            singleDatePicker: true,
+            autoUpdateInput: false,
+            minDate: "{{ $activityStartDate->format('d/m/Y') }}",
+            maxDate: "{{ $activityEndDate->format('d/m/Y') }}",
+            locale: {
+                format: 'DD/MM/YYYY',
+                cancelLabel: 'Clear'
+            }
+        });
 
-              cancelLabel: 'Clear'
-          }
-      });
-      $('input[name="dates"]').on('apply.daterangepicker', function(ev, picker) {
-          $(this).val(picker.startDate.format('MM-DD-YY') + ' > ' + picker.endDate.format('MM-DD-YY'));
-      });
-      $('input[name="dates"]').on('cancel.daterangepicker', function(ev, picker) {
-          $(this).val('');
-      });
+        $('input[name="date"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY'));
+        });
+        $('input[name="date"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+
+        $("#search-btn").click(function() {
+
+            var date = $("input[name=date]").val();
+            var adults =  parseInt($("input[name=qty_adults]").val());
+            var kids = parseInt($("input[name=qty_kids]").val());
+
+            if(!moment(date, "DD/MM/YYYY").isValid()) {
+                alert("Selecciona una fecha");
+                return;
+            }
+
+            if(adults + kids < 1) {
+                alert("Debe haber al menos una persona.");
+                return;
+            }
+
+            if(adults + kids > 6) {
+                alert("Pueden haber 6 personas como máximo.");
+                return;
+            }
+
+            $("#search-form").submit();
+        });
+
+
     });
     </script>
 

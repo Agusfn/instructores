@@ -9,7 +9,7 @@ class UpdateServiceData extends Validator
 {
     
     public static $rules = array(
-		"description" => "required|string|min:10",
+		"description" => "required|string",
         "snowboard_discipline" => "required_without:ski_discipline",
         "ski_discipline" => "required_without:snowboard_discipline",
 		"features" => "required|string",

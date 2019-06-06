@@ -233,24 +233,19 @@ $(document).ready(function() {
 		$.ajax({
 
 			type: "POST",
-
 			url: app_url + "instructor/panel/servicio/eliminar_fechas",
-
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		    },
-
 			data: { range_id: range_id },
 
 			beforeSend: function() {
 				disable_range_form_btn(button);
 			},
-
 			success: function(response) {
 				console.log(response); // debug
 				button.closest("tr").remove();
 			},
-
 			error: function (jqXhr, textStatus, errorMessage) {
 				if(jqXhr.status == 422)
 					alert(jqXhr.responseText);

@@ -17,6 +17,8 @@ Route::get("/", "HomeController@index")->name("home");
 Route::get("preguntas-frecuentes", "HomeController@faq")->name("faq");
 Route::get("ser-instructor", "HomeController@becomeInstructor")->name("become-instructor");
 
+Route::get("buscar", "SearchInstructorsController@search")->name("search");
+
 
 Route::get("instructor/{service_number}", "InstructorServiceController@showDetails")->name("service-page");
 Route::post("instructor/{service_number}/calendar", "InstructorServiceController@fetchJsonCalendar");

@@ -247,7 +247,7 @@ class ServiceDetailsController extends Controller
 
 		// Poner esto ultimo en un task asi se hace mas rapido dsps
 		$service->rebuildJsonBookingCalendar();
-		$service->rebuildUnavailableDatesIndex();
+		$service->rebuildAvailableDatesIndex();
 
 		return redirect()->back();
 	}

@@ -83,6 +83,7 @@ class BookingIndexes
 		
 		$serviceWorkingPeriods = self::$service->dateRanges()->orderBy("date_start", "asc")->get();
 
+
 		$seasonPeriod = CarbonPeriod::create(
 			Reservations::getCurrentYearActivityStart(), 
 			Reservations::getCurrentYearActivityEnd()
@@ -97,10 +98,9 @@ class BookingIndexes
 				$dateData = [];
 
 
-			$serviceDateRange = $serviceWorkingPeriods
-				->where("date_start", "<=", $date->format("Y-m-d"))
-				->where("date_end", ">=", $date->format("Y-m-d"))
-				->first();
+			$serviceDateRange = $serviceWorkingPeriods->filter(function($dateRange) use ($date) {
+				return $dateRange->date_start->lte($date) && $dateRange->date_end->gte($date);
+			})->first();
 
 
 			
