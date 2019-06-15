@@ -1,6 +1,16 @@
 @extends('layouts.main')
 
 
+@if($service->snowboard_discipline && $service->ski_discipline)
+    @section('title', $instructor->name.' - Instructor Ski y Snowboard')
+@elseif($service->snowboard_discipline)
+    @section('title', $instructor->name.' - Instructor Snowboard')
+@else
+    @section('title', $instructor->name.' - Instructor Ski')
+@endif
+
+
+
 @section('custom-css')
 <link rel="stylesheet" type="text/css" href="{{ asset('resources/css/service-public-pg.css') }}">
 @endsection
@@ -51,7 +61,7 @@
 
                 @if($errors->any())
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>{{ $errors->first() }}
+                    {{ $errors->first() }}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -64,8 +74,49 @@
 
                             <h2>Descripción</h2>
                             <p>{!! nl2br(e($service->description)) !!}</p>
-                            <div class="row">
-                                <div class="col-lg-6">
+                            
+                            <hr>
+
+                            <h3 style="margin-bottom: 15px;">Características</h3>
+
+                            <div class="row features">
+                               
+                                <div class="col-md-6">
+                                    <ul>
+                                        @if($service->allows_groups)
+                                            <li><i class="fas fa-users"></i><span>Admite clases grupales de hasta {{ $service->max_group_size }} personas<span></li>
+                                            @if($service->hasGroupDiscounts())
+                                            <li><i class="fas fa-percent"></i><span>Ofrece descuento por grupo</span></li>
+                                            @endif
+                                        @endif
+
+                                        @if($service->offered_to_adults && $service->offered_to_kids)
+                                        <li><i class="fas fa-user-friends"></i><span>Ofrece clases a adultos y niños</span></li>
+                                        @elseif($service->offered_to_adults)
+                                        <li><i class="fas fa-male"></i><span>Ofrece sólo clases a adultos</span></li>
+                                        @else
+                                        <li><i class="fas fa-child"></i><span>Ofrece clases a niños</span></li>
+                                        @endif
+
+                                        @if($service->ski_discipline)
+                                        <li><i class="fas fa-skiing"></i><span>Clases de ski</span></li>
+                                        @endif
+
+                                        @if($service->snowboard_discipline)
+                                        <li><i class="far fa-snowboarding" style="font-weight: 900;"></i><span>Clases de snowboard</span></li>
+                                        @endif 
+                                    </ul>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <ul>
+                                        @foreach($service->featuresArray() as $feature)
+                                            <li><i class="far fa-dot-circle" style="font-size: 16px;"></i><span>{{ $feature }}</span></li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+
+                                {{--<div class="col-lg-6">
                                     <ul class="bullets">
                                         @foreach($service->featuresArray() as $feature)
                                             @if($loop->odd)
@@ -82,7 +133,7 @@
                                             @endif
                                         @endforeach
                                     </ul>
-                                </div>
+                                </div>--}}
                             </div>
                             <!-- /row -->
 
@@ -256,6 +307,18 @@
                             </div>
 
                             <form method="GET" action="{{ url('reservar/'.$service->number) }}" id="book-form">
+                                
+                                <div class="form-group" id="discipline-selection">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        @if($service->ski_discipline)
+                                        <button type="button" class="btn btn-secondary" data-discipline="ski">Ski</button>
+                                        @endif
+                                        @if($service->snowboard_discipline)
+                                        <button type="button" class="btn btn-secondary" data-discipline="snowboard">Snowboard</button>
+                                        @endif
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <input class="form-control" type="text" name="date" id="date-picker-input" readonly="true" autocomplete="off" placeholder="Fecha..">
                                     <i class="icon_calendar"></i>
@@ -273,16 +336,25 @@
                                 <div class="panel-dropdown">
                                     <a href="#">Personas<span class="qtyTotal">1</span></a>
                                     <div class="panel-dropdown-content right">
+                                        @if($service->offered_to_adults)
                                         <div class="qtyButtons">
-                                            <label>Cantidad</label>
-                                            <input type="text" name="persons" class="qtyInput" value="1" data-max="@if($service->allows_groups) {{ $service->max_group_size }} @else 1 @endif" data-min="1" autocomplete="off">
+                                            <label>Adultos</label>
+                                            <input type="text" name="adults_amount" class="qtyInput" value="1" data-max="@if($service->allows_groups) {{ $service->max_group_size }} @else 1 @endif" @if($service->offered_to_kids) data-min="0" @else data-min="1" @endif autocomplete="off">
                                         </div>
+                                        @endif
+                                        @if($service->offered_to_kids)
+                                        <div class="qtyButtons">
+                                            <label>Niños</label>
+                                            <input type="text" name="kids_amount" class="qtyInput" value="0" data-max="@if($service->allows_groups) {{ $service->max_group_size }} @else 1 @endif" @if($service->offered_to_adults) data-min="0" @else data-min="1" @endif autocomplete="off">
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
 
-                                <input type="hidden" name="t_start" value="">
-                                <input type="hidden" name="t_end" value="">
-                                <input type="hidden" name="last_price" value="">
+                                <input type="hidden" name="discipline" value="" autocomplete="off">
+                                <input type="hidden" name="t_start" value="" autocomplete="off">
+                                <input type="hidden" name="t_end" value="" autocomplete="off">
+                                <input type="hidden" name="last_price" value="" autocomplete="off">
                             </form>
 
                             <div class="total-summary">
@@ -332,6 +404,17 @@ var activity_end = "{{ App\Lib\Reservations::getCurrentYearActivityEnd()->format
 var app_url = "{{ config('app.url').'/' }}";
 var serv_number = {{ $service->number }};
 var group_discounts = {!! json_encode($service->getGroupDiscounts()) !!};
+var max_group_size = {{ $service->allows_groups ? $service->max_group_size : "1" }};
+
+
+$(document).ready(function() {
+
+    {{-- Agregar params get --}}
+    @if( (!$service->ski_discipline && $service->snowboard_discipline) || ($service->ski_discipline && !$service->snowboard_discipline) )
+    $("#discipline-selection > div > .btn:first").trigger("click");
+    @endif
+
+});
 </script>
 
 

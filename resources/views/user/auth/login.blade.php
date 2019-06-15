@@ -1,6 +1,8 @@
 @extends('layouts.main-auth')
 
 
+@section('title', 'Iniciar sesión')
+
 @section('form')
 
 			@if(session('verified'))
@@ -11,8 +13,23 @@
 				</button>
 			</div>
 			@endif
-			
-			<form method="POST" action="{{ route('user.login') }}">
+
+			<div class="access_social">
+				<a href="{{ route('user.login.social', 'facebook') }}" class="social_bt facebook">Entrar con Facebook</a>
+				<a href="{{ route('user.login.social', 'google') }}" class="social_bt google">Entrar con Google</a>
+			</div>
+
+			@if($errors->any())
+			<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				{{ $errors->first() }}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			@endif
+
+			{{--<form method="POST" action="{{ route('user.login') }}">
+				
 				@csrf
 				<div class="form-group">
 					<label>Email</label>
@@ -45,7 +62,8 @@
 				</div>
 				<button type="submit" class="btn_1 rounded full-width">Entrar</button>
 				<div class="text-center add_top_10">Nuevo? <strong><a href="{{ route('user.register') }}">Registrate!</a></strong></div>
-			</form>
+				
+			</form>--}}
 
 
 @endsection

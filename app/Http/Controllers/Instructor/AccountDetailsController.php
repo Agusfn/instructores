@@ -31,7 +31,7 @@ class AccountDetailsController extends Controller
 	 */
 	public function index()
 	{
-		return view("instructor.account")->with("instructor", Auth::user());
+		return view("instructor.account.details")->with("instructor", Auth::user());
 	}
 
 
@@ -40,10 +40,10 @@ class AccountDetailsController extends Controller
 	 * [showChangePasswordForm description]
 	 * @return [type] [description]
 	 */
-	public function showChangePasswordForm()
+	/*public function showChangePasswordForm()
 	{
 		return view("instructor.change-password");
-	}
+	}*/
 
 
 
@@ -52,7 +52,7 @@ class AccountDetailsController extends Controller
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	public function changePassword(Request $request)
+	/*public function changePassword(Request $request)
 	{
 		
 		$validator = Validator::make($request->all(), [
@@ -75,6 +75,49 @@ class AccountDetailsController extends Controller
         $request->session()->flash('success');
         return redirect()->back();
 
+	}*/
+
+
+	/**
+	 * Show account details modification form.
+	 * @return [type] [description]
+	 */
+	public function showEditAccountForm()
+	{
+		$instructor = Auth::user();
+		return view("instructor.account.edit")->with("instructor", $instructor);
+	}
+
+
+	/**
+	 * Update instructor account changes.
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function editAccount(Request $request)
+	{
+		$request->validate([
+			"name" => "required|string|between:3,50",
+			"surname" => "required|string|between:3,50",
+			"phone_number" => "nullable|string|between:5,20|regex:/^[0-9+ -]*$/",
+			"instagram_username" => "nullable|string|max:30|regex:/^[\w\d._]{1,30}$/",
+		]);
+
+		$instructor = Auth::user();
+
+		$instructor->fill([
+			"name" => $request->name,
+			"surname" => $request->surname,
+			"instagram_username" => $request->instagram_username
+		]);
+
+		if($request->filled("phone_number"))
+			$instructor->phone_number = $request->phone_number;
+
+
+		$instructor->save();
+
+		return redirect()->route("instructor.account");
 	}
 
 
@@ -83,7 +126,7 @@ class AccountDetailsController extends Controller
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	public function changePhone(Request $request)
+	/*public function changePhone(Request $request)
 	{
 
 		$request->validate([
@@ -94,11 +137,11 @@ class AccountDetailsController extends Controller
 		Auth::user()->save();
 
 		return redirect()->back();
-	}
+	}*/
 
 
 	/**
-	 * [changeProfilePic description]
+	 * Change instructor profile picture through ajax POST request with file.
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
@@ -114,14 +157,8 @@ class AccountDetailsController extends Controller
 
 		$instructor = Auth::user();
 
-		if($instructor->profile_picture) {
-			Storage::delete("img/instructors/".$instructor->profile_picture);
-		}
-
-		$fileName = basename(Storage::putFile("img/instructors", $request->file("profile_pic")));
-
-		$instructor->profile_picture = $fileName;
-		$instructor->save();
+		$image = Image::make($request->file("profile_pic"));
+		$instructor->setProfilePic($image);
 
 		return response("OK", 200);
 	}
@@ -133,7 +170,7 @@ class AccountDetailsController extends Controller
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	public function changeInstagram(Request $request)
+	/*public function changeInstagram(Request $request)
 	{
 		$request->validate([
 			"instagram_username" => "required|string|max:30|regex:/^[\w\d._]{1,30}$/"
@@ -145,7 +182,7 @@ class AccountDetailsController extends Controller
 		$instructor->save();
 
 		return back();
-	}
+	}*/
 
 
 

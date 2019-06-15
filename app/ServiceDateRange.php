@@ -9,6 +9,14 @@ class ServiceDateRange extends Model
 {
     
     /**
+     * Set PK column name.
+     * Can't be "id" because of some query problem during search Join where it replaces the instructor service id.
+     * @var string
+     */
+    protected $primaryKey = "range_id";
+
+
+    /**
      * The attributes that aren't mass assignable.
      *
      * @var array

@@ -20,11 +20,24 @@ class UsersController extends Controller
 		return view("admin.users.list")->with("users", $users);
 	}
 
-
+	/**
+	 * Display user details page. **** PAGINATE RESERVATIONS ******
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
 	public function details($id)
 	{
 		$user = User::find($id);
-		return view("admin.users.details")->with("user", $user);
+
+		if(!$user)
+			return redirect()->route("admin.users.list");
+
+		$reservations = $user->reservations()->with("instructor:id,name,surname")->get();
+
+		return view("admin.users.details")->with([
+			"user" => $user,
+			"reservations" => $reservations
+		]);
 	}
 
 

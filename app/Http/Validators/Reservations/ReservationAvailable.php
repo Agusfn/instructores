@@ -9,18 +9,25 @@ use App\Lib\Helpers\Dates;
 use App\Http\Validators\Validator;
 use Illuminate\Support\Facades\Auth;
 
-class PreviewReservation extends Validator
+class ReservationAvailable extends Validator
 {
     
     public static $rules = array(
+        "discipline" => "required|string|in:ski,snowboard",
         "date" => "required|date_format:d/m/Y",
-        "persons" => "required|integer|between:1,6",
-        "t_start" => "required|integer|between:0,3",
-        "t_end" => "required|integer|between:0,3|gte:t_start",
+        "adults_amount" => "nullable|integer|between:0,6",
+        "kids_amount" => "nullable|integer|between:0,6",
+        "t_start" => "required|integer|between:0,3", // time block start (inclusive)
+        "t_end" => "required|integer|between:0,3|gte:t_start", // time block end (inclusive)
         "last_price" => "numeric"
     );
 
 
+    /**
+     * Checks if the given instructor service (obtained with the service_number url param) does not accept a new reservation with the given date,
+     * persons, and hours. 
+     * @return true
+     */
     public function fails()
     {
     	if(parent::fails())
@@ -36,7 +43,14 @@ class PreviewReservation extends Validator
             return true;
         }
 
-        if($this->request->persons > 1 && (!$service->allows_groups || $service->max_group_size < $this->request->persons)) {
+        if( ($this->request->has("adults_amount") && !$service->offered_to_adults) || ($this->request->has("kids_amount") && !$service->offered_to_kids) ) {
+            $this->messages = "Se ingresó una cantidad de personas incorrecta.";
+            return true;
+        }
+
+        $personAmt = ($this->request->adults_amount ?? 0) + ($this->request->kids_amount ?? 0);
+
+        if($personAmt > 1 && (!$service->allows_groups || $service->max_group_size < $personAmt)) {
             $this->messages = "El instructor no permite clases grupales de esta cantidad.";
             return true;
         }

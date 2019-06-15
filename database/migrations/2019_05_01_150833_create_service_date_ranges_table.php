@@ -14,7 +14,7 @@ class CreateServiceDateRangesTable extends Migration
     public function up()
     {
         Schema::create('service_date_ranges', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('range_id');
             $table->unsignedBigInteger('instructor_service_id');
             $table->date('date_start');
             $table->date('date_end');

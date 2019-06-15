@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Instructores - Sitio de reservas para clases a medida de ski o snowboard.">
     <meta name="author" content="Ansonika">
-    <title>Instructores | Ski & Snowboard</title>
+    <title>@yield('title') - Instructores | Ski & Snowboard</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -24,14 +24,17 @@
 
     <!-- BASE CSS -->
     <link href="{{ asset('resources/css/bootstrap.min.css') }}" rel="stylesheet">
+    <!--Sacar font awesome 4 despues-->
     <link rel="stylesheet" href="{{ asset('resources/vendor/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-    <link href="{{ asset('resources/css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('resources/vendor/fontawesome-free-5.9.0-web/css/all.css') }}">
+    <link href="{{ asset('resources/css/style.css?2') }}" rel="stylesheet">
 	<link href="{{ asset('resources/css/vendors.css') }}" rel="stylesheet">
 
     <!-- YOUR CUSTOM CSS -->
-    <link href="{{ asset('resources/css/custom.css') }}" rel="stylesheet">
+    <link href="{{ asset('resources/css/custom.css?2') }}" rel="stylesheet">
 
     @yield('custom-css')
+
 
 </head>
 
@@ -111,6 +114,8 @@
 
 
 	<!-- COMMON SCRIPTS -->
+
+	<!--script src="https://kit.fontawesome.com/d20723212b.js"></script-->
     <script src="{{ asset('resources/js/jquery-2.2.4.min.js') }}"></script>
     <script src="{{ asset('resources/js/common_scripts.js') }}"></script>
     <script src="{{ asset('resources/js/main.js') }}"></script>

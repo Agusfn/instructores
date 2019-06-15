@@ -4,23 +4,43 @@ namespace App;
 
 use Carbon\Carbon;
 use App\Lib\Reservations;
+use App\Lib\Helpers\Dates;
 use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
-    	
+   
+    /**
+     * Length of reservation code.
+     */
+    const CODE_LENGTH = 7;
+
+    const STATUS_PAYMENT_PENDING = "payment-pending"; // Waiting for payment. Either it's processing or it failed, and another one must be done within x time.
+    const STATUS_PENDING_CONFIRMATION = "pending-confirmation"; // Paid. Pending instructor confirmation.
+    const STATUS_PAYMENT_FAILED = "payment-failed"; // Payment not done within time, so reservation failed as well.
+    const STATUS_REJECTED = "rejected"; // Paid but later rejected by the instructor.
+    const STATUS_CONFIRMED = "confirmed"; // Paid and confirmed by the instructor.
+    const STATUS_CANCELED = "canceled"; // conceled voluntarily (with refund), or chargebacked
+
+
     protected $guarded = [];
 
 
-    const STATUS_PAYMENT_PENDING = "payment-pending"; // waiting for payment.
-    const STATUS_UNPAID = "unpaid"; // cancelled for lack of payment
-    const STATUS_PENDING_CONFIRMATION = "pending-confirmation"; // paid, but needs to be confirmed by instructor
-    const STATUS_REJECTED = "rejected"; // paid but later rejected by the instructor
-    const STATUS_CONFIRMED = "confirmed"; // paid and confirmed by the instructor
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ["reserved_class_date"];
 
 
 
 
+    /**
+     * Obtains the reservation with the given code.
+     * @param  string $code
+     * @return App\Reservation|null
+     */
     public static function findByCode($code)
     {
         return self::where("code", $code)->first();
@@ -38,7 +58,7 @@ class Reservation extends Model
         $i = 0; 
         $pass = '' ; 
 
-        while ($i <= 10) { 
+        while ($i < self::CODE_LENGTH) { 
             $num = rand() % 33; 
             $tmp = substr($chars, $num, 1); 
             $pass = $pass . $tmp; 
@@ -67,8 +87,52 @@ class Reservation extends Model
      */
     public function service()
     {
-    	return $this->belongsTo("App\InstructorService", "instructor_service_id");
+        return $this->belongsTo("App\InstructorService", "instructor_service_id");
     }
+
+    /**
+     * The instructor who provides the classes of this reservation.
+     * @return App\Instructor
+     */
+    public function instructor()
+    {
+        return $this->belongsTo("App\Instructor");
+    }
+
+
+    /**
+     * Obtain the reservation payments.
+     * @return [type] [description]
+     */
+    public function payments()
+    {
+        return $this->hasMany("App\ReservationPayment");
+    }
+
+
+    /**
+     * Obtain the last payment associated with this reservation that was made.
+     * @return App\ReservationPayment|null
+     */
+    public function lastPayment()
+    {
+        return $this->payments()->orderBy("created_at", "DESC")->first();
+    }
+
+
+
+    /**
+     * Scope a query to find a reservation by code (used to stack with other queries)
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string $code
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithCode($query, $code)
+    {
+        return $query->where("code", $code);
+    }
+
+
 
 
 
@@ -84,7 +148,7 @@ class Reservation extends Model
     	$startDate = date("Y")."-".Reservations::getActivityStartDate();
     	$endDate = date("Y")."-".Reservations::getActivityEndDate();
 
-    	return $query->whereBetween("reserved_date", [$startDate, $endDate]);
+    	return $query->whereBetween("reserved_class_date", [$startDate, $endDate]);
     }
 
 
@@ -104,14 +168,6 @@ class Reservation extends Model
     }
 
 
-
-
-    public function date()
-    {
-    	return Carbon::parse($this->reserved_date);
-    }
-
-
     /**
      * Get the reserved time blocks that span this reservation.
      * @return int[]
@@ -121,4 +177,71 @@ class Reservation extends Model
     	return Reservations::hourRangeToBlocks($this->reserved_time_start, $this->reserved_time_end);
     }
 
+
+    /**
+     * Gets a readable hour range string of the hours to be reserved.
+     * @return string
+     */
+    public function readableHourRange($compact = false)
+    {
+        if(!$compact)
+            return Dates::hoursToReadableHourRange($this->reserved_time_start, $this->reserved_time_end);
+
+        else
+            return $this->reserved_time_start."-".$this->reserved_time_end." hs";
+    }
+
+
+    /**
+     * Returns the price breakdown table/array of the reservation (for display uses only)
+     * @return array
+     */
+    public function priceBreakdown()
+    {
+        return json_decode($this->json_breakdown, true);
+    }
+
+
+    /**
+     * Get the total amount of people included in this reservation (adults+kids)
+     * @return int
+     */
+    public function personAmount()
+    {
+        return $this->adults_amount + $this->kids_amount;
+    }
+
+
+
+    public function isPaymentPending()
+    {
+        return $this->status == self::STATUS_PAYMENT_PENDING;
+    }
+
+    public function isPendingConfirmation()
+    {
+        return $this->status == self::STATUS_PENDING_CONFIRMATION;
+    }
+
+    public function isFailed()
+    {
+        return $this->status == self::STATUS_PAYMENT_FAILED;
+    }
+
+    public function isRejected()
+    {
+        return $this->status == self::STATUS_REJECTED;
+    }
+
+    public function isConfirmed()
+    {
+        return $this->status == self::STATUS_CONFIRMED;
+    }
+
+    public function isCanceled() 
+    {
+        return $this->status == self::STATUS_CANCELED;
+    }
 }
+
+

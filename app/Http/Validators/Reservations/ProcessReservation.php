@@ -15,10 +15,12 @@ class ProcessReservation extends Validator
         "address_state" => "required",
         "address_postal_code" => "required",
 
-        "paymentMethodId" => "required",
+        /*"paymentMethodId" => "required",
         "card_token" => "required",
-        "installments" => "required|integer",
+        "installments" => "required|integer",*/
         "issuer" => "", // what is this?
+
+        "total_amount" => "required|numeric" // to check last moment price changes
     );
 
 

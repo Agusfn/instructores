@@ -14,6 +14,8 @@ class Quote
 	private $service;
 
 
+	public $discipline;
+
 
 	/**
 	 * Payment method code. List available at App\Lib\PaymentMethods.
@@ -29,11 +31,17 @@ class Quote
 	public $serviceDate;
 
 
+
+	public $adultsAmount;
+
+	public $kidsAmount;
+
 	/**
-	 * Ammount of persons that will take these classes.
+	 * Adults + kids.
 	 * @var int
 	 */
 	public $personAmmount;
+
 
 
 	public $blockStart;
@@ -113,6 +121,14 @@ class Quote
 
 
 
+
+
+	private $groupDiscounts;
+
+
+
+
+
 	public function __construct(InstructorService $service)
 	{
 		$this->service = $service;
@@ -140,11 +156,22 @@ class Quote
 	}
 
 
-	public function set($paymentMethod, $date, $personAmmt, $blockStart, $blockEnd)
+	/**
+	 * Only function that should be called apart from constructor and calculate().
+	 * @param string $discipline
+	 * @param string $paymentMethod [description]
+	 * @param Carbon\Carbon $date          [description]
+	 * @param [type] $personAmmt    [description]
+	 * @param [type] $blockStart    [description]
+	 * @param [type] $blockEnd      [description]
+	 * @return null
+	 */
+	public function set($discipline, $paymentMethod, $date, $adultsAmount, $kidsAmount, $blockStart, $blockEnd)
 	{
+		$this->discipline = $discipline;
 		$this->setPaymentMethod($paymentMethod);
 		$this->setServiceDate($date);
-		$this->setPersonAmmount($personAmmt);
+		$this->setPersonAmmount($adultsAmount, $kidsAmount);
 		$this->setBlocksSpan($blockStart, $blockEnd);
 	}
 
@@ -172,11 +199,14 @@ class Quote
 	/**
 	 * Set the ammount of persons that will take these classes.
 	 * Must me compatible with instructor group classes policy.
-	 * @param int $ammount
+	 * @param int $adultsAmount
+	 * @param int $kidsAmount
 	 */
-	public function setPersonAmmount($ammount)
+	public function setPersonAmmount($adultsAmount, $kidsAmount)
 	{
-		$this->personAmmount = $ammount;
+		$this->adultsAmount = $adultsAmount;
+		$this->kidsAmount = $kidsAmount;
+		$this->personAmmount = $adultsAmount + $kidsAmount;
 	}
 
 	/**
@@ -197,11 +227,13 @@ class Quote
 
 	/**
 	 * Calculates all the prices of the quote.
+	 * Takes 1 DB query (on getPricePerBlockOnDate()).
 	 */
 	public function calculate()
 	{
 		$this->pricePerBlock = $this->service->getPricePerBlockOnDate($this->serviceDate);
 		$groupDiscounts = $this->service->getGroupDiscounts();
+		$this->groupDiscounts = $groupDiscounts;
 
 		$subtotalPerPerson = $this->timeBlocksAmmt * $this->pricePerBlock;
 
@@ -223,7 +255,7 @@ class Quote
 
 		$this->instructorPay = $this->classesPrice - $this->serviceFee;
 
-		if($this->paymentMethod == PaymentMethods::MERCADOPAGO) {
+		if($this->paymentMethod == PaymentMethods::CODE_MERCADOPAGO) {
 			$this->payProviderFee = PaymentMethods::calculateMercadoPagoFees($this->classesPrice);
 		}
 		
@@ -234,6 +266,29 @@ class Quote
 	}
 
 
+
+	/**
+	 * Returns a table with the breakdown of the price in json format.
+	 * Each column is a person, and the 1st column is the p
+	 * @return string
+	 */
+	public function getJsonBreakdown()
+	{
+		$subtotalPerPerson = $this->timeBlocksAmmt * $this->pricePerBlock;
+
+		$table = [];
+
+		for($i=1; $i <= $this->personAmmount; $i++) {	
+			$row = [
+				round($subtotalPerPerson, 2),
+				round($subtotalPerPerson * $this->groupDiscounts[$i]/100, 2),
+				round($subtotalPerPerson * (1 - $this->groupDiscounts[$i]/100), 2)
+			];
+			$table[] = $row;
+		}
+
+		return json_encode($table);
+	}
 
 
 }

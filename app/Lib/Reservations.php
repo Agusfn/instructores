@@ -2,6 +2,7 @@
 
 namespace App\Lib;
 
+use App\Lib\Helpers\Dates;
 use Carbon\Carbon;
 
 class Reservations
@@ -29,7 +30,7 @@ class Reservations
 
 
 	/**
-	 * The max length in blocks of an individual reservation.
+	 * The max length in blocks of an individual reservation. *** CHECK THIS!!! ****
 	 */
 	const MAX_RESERVATION_LENGTH = 2; // 4hs
 
@@ -167,7 +168,7 @@ class Reservations
 
 
 	/**
-	 * Convert a range of time block numbers to a hour range.
+	 * Convert a range of time block numbers (inclusive) determined by start and end, to an hour range.
 	 * Eg: blocks 1, 2 => [11, 15]
 	 * @param  int[] $blockNumbers
 	 * @return int[]
@@ -191,7 +192,7 @@ class Reservations
 	public static function blocksToReadableHourRange($blockStart, $blockEnd)
 	{
 		$hourRange = self::blockRangeToHourRange($blockStart, $blockEnd);
-		return $hourRange[0]."-".$hourRange[1]."hs";
+		return Dates::hoursToReadableHourRange($hourRange[0], $hourRange[1]);
 	}
 
 

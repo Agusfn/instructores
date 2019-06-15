@@ -1,5 +1,6 @@
 @extends('layouts.main')
 
+@section('title', 'Reservar clases')
 
 
 @section('content')
@@ -61,14 +62,13 @@
 								<tr>
 									<td>
 										<div class="thumb_cart">
-											<img src="http://via.placeholder.com/150x150/ccc/fff/thumb_cart_1.jpg" alt="Image">
+											<img src="{{ $service->instructor->getProfilePicUrl() }}" alt="$service->instructor->name">
 										</div>
 										<span class="item_cart">
+											Clases {{ $quote->discipline }}
 											{{ $quote->personAmmount }} @if($quote->personAmmount>1)personas @else persona @endif
-											x ${{ $quote->pricePerBlock }} c/u
-											@if($quote->timeBlocksAmmt > 1)
-											x {{ $quote->timeBlocksAmmt }} bloques de 2hs
-											@endif
+											x {{ $quote->timeBlocksAmmt * \App\Lib\Reservations::RESERVATION_BLOCK_LENGTH }}hs
+											(${{ $quote->personAmmount * $quote->pricePerBlock * $quote->timeBlocksAmmt }})
 										</span>
 									</td>
 									<td>
@@ -118,10 +118,12 @@
 							</ul>
 							<form action="{{ url('reservar/'.$service->number.'/confirmar') }}" method="POST">
 								@csrf
-								<input type="hidden" name="date" value="{{ $quote->serviceDate->format('d/m/Y') }}">
-								<input type="hidden" name="persons" value="{{ $quote->personAmmount }}">
-								<input type="hidden" name="t_start" value="{{ $quote->blockStart }}">
-								<input type="hidden" name="t_end" value="{{ $quote->blockEnd }}">
+								<input type="hidden" name="discipline" value="{{ $quote->discipline }}" autocomplete="off">
+								<input type="hidden" name="date" value="{{ $quote->serviceDate->format('d/m/Y') }}" autocomplete="off">
+								<input type="hidden" name="adults_amount" value="{{ $quote->adultsAmount }}" autocomplete="off">
+								<input type="hidden" name="kids_amount" value="{{ $quote->kidsAmount }}" autocomplete="off">
+								<input type="hidden" name="t_start" value="{{ $quote->blockStart }}" autocomplete="off">
+								<input type="hidden" name="t_end" value="{{ $quote->blockEnd }}" autocomplete="off">
 								<button class="btn_1 full-width purchase">Checkout</button>
 							</form>
 							<div class="text-center"><small>No se carga dinero en esta etapa</small></div>

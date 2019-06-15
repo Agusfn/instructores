@@ -12,7 +12,7 @@
       </ol>
 		<div class="box_general">
 			<div class="header_box">
-				<h2 class="d-inline-block">Bookings list</h2>
+				<h2 class="d-inline-block">Reservas</h2>
 				<div class="filter">
 					<select name="orderby" class="selectbox">
 						<option value="Any status">Any status</option>
@@ -24,35 +24,66 @@
 			</div>
 			<div class="list_general">
 				
-				<table class="table">
-
+				<table class="table table-sm">
 					<thead>
 						<tr>
-							<th>asdf</th>
-							<th>asdf</th>
+							<th></th>
+							<th>Cod.</th>
+							<th>Fecha realiz.</th>
+							<th>Estado</th>
+							<th>Cliente</th>
+							<th>Instructor</th>
+							<th>Fecha y hora</th>
+							<th>Pers.</th>
+							<th>Total</th>
 						</tr>
 					</thead>
 					<tbody>
+						
+						@foreach($reservations as $reservation)
+
 						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
+							<td><a href="{{ route('admin.reservations.details', $reservation->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+							<td>{{ $reservation->code }}</td>
+							<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
+							<td>
+								@if($reservation->isPaymentPending())
+									<span class="badge badge-secondary">Pago pendiente - 
+									@if($reservation->lastPayment()->isProcessing())
+									Procesando
+									@elseif($reservation->lastPayment()->isFailed())
+									Reintentar
+									@endif
+									</span>
+								@elseif($reservation->isPendingConfirmation())
+									<span class="badge badge-primary">Pend. confirmación instructor</span>
+								@elseif($reservation->isFailed())
+									<span class="badge badge-danger">Pago fallido</span>
+								@elseif($reservation->isRejected())
+									<span class="badge badge-danger">Rechazada por instructor</span>
+								@elseif($reservation->isConfirmed())
+									<span class="badge badge-success">Confirmada</span>
+								@elseif($reservation->isCanceled())
+									<span class="badge badge-danger">Cancelada</span>
+								@endif
+							</td>
+							<td>
+								<a href="{{ route('admin.users.details', $reservation->user->id) }}">
+								{{ $reservation->user->name.' '.$reservation->user->surname }}
+								</a>
+							</td>
+							<td>
+								<a href="{{ route('admin.instructors.details', $reservation->instructor->id) }}">
+								{{ $reservation->instructor->name.' '.$reservation->instructor->surname }}
+								</a>
+							</td>
+							<td>{{ $reservation->reserved_class_date->format('d/m/Y') }}&nbsp;&nbsp;&nbsp;{{ $reservation->readableHourRange(true) }}</td>
+							<td>{{ $reservation->personAmount() }}</td>
+							<td>${{ round($reservation->final_price, 2) }}</td>
 						</tr>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
+
+						@endforeach
+
 					</tbody>
 				</table>
 

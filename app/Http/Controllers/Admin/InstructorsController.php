@@ -33,6 +33,10 @@ class InstructorsController extends Controller
 	public function details($id)
 	{
 		$instructor = Instructor::with("service")->find($id);
+
+		if(!$instructor)
+			return redirect()->route("admin.instructors.list");
+
 		return view("admin.instructors.details")->with([
 			"instructor" => $instructor,
 			"service" => $instructor ? $instructor->service : null

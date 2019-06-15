@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Instructores - Sitio de reservas para clases a medida de ski o snowboard.">
     <meta name="author" content="Ansonika">
-    <title>Instructores | Ski & Snowboard</title>
+    <title>@yield('title') - Instructores | Ski & Snowboard</title>
 
     <!-- Favicons-->
     <link rel="shortcut icon" href="{{ asset('resources/img/favicon.png') }}" type="image/x-icon">

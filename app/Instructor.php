@@ -6,13 +6,14 @@ use App\Lib\Reservations;
 use App\InstructorService;
 use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Lib\Traits\HasProfilePicture;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Instructor extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable;
+    use Notifiable, HasProfilePicture;
 
 
     /**
@@ -29,17 +30,21 @@ class Instructor extends Authenticatable implements MustVerifyEmail
      *
      * @var array
      */
-    protected $hidden = [
+    /*protected $hidden = [
         'password', 'remember_token',
-    ];
+    ];*/
+
 
     /**
-     * The attributes that should be cast to native types.
+     * The attributes that should be visible in arrays. (Only used in search bar)
      *
      * @var array
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
+    protected $visible = [
+        "name",
+        "profile_picture",
+        "level"
+
     ];
 
 
@@ -65,6 +70,21 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     }
 
 
+    /**
+     * Find instructor by social network login provider name and its respective id.
+     * @param  string $providerName
+     * @param  string $providerId 
+     * @return App\User|null
+     */
+    public static function findByProviderNameAndId($providerName, $providerId)
+    {
+        return self::where([
+            ["provider", "=", $providerName],
+            ["provider_id", "=", $providerId]
+        ])->first();
+    }
+
+
 
     public static function findByEmail($email) 
     {
@@ -73,10 +93,38 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
 
-    public function mpAccount()
+    /**
+     * Get the service provided by the instructor
+     * @return App\InstructorService|null
+     */
+    public function service()
+    {
+        return $this->hasOne("App\InstructorService");
+    }
+
+
+
+    /*public function mpAccount()
     {
         return $this->hasOne("App\InstructorMpAccount");
+    }*/
+
+    public function bankAccount()
+    {
+        return $this->hasOne("App\InstructorBankAccount");
     }
+
+    public function wallet()
+    {
+        return $this->hasOne("App\InstructorWallet");
+    }
+
+
+    public function reservations()
+    {
+        return $this->hasMany("App\Reservation");
+    }
+
 
 
 
@@ -157,26 +205,9 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     }
 
 
-    /**
-     * Get the service provided by the instructor
-     * @return App\InstructorService|null
-     */
-    public function service()
-    {
-        return $this->hasOne("App\InstructorService");
-    }
 
 
 
-    public function balanceMovements()
-    {
-        return $this->hasMany("App\InstructorBalanceMovement");
-    }
 
-
-    public function profilePicUrl()
-    {
-        return \Storage::url("img/instructors/".$this->profile_picture);
-    }
 
 }

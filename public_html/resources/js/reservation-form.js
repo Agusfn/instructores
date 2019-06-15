@@ -18,7 +18,8 @@ $(document).ready(function() {
 		if(!validateForm())
 			return;
 
-		Mercadopago.createToken($("#payment-form"), function(status, response) {
+        $("#payment-form").submit();
+		/*Mercadopago.createToken($("#payment-form"), function(status, response) {
 
 			console.log(response);
 
@@ -39,7 +40,7 @@ $(document).ready(function() {
 	       $("input[name=card_token]").val(response.id);
 
 	       $("#payment-form").submit();
-		});
+		});*/
 
 	});
 

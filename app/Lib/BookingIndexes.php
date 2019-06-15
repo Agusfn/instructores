@@ -54,11 +54,11 @@ class BookingIndexes
 	{
 		$calendar = [];
 
-		$seasonReservations = self::$service->reservations()->active()->withinCurrentSeason()->orderBy("reserved_date", "asc")->get();
+		$seasonReservations = self::$service->reservations()->active()->withinCurrentSeason()->orderBy("reserved_class_date", "asc")->get();
 		
 		foreach($seasonReservations as $reservation) {		
 
-			$date = $reservation->date();
+			$date = $reservation->reserved_class_date;
 
 			foreach($reservation->reservedTimeBlocks() as $blockNumber) {
 				$calendar[$date->month][$date->day]["blocks_available"][$blockNumber] = false;

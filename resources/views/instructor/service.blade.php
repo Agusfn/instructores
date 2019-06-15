@@ -1,6 +1,9 @@
 @extends('layouts.main')
 
 
+@section('title', 'Mi servicio')
+
+
 @section('custom-css')
 	@if($instructor->isApproved())
 	<link href="{{ asset('resources/vendor/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
@@ -159,7 +162,7 @@
 								<td>{{ $dateRange->date_start->format('d/m/Y') }}</td>
 								<td>{{ $dateRange->date_end->format('d/m/Y') }}</td>
 								<td>${{ round($dateRange->price_per_block, 2) }}</td>
-								<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="{{ $dateRange->id }}"><i class="fa fa-times" aria-hidden="true"></i></button></td>
+								<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="{{ $dateRange->range_id }}"><i class="fa fa-times" aria-hidden="true"></i></button></td>
 							</tr>
 							@endforeach
 							<tr id="insert-form-row">

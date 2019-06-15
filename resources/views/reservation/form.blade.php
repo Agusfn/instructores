@@ -1,6 +1,8 @@
 @extends('layouts.main')
 
 
+@section('title', 'Reservar clases')
+
 
 @section('content')
 
@@ -42,7 +44,15 @@
 			<div class="container margin_60_35">
 				<div class="row">
 					<div class="col-lg-8">
-						
+		                
+		                @if($errors->any())
+		                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+		                    {{ $errors->first() }}
+		                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		                        <span aria-hidden="true">&times;</span>
+		                    </button>
+		                </div>
+		                @endif
 
 						<div class="box_cart">
 							
@@ -224,14 +234,16 @@
 								</div>
 
 								<!-- Data of classes to make a reservation for -->
-								<input type="hidden" name="date" value="{{ $quote->serviceDate->format('d/m/Y') }}">
-								<input type="hidden" name="persons" value="{{ $quote->personAmmount }}">
-								<input type="hidden" name="t_start" value="{{ $quote->blockStart }}">
-								<input type="hidden" name="t_end" value="{{ $quote->blockEnd }}">
-								<!-- Payment data -->
-								<input type="hidden" id="amount" value="{{ $quote->total }}" />
-								<input type="hidden" name="paymentMethodId" />
-								<input type="hidden" name="card_token" />
+								<input type="hidden" name="discipline" value="{{ $quote->discipline }}" autocomplete="off">
+								<input type="hidden" name="date" value="{{ $quote->serviceDate->format('d/m/Y') }}" autocomplete="off">
+								<input type="hidden" name="adults_amount" value="{{ $quote->adultsAmount }}" autocomplete="off">
+								<input type="hidden" name="kids_amount" value="{{ $quote->kidsAmount }}" autocomplete="off">								
+								<input type="hidden" name="t_start" value="{{ $quote->blockStart }}" autocomplete="off">
+								<input type="hidden" name="t_end" value="{{ $quote->blockEnd }}" autocomplete="off">
+								<!-- Payment data for MP processor -->
+								<input type="hidden" name="total_amount" id="amount" value="{{ $quote->total }}" autocomplete="off">
+								<input type="hidden" name="paymentMethodId" autocomplete="off">
+								<input type="hidden" name="card_token" autocomplete="off">
 							</form>
 
 							<hr>

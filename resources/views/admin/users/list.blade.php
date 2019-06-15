@@ -1,6 +1,22 @@
 @extends('admin.layouts.main')
 
 
+@section('custom-css')
+<style type="text/css">
+	.users-table td
+	{
+		vertical-align: middle;
+	}
+
+	.users-table .profile-pic {
+		-webkit-border-radius: 50%;
+		-moz-border-radius: 50%;
+		-ms-border-radius: 50%;
+		border-radius: 50%;
+	}
+</style>
+@endsection
+
 @section('content')
 
 	<!-- Breadcrumbs-->
@@ -24,10 +40,11 @@
 			</div>
 			<div class="list_general">
 				
-				<table class="table">
+				<table class="table users-table">
 
 					<thead>
 						<tr>
+							<th></th>
 							<th></th>
 							<th>ID</th>
 							<th>Nombre completo</th>
@@ -39,10 +56,11 @@
 						@foreach($users as $user)
 						<tr>
 							<td><a href="{{ route('admin.users.details', $user->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+							<td><img src="{{ $user->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
 							<td>{{ $user->id }}</td>
 							<td>{{ $user->name.' '.$user->surname }}</td>
 							<td>{{ $user->email }}</td>
-							<td>0</td>
+							<td>{{ $user->reservations()->count() }}</td>
 						</tr>
 						@endforeach
 					</tbody>

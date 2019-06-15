@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-
+@section('title', 'Mis pagos')
 
 
 
@@ -16,7 +16,7 @@
 
 			@include('instructor.panel-nav-layout')
 
-			<div class="col-9">
+			<div class="col-md-9">
 
 				<h4 class="add_bottom_30">
 					Mis cobros

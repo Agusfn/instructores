@@ -37,6 +37,7 @@ class LoginController extends Controller
     }
 
 
+
     /**
      * Handle a login request to the application.
      *

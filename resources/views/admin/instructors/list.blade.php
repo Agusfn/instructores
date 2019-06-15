@@ -1,6 +1,22 @@
 @extends('admin.layouts.main')
 
 
+@section('custom-css')
+<style type="text/css">
+	.instructor-table td
+	{
+		vertical-align: middle;
+	}
+
+	.instructor-table .profile-pic {
+		-webkit-border-radius: 50%;
+		-moz-border-radius: 50%;
+		-ms-border-radius: 50%;
+		border-radius: 50%;
+	}
+</style>
+@endsection
+
 @section('content')
 
 	<!-- Breadcrumbs-->
@@ -24,10 +40,11 @@
 			</div>
 			<div class="list_general">
 				
-				<table class="table">
+				<table class="table instructor-table">
 
 					<thead>
 						<tr>
+							<th></th>
 							<th></th>
 							<th>Nombre completo</th>
 							<th>Email</th>
@@ -39,7 +56,10 @@
 					<tbody>
 						@foreach($instructors as $instructor)
 						<tr>
-							<td><a href="{{ route('admin.instructors.details', $instructor->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+							<td>
+								<a href="{{ route('admin.instructors.details', $instructor->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a>
+							</td>
+							<td><img src="{{ $instructor->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
 							<td>{{ $instructor->name.' '.$instructor->surname }}</td>
 							<td>{{ $instructor->email }}</td>
 							<td>
@@ -55,7 +75,7 @@
 									<span class="badge badge-success">Verificado</span>
 								@endif
 							</td>
-							<td>0</td>
+							<td>{{ $instructor->reservations()->count() }}</td>
 							<td>${{ $instructor->balance }} ARS</td>
 						</tr>
 						@endforeach

@@ -18,6 +18,9 @@ class InstructorService extends Model
 	use DescriptionImages;
 
 
+	const DISCIPLINE_SKI = "ski";
+	const DISCIPLINE_SNOWBOARD = "snowboard";
+
     /**
      * 
      *
@@ -33,7 +36,20 @@ class InstructorService extends Model
 	];
 
 
-	public $disciplines = ["ski", "snowboard"];
+    /**
+     * The attributes that should be visible in arrays. (Only used in search bar)
+     *
+     * @var array
+     */
+	protected $visible = [
+		"number",
+		"snowboard_discipline",
+		"ski_discipline",
+		"instructor"
+	];
+
+
+	//public $disciplines = ["ski", "snowboard"];
 
 
 	/**
@@ -292,7 +308,7 @@ class InstructorService extends Model
 			throw new \Exception("Invalid working hour period.");
 
 		$reservations = $this->reservations()->active()
-			->where("reserved_date", $date->format("Y-m-d"))
+			->where("reserved_class_date", $date->format("Y-m-d"))
 			->where(function ($query) use ($hour_start, $hour_end) {
 
 				$query->where("reserved_time_start", $hour_start)
@@ -438,7 +454,18 @@ class InstructorService extends Model
 	}
 
 
-
+	/**
+	 * Check whether this service offers any discount for group
+	 * @return boolean
+	 */
+	public function hasGroupDiscounts()
+	{
+		for($i=2; $i<=6; $i++) {
+			if($this->{"person".$i."_discount"} > 0)
+				return true;
+		}
+		return false;
+	}
 
 
 

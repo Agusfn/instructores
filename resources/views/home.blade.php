@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'Inicio')
+
 @section('custom-css')
 <style type="text/css">
     .discipline-select {
@@ -69,6 +71,7 @@
                                 <button type="button" class="btn_search" id="search-btn">Buscar</button>
                             </div>
                         </div>
+                        <input type="hidden" name="sort" value="default">
                         <!-- /row -->
                     </form>
                 </div>

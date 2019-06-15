@@ -1,5 +1,6 @@
 @extends('layouts.main')
 
+@section('title', 'Mi cuenta')
 
 @section('custom-css')
 <link rel="stylesheet" href="{{ asset('resources/vendor/croppie/croppie.css') }}" />
@@ -37,10 +38,15 @@
 					@endif
 				@endif
 
-				<h4 class="add_bottom_30">Mi cuenta</h4>
+				<h4 class="add_bottom_30">Mi cuenta <span style="font-size: 14px;font-weight: normal;">- <a href="{{ url('instructor/panel/cuenta/modificar') }}">Actualizar datos</a></span></h4>
 
 
 				<div class="more_padding_left add_bottom_60">
+
+					<div class="row add_bottom_30">
+						<div class="col-6"><strong>Login cuenta</strong></div>
+						<div class="col-6">{{ ucfirst($instructor->provider) }}</div>
+					</div>
 					<div class="row add_bottom_30">
 						<div class="col-6"><strong>Nombre y apellido</strong></div>
 						<div class="col-6">{{ $instructor->name.' '.$instructor->surname }}</div>
@@ -50,8 +56,14 @@
 						<div class="col-6">{{ $instructor->email }}</div>
 					</div>
 					<div class="row add_bottom_30">
-						<div class="col-6"><strong>Contraseña</strong></div>
-						<div class="col-6">********** <span style="font-size:12px">(<a href="{{ url('instructor/panel/cuenta/password') }}">cambiar</a>)</span></div>
+						<div class="col-6"><strong>Número de teléfono</strong></div>
+						<div class="col-6">
+							@if($instructor->phone_number)
+							{{ $instructor->phone_number }}
+							@else
+							<a href="{{ url('instructor/panel/cuenta/modificar') }}">Agregar</a>
+							@endif
+						</div>
 					</div>
 					<div class="row add_bottom_30">
 						<div class="col-6"><strong>Cuenta aprobada</strong></div>
@@ -62,29 +74,11 @@
 								@if($instructor->approvalDocsSent())
 								Pendiente
 								@else
-								No
+								Aprobación pendiente
 								@endif
 							@endif
 						</div>
 					</div>						
-					<div class="row add_bottom_30">
-						<div class="col-6"><strong>Número de teléfono</strong></div>
-						<div class="col-6">
-							@if($instructor->phone_number)
-							<div>
-								{{ $instructor->phone_number }}
-								<span style="font-size:12px">(<a href="javascript:void(0);" onclick="$(this).closest('div').hide();$('#change-phone-form').show();">cambiar</a>)</span>
-							</div>
-							@else
-							<a href="javascript:void(0);" onclick="$(this).hide();$('#change-phone-form').show();">Agregar</a>
-							@endif
-							<form id="change-phone-form" style="display: none" method="POST" action="{{ url('instructor/panel/cuenta/cambiar_tel') }}">
-								@csrf
-								<input type="text" value="{{ $instructor->phone_number }}" name="phone_number" class="form-control form-control-sm" style="width: 150px; display: inline-block;">
-								<button type="submit" class="btn btn-primary btn-sm">Aplicar</button>
-							</form>
-						</div>
-					</div>
 					<div class="row add_bottom_30">
 							<div class="col-6"><strong>Tipo de documento</strong></div>
 						<div class="col-6">
@@ -120,6 +114,7 @@
 				<h4 class="add_bottom_30">Mi perfil</h4>
 
 				<div class="more_padding_left add_bottom_60">
+					
 					<div class="row add_bottom_30">
 						<div class="col-6"><strong>Foto de perfil</strong></div>
 						<div class="col-6">
@@ -128,7 +123,7 @@
 
 							@if($instructor->profile_picture)
 							<div style="width: 150px;text-align: center;">
-								<img src="{{ $instructor->profilePicUrl() }}" class="profile-pic"><br/>
+								<img src="{{ $instructor->getProfilePicUrl() }}" class="profile-pic"><br/>
 								<a href="javascript:void(0);" id="change-profile-pic">Cambiar</a>
 							</div>
 							@endif
@@ -145,27 +140,14 @@
 						</div>
 					</div>
 
-
-
 					<div class="row add_bottom_30">
 						<div class="col-6"><strong>Cuenta de instagram</strong></div>
 						<div class="col-6">
-
 							@if($instructor->instagram_username)
-							<div>
-								<a href="https://www.instagram.com/{{ $instructor->instagram_username }}/" target="_blank">{{ $instructor->instagram_username }}</a>
-								<span style="font-size:12px">(<a href="javascript:void(0);" onclick="$(this).closest('div').hide();$('#instagram-form').show();">cambiar</a>)</span>
-							</div>
+							<a href="https://www.instagram.com/{{ $instructor->instagram_username }}/" target="_blank">{{ $instructor->instagram_username }}</a>
 							@else
-							<a href="javascript:void(0);" onclick="$(this).hide();$('#instagram-form').show();">Agregar</a>
+							<a href="{{ url('instructor/panel/cuenta/modificar') }}">Agregar</a>
 							@endif
-
-							<form id="instagram-form" style="display: none" method="POST" action="{{ url('instructor/panel/cuenta/cambiar_instagram') }}">
-								@csrf
-								<input type="text" value="{{ $instructor->instagram_username }}" name="instagram_username" class="form-control form-control-sm" style="width: 150px; display: inline-block;">
-								<button type="submit" class="btn btn-primary btn-sm">Aplicar</button>
-							</form>
-
 						</div>
 					</div>
 				</div>	

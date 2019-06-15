@@ -1,6 +1,20 @@
 @extends('admin.layouts.main')
 
 
+@section('custom-css')
+<style type="text/css">
+	.profile-pic
+	{
+		width: 100%;
+		max-width: 200px;
+		border-top-left-radius: 50% 50%;
+		border-top-right-radius: 50% 50%;
+		border-bottom-right-radius: 50% 50%;
+		border-bottom-left-radius: 50% 50%;
+	}
+</style>
+@endsection
+
 @section('content')
 
 	<!-- Breadcrumbs-->
@@ -10,43 +24,148 @@
         <li class="breadcrumb-item active">Detalles de usuario</li>
       </ol>
       	<div class="row">
-      		<div class="col-md-6">
+
+      		<div class="col-lg-6">
+
 				<div class="box_general padding_bottom">
 					<div class="header_box">
-						<h2 class="d-inline-block">Datos personales y de la cuenta</h2>
+						<h2 class="d-inline-block">Datos personales</h2>
 					</div>
 					<div class="list_general">
-						
-						<div class="row" style="margin-bottom: 20px">
-							<div class="col-lg-2">
-								<label><strong>ID</strong></label><br/>
-								{{ $user->id }}
+
+						<div class="row" style="margin: 20px 0 40px 0">
+							<div class="col-md-3">
+								@if($user->profile_picture)
+									<img src="{{ $user->getProfilePicUrl() }}" class="profile-pic">
+								@else
+									<img src="{{ asset('resources/admin/img/avatar.jpg') }}" class="profile-pic">
+								@endif
 							</div>
 
-							<div class="col-lg-5">
-								<label><strong>Nombre y apellido</strong></label><br/>
-								{{ $user->name.' '.$user->surname }}
-							</div>
+							<div class="col-md-9">
+								<div class="row" style="margin-bottom: 20px">
+									<div class="col-md-6">
+										<label><strong>Nombre y apellido</strong></label><br/>
+										{{ $user->name.' '.$user->surname }}
+									</div>
+									<div class="col-md-6">
+										<label><strong>E-mail</strong></label><br/>
+										{{ $user->email }}
+									</div>
+								</div>
 
-							<div class="col-lg-5">
-								<label><strong>E-mail</strong></label><br/>
-								{{ $user->email }}
+								<div class="row" style="margin-bottom: 20px">
+									<div class="col-md-6">
+										<label><strong>Nro tel</strong></label><br/>
+										@if($user->phone_number)
+											{{ $user->phone_number }}
+										@else
+											-
+										@endif
+									</div>
+								</div>
+
 							</div>
 						</div>
 
 					</div>
 				</div>
 
+				<div class="box_general padding_bottom">
+					<div class="header_box">
+						<h6 class="d-inline-block">Datos de la cuenta</h6>
+					</div>
+					<div class="list_general">
+
+						<div class="row" style="margin: 10px 0 10px 0">
+							<div class="col-md-3">
+								<label><strong>ID usuario</strong></label><br/>
+								{{ $user->id }}
+							</div>
+							<div class="col-md-3">
+								<label><strong>Registrado el</strong></label><br/>
+								@if($user->created_at)
+								{{ $user->created_at->format('d/m/Y H:i:s') }}
+								@else
+								-
+								@endif
+							</div>
+							<div class="col-md-3">
+								<label><strong>Login con</strong></label><br/>
+								{{ ucfirst($user->provider) }}
+							</div>
+							<div class="col-md-3">
+								<label><strong>ID red social</strong></label><br/>
+								{{ $user->provider_id }}
+							</div>
+						</div>
+					</div>
+				</div>
+
 
       		</div>
 
-      		<div class="col-md-6">
+      		<div class="col-lg-6">
 				<div class="box_general padding_bottom">
 					<div class="header_box">
 						<h2 class="d-inline-block">Reservas</h2>
 					</div>
 					<div class="list_general">
-										
+						
+						@if($reservations->count() > 0)
+						<table class="table table-sm">
+							<thead>
+								<tr>
+									<th></th>
+									<th>Cod.</th>
+									<th>Estado</th>
+									<th>Instructor</th>
+									<th>Fecha</th>
+									<th>Horas</th>
+									<th>Pers.</th>
+									<th>Total</th>
+								</tr>
+							</thead>
+							<tbody>
+								
+								@foreach($reservations as $reservation)
+
+								<tr>
+									<td><a href="{{ route('admin.reservations.details', $reservation->id) }}" class="btn btn-sm btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+									<td>{{ $reservation->code }}</td>
+									<td>
+										@if($reservation->isPaymentPending())
+										Pago pend.
+										@elseif($reservation->isPendingConfirmation())
+										Pend. confirmación
+										@elseif($reservation->isFailed())
+										Pago fallido
+										@elseif($reservation->isRejected())
+										Rechazada
+										@elseif($reservation->isConfirmed())
+										Confirmada
+										@elseif($reservation->isCanceled())
+										Cancelada
+										@endif
+									</td>
+									<td>
+										<a href="{{ route('admin.instructors.details', $reservation->instructor->id) }}">
+										{{ $reservation->instructor->name.' '.$reservation->instructor->surname[0].'.' }}
+										</a>
+									</td>
+									<td>{{ $reservation->reserved_class_date->format('d/m/Y') }}</td>
+									<td>{{ $reservation->readableHourRange(true) }}</td>
+									<td>{{ $reservation->personAmount() }}</td>
+									<td>${{ round($reservation->final_price, 2) }}</td>
+								</tr>
+
+								@endforeach
+
+							</tbody>
+						</table>
+						@else
+						<div style="text-align: center;margin-bottom: 15px">El usuario no posee reservas realizadas.</div>
+						@endif
 					</div>
 				</div>
       		</div>

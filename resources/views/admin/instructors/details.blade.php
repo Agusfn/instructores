@@ -6,6 +6,7 @@
 	.profile-pic
 	{
 		width: 100%;
+		max-width: 200px;
 		border-top-left-radius: 50% 50%;
 		border-top-right-radius: 50% 50%;
 		border-bottom-right-radius: 50% 50%;
@@ -17,102 +18,100 @@
 
 @section('body-start')
 
-@if($instructor != null)
 
-	@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
-	<div class="modal" tabindex="-1" role="dialog" id="approval-modal">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Aprobar instructor</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
+@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
+<div class="modal" tabindex="-1" role="dialog" id="approval-modal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Aprobar instructor</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
 
-					<div class="alert alert-info">Ingresa los datos de los documentos enviados por el instructor.</div>
+				<div class="alert alert-info">Ingresa los datos de los documentos enviados por el instructor.</div>
 
-					<form action="{{ url('admin/instructores/'.$instructor->id.'/aprobar') }}" method="POST" id="approve-form">
-						@csrf
-						<div class="form-group">
-							<label>Tipo de documento</label>
-							<select name="identification_type" class="form-control{{ $errors->approval->has('identification_type') ? ' is-invalid' : '' }}">
-								@foreach(App\Instructor::$identification_types as $code => $name)
-								<option value="{{ $code }}">{{ $name }}</option>
-								@endforeach
-							</select>
-							@if ($errors->approval->has('identification_type'))
-					        <span class="invalid-feedback" role="alert">
-					            <strong>{{ $errors->approval->first('identification_type') }}</strong>
-					        </span>
-					    	@endif
-						</div>
-						<div class="form-group">
-							<label>Número de documento</label>
-							<input type="text" class="form-control{{ $errors->approval->has('identification_number') ? ' is-invalid' : '' }}" name="identification_number">
-							@if ($errors->approval->has('identification_number'))
-					        <span class="invalid-feedback" role="alert">
-					            <strong>{{ $errors->approval->first('identification_number') }}</strong>
-					        </span>
-					    	@endif
-						</div>
-						<div class="form-group">
-							<label>Nivel de instructor (1-5)</label>
-							<input type="text" class="form-control{{ $errors->approval->has('level') ? ' is-invalid' : '' }}" name="level">
-							@if ($errors->approval->has('level'))
-					        <span class="invalid-feedback" role="alert">
-					            <strong>{{ $errors->approval->first('level') }}</strong>
-					        </span>
-					    	@endif
-						</div>
-					</form>
+				<form action="{{ url('admin/instructores/'.$instructor->id.'/aprobar') }}" method="POST" id="approve-form">
+					@csrf
+					<div class="form-group">
+						<label>Tipo de documento</label>
+						<select name="identification_type" class="form-control{{ $errors->approval->has('identification_type') ? ' is-invalid' : '' }}">
+							@foreach(App\Instructor::$identification_types as $code => $name)
+							<option value="{{ $code }}">{{ $name }}</option>
+							@endforeach
+						</select>
+						@if ($errors->approval->has('identification_type'))
+				        <span class="invalid-feedback" role="alert">
+				            <strong>{{ $errors->approval->first('identification_type') }}</strong>
+				        </span>
+				    	@endif
+					</div>
+					<div class="form-group">
+						<label>Número de documento</label>
+						<input type="text" class="form-control{{ $errors->approval->has('identification_number') ? ' is-invalid' : '' }}" name="identification_number">
+						@if ($errors->approval->has('identification_number'))
+				        <span class="invalid-feedback" role="alert">
+				            <strong>{{ $errors->approval->first('identification_number') }}</strong>
+				        </span>
+				    	@endif
+					</div>
+					<div class="form-group">
+						<label>Nivel de instructor (1-5)</label>
+						<input type="text" class="form-control{{ $errors->approval->has('level') ? ' is-invalid' : '' }}" name="level">
+						@if ($errors->approval->has('level'))
+				        <span class="invalid-feedback" role="alert">
+				            <strong>{{ $errors->approval->first('level') }}</strong>
+				        </span>
+				    	@endif
+					</div>
+				</form>
 
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-					<button type="button" class="btn btn-primary" onclick="$('#approve-form').submit();">Confirmar</button>
-				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-primary" onclick="$('#approve-form').submit();">Confirmar</button>
 			</div>
 		</div>
 	</div>
+</div>
 
 
-	<div class="modal" tabindex="-1" role="dialog" id="reject-docs-modal">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Rechazar documentación</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
+<div class="modal" tabindex="-1" role="dialog" id="reject-docs-modal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Rechazar documentación</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
 
-					<form action="{{ url('admin/instructores/'.$instructor->id.'/rechazar_doc') }}" method="POST" id="reject-docs-form">
-						@csrf
-						<div class="form-group">
-							<label>Motivo del rechazo de documentación</label>
-							<input type="text" class="form-control{{ $errors->doc_rejectal->has('reason') ? ' is-invalid' : '' }}" name="reason">
-							@if ($errors->doc_rejectal->has('reason'))
-					        <span class="invalid-feedback" role="alert" style="display: block;">
-					            <strong>{{ $errors->doc_rejectal->first('reason') }}</strong>
-					        </span>
-					    	@endif
-						</div>
-					</form>
+				<form action="{{ url('admin/instructores/'.$instructor->id.'/rechazar_doc') }}" method="POST" id="reject-docs-form">
+					@csrf
+					<div class="form-group">
+						<label>Motivo del rechazo de documentación</label>
+						<input type="text" class="form-control{{ $errors->doc_rejectal->has('reason') ? ' is-invalid' : '' }}" name="reason">
+						@if ($errors->doc_rejectal->has('reason'))
+				        <span class="invalid-feedback" role="alert" style="display: block;">
+				            <strong>{{ $errors->doc_rejectal->first('reason') }}</strong>
+				        </span>
+				    	@endif
+					</div>
+				</form>
 
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-					<button type="button" class="btn btn-primary" onclick="$('#reject-docs-form').submit();">Confirmar</button>
-				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-primary" onclick="$('#reject-docs-form').submit();">Confirmar</button>
 			</div>
 		</div>
 	</div>
-	@endif
-
+</div>
 @endif
+
 
 
 @endsection
@@ -142,7 +141,8 @@
 		</div>
 
       	<div class="row">
-      		<div class="col-md-6">
+
+      		<div class="col-lg-6">
 				<div class="box_general padding_bottom">
 					<div class="header_box">
 						<h2 class="d-inline-block">Datos personales y de la cuenta</h2>
@@ -150,28 +150,30 @@
 					<div class="list_general">
 
 						<div class="row" style="margin: 20px 0 40px 0">
-							<div class="col-lg-3">
+							
+
+							<div class="col-md-3">
 								@if($instructor->profile_picture)
-									<img src="{{ $instructor->profilePicUrl() }}" class="profile-pic">
+									<img src="{{ $instructor->getProfilePicUrl() }}" class="profile-pic">
 								@else
 									<img src="{{ asset('resources/admin/img/avatar.jpg') }}" class="profile-pic">
 								@endif
 							</div>
 
-							<div class="col-lg-9">
+							<div class="col-md-9">
 								<div class="row" style="margin-bottom: 20px">
-									<div class="col-lg-6">
+									<div class="col-md-6">
 										<label><strong>Nombre y apellido</strong></label><br/>
 										{{ $instructor->name.' '.$instructor->surname }}
 									</div>
-									<div class="col-lg-6">
+									<div class="col-md-6">
 										<label><strong>E-mail</strong></label><br/>
 										{{ $instructor->email }}
 									</div>
 								</div>
 
-								<div class="row">
-									<div class="col-lg-6">
+								<div class="row" style="margin-bottom: 20px">
+									<div class="col-md-6">
 										<label><strong>Nro tel</strong></label><br/>
 										@if($instructor->phone_number)
 											{{ $instructor->phone_number }}
@@ -179,7 +181,7 @@
 											-
 										@endif
 									</div>
-									<div class="col-lg-6">
+									<div class="col-md-6">
 										<label><strong>Cta instagram</strong></label><br/>
 										@if($instructor->instagram_username)
 										<a href="https://instagram.com/{{ $instructor->instagram_username }}" target="_blank">{{ $instructor->instagram_username }}</a>
@@ -188,12 +190,14 @@
 										@endif
 									</div>
 								</div>
+
+
 							</div>
 						</div>
 
 
 						<div class="row" style="margin-bottom: 20px">
-							<div class="col-lg-3">
+							<div class="col-md-3">
 								<label><strong>Aprobación</strong></label><br/>
 								@if(!$instructor->isApproved())
 									@if(!$instructor->approvalDocsSent())
@@ -205,7 +209,7 @@
 									<span class="badge badge-success">Aprobado</span>
 								@endif
 							</div>
-							<div class="col-lg-3">
+							<div class="col-md-3">
 								<label><strong>Fotos certif.</strong></label><br/>
 								@if($instructor->approvalDocsSent())
 
@@ -217,7 +221,7 @@
 									-
 								@endif
 							</div>
-							<div class="col-lg-3">
+							<div class="col-md-3">
 								<label><strong>Fotos documento</strong></label><br/>
 								@if($instructor->approvalDocsSent())
 
@@ -229,7 +233,7 @@
 									-
 								@endif
 							</div>
-							<div class="col-lg-3">
+							<div class="col-md-3">
 								@if(!$instructor->isApproved())
 									<label><strong>Fecha enviados</strong></label><br/>
 									@if($instructor->approvalDocsSent())
@@ -245,7 +249,7 @@
 						</div>
 
 						<div class="row" style="margin-bottom: 20px">
-							<div class="col-lg-3">
+							<div class="col-md-3">
 								<label><strong>Tipo documento</strong></label><br/>
 								@if($instructor->isApproved())
 									{{ App\Instructor::idTypeName($instructor->identification_type) }}
@@ -254,7 +258,7 @@
 								@endif
 							</div>
 
-							<div class="col-lg-3">
+							<div class="col-md-3">
 								<label><strong>Nro. documento</strong></label><br/>
 								@if($instructor->isApproved())
 									{{ $instructor->identification_number }}
@@ -263,7 +267,7 @@
 								@endif
 							</div>
 
-							<div class="col-lg-3">
+							<div class="col-md-3">
 								<label><strong>Nivel instructor</strong></label><br/>
 								@if($instructor->isApproved())
 									{{ $instructor->level }}
@@ -273,6 +277,38 @@
 							</div>
 						</div>
 
+					</div>
+				</div>
+
+
+				<div class="box_general padding_bottom">
+					<div class="header_box">
+						<h6 class="d-inline-block">Datos de la cuenta</h6>
+					</div>
+					<div class="list_general">
+
+						<div class="row" style="margin: 10px 0 10px 0">
+							<div class="col-md-3">
+								<label><strong>ID usuario</strong></label><br/>
+								{{ $instructor->id }}
+							</div>
+							<div class="col-md-3">
+								<label><strong>Registrado el</strong></label><br/>
+								@if($instructor->created_at)
+								{{ $instructor->created_at->format('d/m/Y H:i:s') }}
+								@else
+								-
+								@endif
+							</div>
+							<div class="col-md-3">
+								<label><strong>Login con</strong></label><br/>
+								{{ ucfirst($instructor->provider) }}
+							</div>
+							<div class="col-md-3">
+								<label><strong>ID red social</strong></label><br/>
+								{{ $instructor->provider_id }}
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -300,9 +336,12 @@
 					</div>
 				</div>
 
+
+
+
       		</div>
 
-      		<div class="col-md-6">
+      		<div class="col-lg-6">
 				<div class="box_general padding_bottom">
 					<div class="header_box">
 						<h2 class="d-inline-block">Detalles del servicio 

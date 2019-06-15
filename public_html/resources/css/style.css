@@ -4443,7 +4443,7 @@ section#reviews {
   font-size: 18px;
   font-size: 1.125rem;
   position: absolute;
-  background-color: #fff;
+  /*background-color: #fff;*/
   height: 43px;
   top: 1px;
   right: 1px;
@@ -4452,7 +4452,7 @@ section#reviews {
   width: 20px;
   box-sizing: content-box;
   line-height: 43px;
-  z-index: 9;
+  z-index: 8;
   color: #999;
 }
 .booking .form-group i.icon_lock_alt {

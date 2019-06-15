@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class InstructorMpAccount extends Model
+class InstructorBankAccount extends Model
 {
-    
+	
 	protected $guarded = [];
 
 
@@ -29,8 +29,6 @@ class InstructorMpAccount extends Model
 	{
 		return $this->belongsTo("App\Instructor");
 	}
-
-
-
+	
 
 }

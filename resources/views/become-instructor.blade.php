@@ -1,5 +1,6 @@
 @extends('layouts.main')
 
+@section('title', 'Ser instructor')
 
 @section('content')
         
@@ -134,7 +135,7 @@
                     <div class="block-reveal">
                         <div class="block-vertical"></div>
                         <div class="box_1">
-                            <a href="{{ route('instructor.register') }}" class="btn_1 rounded">Registrarse</a>
+                            {{--<a href="{{ route('instructor.register') }}" class="btn_1 rounded">Registrarse</a>--}}
                             <a href="{{ route('instructor.login') }}" class="btn_1 rounded">Iniciar sesión</a>
                         </div>
                     </div>

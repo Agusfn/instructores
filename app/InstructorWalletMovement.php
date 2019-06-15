@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class InstructorBalanceMovement extends Model
+class InstructorWalletMovement extends Model
 {
  
 	const MOTIVE_RESERVATION_PAYMENT = "payment";
@@ -16,15 +16,15 @@ class InstructorBalanceMovement extends Model
 
 
 
-	public function instructor()
+	public function wallet()
 	{
-		return $this->belongsTo("App\Instructor");
+		return $this->belongsTo("App\InstructorWallet");
 	}
 
 
-	public function reservation()
+	/*public function reservation()
 	{
 		return $this->belongsTo("App\Reservation");
-	}
+	}*/
 
 }

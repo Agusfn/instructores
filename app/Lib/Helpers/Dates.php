@@ -44,5 +44,15 @@ class Dates {
 	}
 
 
+	/**
+	 * Converts a range of 2 ints of hours to a readable format.
+	 * Eg: 11, 13: "11:00-13:00 hs"
+	 * @return string
+	 */
+	public static function hoursToReadableHourRange($hour1, $hour2)
+	{
+		return $hour1.":00-".$hour2.":00 hs";
+	}
+
 
 }
