@@ -242,6 +242,35 @@ class Reservation extends Model
     {
         return $this->status == self::STATUS_CANCELED;
     }
+
+
+
+
+    /**
+     * In the reservation process, the Reservation is created and then the payment is excecuted and created.
+     * After a payment is excecuted, the processing fee might be slightly different than the one predicted and saved into the reservation.
+     * This method is to adjust and reflect that difference into the reservation, to keep storing real data. As the total remains the same, 
+     * the difference will directly affect our service fee.
+     * save() MUST BE CALLED AFTER CALLING THIS.
+     * 
+     * @param  float $realPayFee
+     * @return null
+     */
+    public function adjustPayProcessorFee($realPayFee)
+    {
+        $feeDifference = $this->payment_proc_fee - $realPayFee;
+
+        if($feeDifference != 0) {
+            $this->payment_proc_fee = $realPayFee;
+            $this->service_fee += $feeDifference;
+
+            if($feeDifference < 0) // against
+                \Log::notice("MP fee difference of ".$feeDifference." ARS for reservation ".$this->code);
+        }
+    }
+
+
+
 }
 
 

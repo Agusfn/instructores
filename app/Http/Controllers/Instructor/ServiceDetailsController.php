@@ -35,7 +35,7 @@ class ServiceDetailsController extends Controller
 
 
 	/**
-	 * [index description]
+	 * Show instructor service details form.
 	 * @return [type] [description]
 	 */
 	public function index()
@@ -49,12 +49,15 @@ class ServiceDetailsController extends Controller
 	}
 
 
-
+	/**
+	 * Pause an instructor service listing from being published.
+	 * @return [type] [description]
+	 */
 	public function pause()
 	{
 		$instructor = Auth::user();
 
-		if($instructor->isApproved() && $instructor->service->published) {
+		if($instructor->service->published) {
 
 			$instructor->service->published = false;
 			$instructor->service->save();
@@ -65,17 +68,15 @@ class ServiceDetailsController extends Controller
 
 
 
+	/**
+	 * Activate and publish the instructor service listing
+	 * @return [type] [description]
+	 */
 	public function activate()
 	{
 		$instructor = Auth::user();
 
-		if($instructor->isApproved() && !$instructor->service->published) {
-
-
-			if(!$instructor->hasMpAccountAssociated())
-				return redirect()->back()->withErrors([
-					"cant_activate" => 'Para publicar tu servicio debés asociar tu cuenta de MercadoPago primero (en la pestaña "mis cobros").'
-				]);
+		if(!$instructor->service->published) {
 
 			if(!$instructor->service->canBePublished())
 				return redirect()->back()->withErrors([
@@ -84,17 +85,18 @@ class ServiceDetailsController extends Controller
 
 			$instructor->service->published = true;
 			$instructor->service->save();
+			request()->session()->flash('activate-success');
 
 		}
 
-		request()->session()->flash('activate-success');
+		
 		return redirect()->back();
 	}
 
 
 
 	/**
-	 * [addDateRange description]
+	 * Create an instructor service date range with it's price per time block.
 	 * @param Request $request [description]
 	 */
 	public function addDateRange(Request $request)
@@ -124,25 +126,29 @@ class ServiceDetailsController extends Controller
 
 
 	/**
-	 * [removeDateRange description]
+	 * Delete an instructor service date range.
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	public function removeDateRange(Request $request)
+	public function deleteDateRange(Request $request)
 	{
-		$instructor = Auth::user();
-
 		$validator = Validator::make($request->all(), [
 			"range_id" => "required|integer",
 		]);
 
-		if ($validator->fails()) {
+		if ($validator->fails())
 			return response($validator->messages()->first(), 422);
-        }
-	
-		$dateRange = ServiceDateRange::find($request->range_id);
 
-		if(!$dateRange || $dateRange->service->instructor->id != $instructor->id) {
+		$instructor = Auth::user();
+
+		if($instructor->service->published && $instructor->service->dateRanges()->count() == 1) {
+			return response("Pausa tu publicación antes de eliminar todas las fechas de trabajo.", 422);
+		}
+		
+
+		$dateRange = $instructor->service->dateRanges()->where("range_id", $request->range_id)->first();
+
+		if(!$dateRange) {
 			return response("Rango de fechas a eliminar inexistente.", 422);
 		}
 

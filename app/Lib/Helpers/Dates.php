@@ -2,6 +2,7 @@
 
 namespace App\Lib\Helpers;
 
+use Carbon\Carbon;
 use \DateTime;
 use \DateInterval;
 use \DatePeriod;
@@ -52,6 +53,17 @@ class Dates {
 	public static function hoursToReadableHourRange($hour1, $hour2)
 	{
 		return $hour1.":00-".$hour2.":00 hs";
+	}
+
+
+	/**
+	 * Converts an iso 8601 date (eg: 2004-02-12T15:19:21+00:00) to MySQL date format: Y-m-d H:i:s
+	 * @param string $date
+	 * @return string
+	 */
+	public static function iso8601ToMysql($date)
+	{
+		return Carbon::parse($date)->setTimezone(config("app.timezone"))->format("Y-m-d H:i:s");
 	}
 
 

@@ -32,15 +32,15 @@ Route::get("instructor/panel/cuenta/modificar", "Instructor\AccountDetailsContro
 Route::post("instructor/panel/cuenta/modificar", "Instructor\AccountDetailsController@editAccount");
 /*Route::get("instructor/panel/cuenta/password", "Instructor\AccountDetailsController@showChangePasswordForm");
 Route::post("instructor/panel/cuenta/password", "Instructor\AccountDetailsController@changePassword");*/
-Route::post("instructor/panel/cuenta/cambiar_tel", "Instructor\AccountDetailsController@changePhone");
+//Route::post("instructor/panel/cuenta/cambiar_tel", "Instructor\AccountDetailsController@changePhone");
 Route::post("instructor/panel/cuenta/img_perfil", "Instructor\AccountDetailsController@changeProfilePic");
-Route::post("instructor/panel/cuenta/cambiar_instagram", "Instructor\AccountDetailsController@changeInstagram");
+//Route::post("instructor/panel/cuenta/cambiar_instagram", "Instructor\AccountDetailsController@changeInstagram");
 Route::post("instructor/panel/cuenta/verificar", "Instructor\AccountDetailsController@sendVerifyInfo");
 
 // Service
 Route::get("instructor/panel/servicio", "Instructor\ServiceDetailsController@index")->name("instructor.service");
 Route::post("instructor/panel/servicio/agregar_fechas", "Instructor\ServiceDetailsController@addDateRange");
-Route::post("instructor/panel/servicio/eliminar_fechas", "Instructor\ServiceDetailsController@removeDateRange");
+Route::post("instructor/panel/servicio/eliminar_fechas", "Instructor\ServiceDetailsController@deleteDateRange");
 
 Route::post("instructor/panel/servicio/subir_imagen", "Instructor\ServiceDetailsController@uploadImage");
 Route::post("instructor/panel/servicio/eliminar_imagen", "Instructor\ServiceDetailsController@deleteImage");
@@ -57,9 +57,11 @@ Route::post("instructor/panel/reservas/{reservation_code}/rechazar", "Instructor
 
 
 // Balance
-Route::get("instructor/panel/saldo", "Instructor\AccountBalanceController@index")->name("instructor.balance.overview");
-Route::get("instructor/panel/saldo/cuenta-bancaria", "Instructor\AccountBalanceController@showBankAccountForm")->name("instructor.balance.bank-account");
-//Route::post("instructor/panel/saldo/cuenta-bancaria", "Instructor\AccountBalanceController@setBankAccount");
+Route::get("instructor/panel/saldo", "Instructor\AccountBalanceController@overview")->name("instructor.balance.overview");
+Route::get("instructor/panel/saldo/cta-bancaria", "Instructor\AccountBalanceController@showBankAccountForm")->name("instructor.balance.bank-account");
+Route::post("instructor/panel/saldo/cta-bancaria", "Instructor\AccountBalanceController@saveBankAccount");
+Route::post("instructor/panel/saldo/retirar", "Instructor\AccountBalanceController@createCollectionRequest");
+Route::post("instructor/panel/saldo/cancelar-retiro", "Instructor\AccountBalanceController@cancelCollection");
 
 // Was going to be used with mercadopago marketplace functionality, where sellers had to associate their MP accounts to the marketplace's. Was not used finally.
 /*Route::get("instructor/panel/cobros", "Instructor\PaymentsController@index")->name("instructor.payments");

@@ -26,14 +26,15 @@ class InstructorService extends Model
      *
      * @var array
      */
-	protected $guarded = [
+	/*protected $guarded = [
 		"number",
 		"published",
 		"instructor_id",
 		"instructor_level",
 		"images_json",
 		"booking_calendar_json"
-	];
+	];*/
+	protected $guarded = [];
 
 
     /**
@@ -156,7 +157,7 @@ class InstructorService extends Model
 		if(!$this->offered_to_adults && !$this->offered_to_kids)
 			return false;
 
-		if($this->dateRanges->count() == 0)
+		if($this->dateRanges()->count() == 0)
 			return false;
 
 		return true;

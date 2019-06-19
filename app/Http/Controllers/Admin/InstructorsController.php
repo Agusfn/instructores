@@ -22,14 +22,23 @@ class InstructorsController extends Controller
 	}
 
 
+	/**
+	 * Show existing instructor list.
+	 * @return [type] [description]
+	 */
 	public function list()
 	{
-		$instructors = Instructor::all();
+		$instructors = Instructor::with("wallet")->get();
 		return view("admin.instructors.list")->with("instructors", $instructors);
 	}
 
 
 
+	/**
+	 * Show details of instructor.
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
 	public function details($id)
 	{
 		$instructor = Instructor::with("service")->find($id);
@@ -44,15 +53,15 @@ class InstructorsController extends Controller
 	}
 
 
-
+	/**
+	 * Approve an instructor, assigning their identification number and instructor level.
+	 * This also creates the InstructorService and InstructorWallet belonging to them.
+	 * @param  Request $request [description]
+	 * @param  [type]  $id      [description]
+	 * @return [type]           [description]
+	 */
 	public function approve(Request $request, $id)
 	{
-		$instructor = Instructor::find($id);
-
-		if(!$instructor)
-			return redirect()->back();
-
-
 		$validator = Validator::make($request->all(), [
 			"identification_type" => "required|in:dni,passport",
 			"identification_number" => "required|between:5,20|regex:/^[0-9+ -]*$/",
@@ -63,13 +72,17 @@ class InstructorsController extends Controller
 			return redirect()->back()->withErrors($validator, 'approval')->withInput();
 		}
 
-		$instructor->approve();
-		$instructor->fill($request->only([
-			"identification_type", 
-			"identification_number",
-			"level"
-		]));
-		$instructor->save();
+		$instructor = Instructor::find($id);
+
+		if(!$instructor)
+			return redirect()->back();
+
+
+		$instructor->approve(
+			$request->identification_type,
+			$request->identification_number,
+			$request->level
+		);
 
 		//Mail::to($instructor)->send(new InstructorApproved($instructor));
 

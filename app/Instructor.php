@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\InstructorWallet;
 use App\Lib\Reservations;
 use App\InstructorService;
 use App\Mail\UserWelcomeEmail;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Instructor extends Authenticatable implements MustVerifyEmail
+class Instructor extends Authenticatable
 {
     use Notifiable, HasProfilePicture;
 
@@ -128,10 +129,10 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
 
-    public function sendWelcomeAndVerificationEmail()
+    /*public function sendWelcomeAndVerificationEmail()
     {
         return Mail::to($this)->send(new UserWelcomeEmail($this));
-    }
+    }*/
 
 
 
@@ -149,12 +150,9 @@ class Instructor extends Authenticatable implements MustVerifyEmail
      * Check whether the instructor has associated its MercadoPago account.
      * @return boolean
      */
-    public function hasMpAccountAssociated()
+    public function hasBankAccount()
     {
-        if($this->mpAccount != null && $this->mpAccount->access_token != null)
-            return true;
-
-        return false;
+        return $this->bankAccount()->exists();
     }
 
 
@@ -173,21 +171,36 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
     /**
-     * Approve instructor and create its service
+     * Approve an instructor, create their InstructorService and their InstructorWallet.
+     * 
+     * @param  string $idType   Identification type. Types defined in self::$identification_types
+     * @param  string $idNumber
+     * @param  int $level    level of instructor.
      * @return null
      */
-    public function approve()
+    public function approve($idType, $idNumber, $level)
     {
-        $service = new InstructorService(); 
+        
+        InstructorService::create([
+            "number" => InstructorService::generateNumber(),
+            "instructor_id" => $this->id,
+            "worktime_hour_start" => Reservations::DAILY_ACTIVITY_START_TIME,
+            "worktime_hour_end" => Reservations::DAILY_ACTIVITY_END_TIME,
+        ]);
 
-        $service->number = InstructorService::generateNumber();
-        $service->instructor_id = $this->id;
-        $service->worktime_hour_start = Reservations::DAILY_ACTIVITY_START_TIME;
-        $service->worktime_hour_end = Reservations::DAILY_ACTIVITY_END_TIME;
-        $service->save();
+        InstructorWallet::create([
+            "instructor_id" => $this->id,
+            "currency_code" => \App\Lib\Currencies::CODE_ARS
+        ]);
 
-        $this->approved = true;
-        $this->approved_at = date("Y-m-d H:i:s");
+        $this->fill([
+            "approved" => true,
+            "approved_at" => date("Y-m-d H:i:s"),
+            "identification_type" => $idType,
+            "identification_number" => $idNumber,
+            "level" => $level
+        ]);
+
         $this->save();
     }
 

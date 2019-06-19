@@ -56,7 +56,9 @@
 
 						<div class="box_cart">
 							
-							<form action="{{ url('reservar/'.$service->number.'/procesar') }}" method="POST" id="payment-form">
+							<h3 style="margin-bottom: 30px">Reintentar pago reserva {{ $reservation->code }}</h3>
+
+							<form action="{{ route('reservation.retry-payment', $reservation->code) }}" method="POST" id="payment-form">
 							@csrf
 								<div class="form_title">
 									<h3><strong>1</strong>Datos personales</h3>
@@ -87,11 +89,7 @@
 										<div class="col-sm-6">
 											<div class="form-group">
 												<label>Teléfono</label><br/>
-												@if($user->phone_number != null)
 												{{ $user->phone_number }}
-												@else
-												<input type="text" class="form-control" name="phone">
-												@endif
 											</div>
 										</div>
 									</div>
@@ -177,7 +175,7 @@
 										</div>
 										<div class="col-md-6">
 											<div class="form-group">
-												<label>Cuotas (financiación MercadoPago)</label>
+												<label>Cuotas</label>
 												<select class="form-control" id="installments" name="installments"></select>
 											</div>
 										</div>
@@ -237,15 +235,8 @@
 									<!--End row -->
 								</div>
 
-								<!-- Data of classes to make a reservation for -->
-								<input type="hidden" name="discipline" value="{{ $quote->discipline }}" autocomplete="off">
-								<input type="hidden" name="date" value="{{ $quote->serviceDate->format('d/m/Y') }}" autocomplete="off">
-								<input type="hidden" name="adults_amount" value="{{ $quote->adultsAmount }}" autocomplete="off">
-								<input type="hidden" name="kids_amount" value="{{ $quote->kidsAmount }}" autocomplete="off">								
-								<input type="hidden" name="t_start" value="{{ $quote->blockStart }}" autocomplete="off">
-								<input type="hidden" name="t_end" value="{{ $quote->blockEnd }}" autocomplete="off">
 								<!-- Payment data for MP processor -->
-								<input type="hidden" name="total_amount" id="amount" value="{{ $quote->total }}" autocomplete="off">
+								<input type="hidden" name="total_amount" id="amount" value="{{ $reservation->final_price }}" autocomplete="off">
 								<input type="hidden" name="paymentMethodId" autocomplete="off">
 								<input type="hidden" name="card_token" autocomplete="off">
 							</form>
@@ -268,11 +259,11 @@
 							<div style="margin-bottom: 15px">
 								<div class="row">
 									<div class="col-8">Subtotal</div>
-									<div class="col-4">${{ $quote->classesPrice }}</div>
+									<div class="col-4">${{ $reservation->instructor_pay + $reservation->service_fee }}</div>
 								</div>
 								<div class="row">
 									<div class="col-8">Tarifa serv. pagos</div>
-									<div class="col-4">${{ $quote->payProviderFee }}</div>
+									<div class="col-4">${{ $reservation->payment_proc_fee }}</div>
 								</div>
 								<div class="row" style="display: none">
 									<div class="col-8">Costo financiación (<span id="installment-number"></span> cuotas)</div>
@@ -281,12 +272,12 @@
 							</div>
 
 							<div id="total_cart">
-								Total <span class="float-right" id="total">${{ $quote->total }}</span>
+								Total <span class="float-right" id="total">${{ $reservation->final_price }}</span>
 							</div>
 							<ul class="cart_details">
-								<li>Fecha <span>{{ $quote->serviceDate->format("d/m/Y") }}</span></li>
-								<li>Horas <span>{{ App\Lib\Reservations::blocksToReadableHourRange($quote->blockStart, $quote->blockEnd) }}</span></li>
-								<li>Personas <span>{{ $quote->personAmmount }}</span></li>
+								<li>Fecha <span>{{ $reservation->reserved_class_date->format("d/m/Y") }}</span></li>
+								<li>Horas <span>{{ $reservation->readableHourRange() }}</span></li>
+								<li>Personas <span>{{ $reservation->personAmount() }}</span></li>
 							</ul>
 							<button type="button" class="btn_1 full-width purchase">Pagar</button>
 							<div class="text-center"></div>

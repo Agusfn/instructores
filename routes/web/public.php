@@ -34,6 +34,8 @@ Route::post("reservar/{service_number}/confirmar", "ReservationsController@reser
 Route::get("reservar/{service_number}/confirmar", "ReservationsController@redirectToService");
 Route::post("reservar/{service_number}/procesar", "ReservationsController@processReservation");
 Route::get("reservar/resultado/{reservation_code}", "ReservationsController@showResult")->name("reservation.result");
+Route::get("reservar/{reservation_code}/reintentar-pago", "ReservationsController@retryPaymentForm")->name("reservation.retry-payment");
+Route::post("reservar/{reservation_code}/reintentar-pago", "ReservationsController@retryMpPayment");
 
 
 /*Route::get('email/verificar', 'Auth\VerificationController@show')->name('verification.notice');

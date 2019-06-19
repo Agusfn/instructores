@@ -53,8 +53,9 @@ class ReservationsController extends Controller
 	public function previewReservation(Request $request, $service_number)
 	{
 
-		$this->validateAndQuoteReservation($request, $service_number);
-
+		$redirect = $this->validateAndQuoteReservation($request, $service_number);
+		if($redirect)
+			return $redirect;
 
 		$priceChangeWarning = false;
 
@@ -81,7 +82,9 @@ class ReservationsController extends Controller
 	public function reservationForm(Request $request, $service_number)
 	{
 
-		$this->validateAndQuoteReservation($request, $service_number);
+		$redirect = $this->validateAndQuoteReservation($request, $service_number);
+		if($redirect)
+			return $redirect;
 
 		return view("reservation.form")->with([
 			"service" => $this->service,
@@ -114,7 +117,9 @@ class ReservationsController extends Controller
 	public function processReservation(Request $request, $service_number)
 	{
 
-		$this->validateAndQuoteReservation($request, $service_number);
+		$redirect = $this->validateAndQuoteReservation($request, $service_number);
+		if($redirect)
+			return $redirect;
 
 
 		$validator = new ProcessReservation($request);
@@ -126,9 +131,15 @@ class ReservationsController extends Controller
 		if($request->total_amount != $this->quote->total) {
 			return redirect()->route("service-page", $service_number)->withErrors("El precio la reserva que se intentó realizar cambió antes de confirmarla.");
 		}
-		
+
 
 		$user = Auth::user();
+
+		if($user->phone_number == null) {
+			$user->phone_number = $request->phone;
+			$user->save();
+		}
+
 
 		$hourRange = Reservations::blockRangeToHourRange($request->t_start, $request->t_end);
 
@@ -147,21 +158,39 @@ class ReservationsController extends Controller
 			"adults_amount" => $request->adults_amount,
 			"kids_amount" => $request->kids_amount,
 			"json_breakdown" => $this->quote->getJsonBreakdown(),
-			"final_price" => $this->quote->total,
+			"final_price" => $this->quote->total, // changes if paid in installments
 			"instructor_pay" => $this->quote->instructorPay,
 			"service_fee" => $this->quote->serviceFee,
-			"payment_proc_fee" => $this->quote->payProviderFee
+			"payment_proc_fee" => $this->quote->payProviderFee, // guessed. Any later change affect service_fee
+			"billing_address" => $request->address,
+			"billing_city" => $request->address_city,
+			"billing_state" => $request->address_state,
+			"billing_postal_code" => $request->address_postal_code,
+			"billing_country_code" => $request->address_country,
 		]);
 
 
-		//if($this->quote->paymentMethod == PaymentMethods::CODE_MERCADOPAGO) {
-			$payment = ReservationPayments::makeMercadoPagoPayment($reservation, $this->quote);
-		//}
+		$reservPayment = ReservationPayments::processMpApiPayment(
+			$request->card_token,
+			$request->issuer,
+			$request->paymentMethodId,
+			$request->installments,
+			$user,
+			$reservation
+		);
 
 
-		if($payment->status == ReservationPayment::STATUS_SUCCESSFUL) {
+		if($reservPayment->isSuccessful()) {
 
-			$reservation->status = Reservation::STATUS_PENDING_CONFIRMATION;
+			$reservation->adjustPayProcessorFee($reservPayment->payment_provider_fee);
+
+			$reservation->fill([
+				"status" => Reservation::STATUS_PENDING_CONFIRMATION,
+				"final_price" => $reservPayment->total_amount,
+				"mp_financing_cost" => $reservPayment->financing_costs,
+				"mp_installment_amt" => $reservPayment->mercadopagoPayment->installment_amount
+			]);
+
 			$reservation->save();
 
 			// Send email
@@ -194,7 +223,7 @@ class ReservationsController extends Controller
 		if($reservation->isPaymentPending() || $reservation->isPendingConfirmation()) {
 			return view("reservation.result")->with([
 				"reservation" => $reservation,
-				"payment" => $reservation->lastPayment()
+				"lastPayment" => $reservation->lastPayment()
 			]);
 		}
 		else 
@@ -203,6 +232,94 @@ class ReservationsController extends Controller
 	}
 
 
+
+	/**
+	 * [retryPaymentForm description]
+	 * @param  Request $request         [description]
+	 * @param  [type]  $reservationCode [description]
+	 * @return [type]                   [description]
+	 */
+	public function retryPaymentForm(Request $request, $reservationCode)
+	{
+		$user = Auth::user();
+		$reservation = $user->reservations()->withCode($reservationCode)->first();
+
+		if(!$reservation) {
+			return redirect()->route("home");
+		}
+
+		if($reservation->isPaymentPending() && $reservation->lastPayment()->isFailed()) {
+			return view("reservation.retry-mp-payment")->with([
+				"user" => $user,
+				"reservation" => $reservation,
+				"countries" => Country::getNamesAndCodes()
+			]);
+		}
+		else
+			return redirect()->route("user.reservation", $reservationCode);
+
+	}
+
+
+
+	/**
+	 * Retry payment of an unpaid reservation through MercadoPago.
+	 * @return [type] [description]
+	 */
+	public function retryMpPayment(Request $request, $reservationCode)
+	{
+
+		$validator = new ProcessReservation($request);
+		if($validator->fails()) {
+			return redirect()->route("service-page", $service_number)->withErrors($validator->messages());
+		}
+
+		$user = Auth::user();
+		$reservation = $user->reservations()->withCode($reservationCode)->first();
+
+		if(!$reservation) {
+			return redirect()->route("home");
+		}
+
+
+		$reservation->fill([
+			"billing_address" => $request->address,
+			"billing_city" => $request->address_city,
+			"billing_state" => $request->address_state,
+			"billing_postal_code" => $request->address_postal_code,
+			"billing_country_code" => $request->address_country,
+		]);
+
+
+		$reservPayment = ReservationPayments::processMpApiPayment(
+			$request->card_token,
+			$request->issuer,
+			$request->paymentMethodId,
+			$request->installments,
+			$user,
+			$reservation
+		);
+
+
+		if($reservPayment->isSuccessful()) {
+
+			$reservation->adjustPayProcessorFee($reservPayment->payment_provider_fee);
+			
+			$reservation->fill([
+				"status" => Reservation::STATUS_PENDING_CONFIRMATION,
+				"final_price" => $reservPayment->total_amount,
+				"mp_financing_cost" => $reservPayment->financing_costs,
+				"mp_installment_amt" => $reservPayment->mercadopagoPayment->installment_amount
+			]);
+
+			$reservation->save();
+
+			// Send email
+		}
+
+
+		return redirect()->route("reservation.result", $reservation->code);
+	}
 
 
 

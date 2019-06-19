@@ -32,7 +32,7 @@
 									</div>
 
 									<div class="col-md-6">
-										<span style="color: #2e79b9">$14610.50 ARS</span>
+										<span style="color: #2e79b9">${{ $wallet->balance }} ARS</span>
 									</div>
 								</div>
 							</div>
@@ -44,10 +44,10 @@
 							<div class="card-body">
 								<div class="row">
 									<div class="col-md-6">
-										<button type="button" class="btn btn-success" data-toggle="modal" data-target="#collection-modal">Retirar fondos</button>
+										<button type="button" class="btn btn-success" @if($bankAccount) data-toggle="modal" data-target="#collection-modal" @else onclick="alert('Debes asociar tu cuenta bancaria para poder retirar tus fondos.')" @endif>Retirar fondos</button>
 									</div>
 									<div class="col-md-6" style="padding-top: 9px;">
-										@if($instructor->bankAccount == null)
+										@if(!$bankAccount)
 										<a href="{{ route('instructor.balance.bank-account') }}">Agregar cta. bancaria</a>
 										@else
 										<a href="{{ route('instructor.balance.bank-account') }}">Modificar cta. bancaria</a>
@@ -58,6 +58,53 @@
 						</div>
 					</div>
 				</div>
+
+				@if($bankAccount && $wallet->collections()->pending()->count() > 0)
+				<div class="card" style="margin: 15px 0">
+					<div class="card-body">
+						<h6 class="card-title">Extracciones de dinero pendientes</h6>
+						<table class="table table-sm">
+
+							<thead>
+								<tr>
+									<th>Fecha</th>
+									<th>Monto</th>
+									<th>Destino</th>
+									<th>Estado</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach($wallet->collections()->pending()->get() as $collection)
+								<tr>
+									<td>
+										{{ $collection->created_at->format('d/m/Y') }}
+									</td>
+									<td>
+										${{ $collection->amount }}
+									</td>
+									<td>Cuenta bancaria</td>
+									<td>
+										@if($collection->isPending())
+										Pendiente
+										@elseif($collection->isInProcess())
+										Procesando
+										@endif
+									</td>
+									<td>
+										<form action="{{ url('instructor/panel/saldo/cancelar-retiro') }}" method="POST">
+											@csrf
+											<input type="hidden" name="collection_id" value="{{ $collection->id }}">
+											<button type="button" class="btn btn-dark btn-sm" onclick="if(confirm('¿Cancelar esta extracción?')) $(this).parent().submit();"><i class="fas fa-times"></i></button>
+										</form>
+									</td>
+								</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+				</div>
+				@endif
 
 				<div class="card">
 					<div class="card-body">
@@ -74,18 +121,18 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($balanceMovements as $movement)
+								@foreach($wallet->movements as $movement)
 								<tr>
 									<td>{{ date('d/m/Y', strtotime($movement->date)) }}</td>
 									<td>
-										@if($movement->motive == App\InstructorBalanceMovement::MOTIVE_RESERVATION_PAYMENT)
+										@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
 										Pago de reserva
-										@elseif($movement->motive == App\InstructorBalanceMovement::MOTIVE_COLLECTION)
+										@elseif($movement->motive == App\InstructorWalletMovement::MOTIVE_COLLECTION)
 										Retiro de dinero
 										@endif
 									</td>
 									<td>
-										@if($movement->motive == App\InstructorBalanceMovement::MOTIVE_RESERVATION_PAYMENT)
+										@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
 										<a href="">{{ $movement->reservation->code }}</a>
 										@endif
 									</td>
@@ -115,8 +162,8 @@
 
 
 
-
 @section('body-end')
+@if($instructor->isApproved() && $bankAccount)
 <div class="modal menu_fixed" style="z-index: 1050" tabindex="-1" role="dialog" id="collection-modal">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -128,16 +175,54 @@
 			</div>
 			<div class="modal-body">
 
-				<div class="form-group" style="text-align: center;">
-					<label>Ingresa el monto en Pesos</label>
-					<input type="text" class="form-control" style="width: 150px;margin: 0 auto;">
+				@if($bankAccount->lockTimePassed())
+				<form action="{{ url('instructor/panel/saldo/retirar') }}" method="POST" id="collection-form">
+					@csrf
+					<div class="form-group" style="text-align: center;">
+						<label>Ingresa el monto en pesos</label>
+						<input name="amount" type="text" class="form-control{{ $errors->collection->has('amount') ? ' is-invalid' : '' }}" value="{{ old('amount') }}" style="width: 150px;margin: 0 auto;">
+						@if ($errors->collection->has('amount'))
+				        <span class="invalid-feedback" role="alert">
+				            <strong>{{ $errors->collection->first('amount') }}</strong>
+				        </span>
+				    	@endif
+					</div>
+				</form>
+				<div>
+					<div style="margin-bottom: 12px">Los fondos se retirarán a la siguiente cuenta bancaria:</div>
+					<div style="">
+						<strong>CBU:</strong> {{ $bankAccount->cbu }}<br/>
+						<strong>Titular:</strong> {{ $bankAccount->holder_name }}<br/>
+						<strong>Documento:</strong> {{ $bankAccount->document_number }}<br/>
+						<strong>CUIL/CUIT:</strong> {{ $bankAccount->cuil_cuit }}<br/>
+					</div>
 				</div>
+				@else
+				<div class="alert alert-info">
+					Tu cuenta bancaria fue recientemente configurada, debés esperar al {{ $bankAccount->unlockTime()->format('d/m/Y H:i') }} para poder retirar dinero.
+				</div>
+				@endif
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="$('#approve-form').submit();">Confirmar</button>
+				@if($bankAccount->lockTimePassed())
+				<button type="button" class="btn btn-primary" onclick="$('#collection-form').submit();">Confirmar</button>
+				@endif
 			</div>
 		</div>
 	</div>
 </div>
+@endif
+@endsection
+
+
+
+@section('custom-js')
+
+@if(!$errors->collection->isEmpty() && $instructor->isApproved())
+<script type="text/javascript">
+	$('#collection-modal').modal("show");
+</script>
+@endif
+
 @endsection

@@ -17,8 +17,8 @@ class CreateInstructorBankAccountsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('instructor_id');
             $table->string("cbu");
-            $table->string("holder");
-            $table->string("document");
+            $table->string("holder_name");
+            $table->string("document_number");
             $table->string("cuil_cuit");
             $table->boolean("invalid")->default(false);
             $table->timestamps();

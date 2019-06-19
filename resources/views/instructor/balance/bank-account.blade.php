@@ -15,51 +15,74 @@
 
 			<div class="col-md-9">
 
-				<a href="{{ route('instructor.account') }}"><span class="badge badge-pill badge-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> volver</span></a>
-				<h4 class="add_bottom_30">Mi cuenta</h4>
+				<a href="{{ route('instructor.balance.overview') }}"><span class="badge badge-pill badge-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> volver</span></a>
+				<h4 class="add_bottom_30">Mi cuenta bancaria</h4>
 
-				<form action="{{ url('instructor/panel/cuenta/modificar') }}" method="POST">
+				@if($instructor->wallet->collections()->pending()->count() > 0)
+				@php($formDisabled = true)
+				<div class="alert alert-warning">
+					Tenés solicitudes de retiro de dinero pendientes. No podrás modificar tu cuenta bancaria hasta que estas se concluyan.
+				</div>
+				@else
+				@php($formDisabled = false)
+				<div class="alert alert-info">
+					Si guardas/modificas los datos de tu cuenta bancaria, deberás esperar {{ \App\InstructorBankAccount::LOCK_TIME_DAYS }} días para poder realizar extracciones de dinero a la misma.
+				</div>
+				@endif
+
+				<form action="{{ url('instructor/panel/saldo/cta-bancaria') }}" method="POST">
 					@csrf
 
 					<div class="more_padding_left add_bottom_60">
 
 						<div class="row add_bottom_30">
 							<div class="col-6">
-								<strong>Nombre</strong>
+								<strong>CBU</strong>
 							</div>
 							<div class="col-5">
-								<input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" value="{{ $instructor->name }}" name="name" />
-							    @if ($errors->has('name'))
+								<input type="text" class="form-control{{ $errors->has('cbu') ? ' is-invalid' : '' }}" value="{{ old('cbu', $bankAccount ? $bankAccount->cbu : '') }}" name="cbu" @if($formDisabled) readonly="" @endif />
+							    @if ($errors->has('cbu'))
 							        <span class="invalid-feedback" role="alert">
-							            <strong>{{ $errors->first('name') }}</strong>
+							            <strong>{{ $errors->first('cbu') }}</strong>
 							        </span>
 							    @endif
 							</div>
 						</div>
-
 						<div class="row add_bottom_30">
 							<div class="col-6">
-								<strong>Apellido</strong>
+								<strong>Nombre del titular</strong>
 							</div>
 							<div class="col-5">
-								<input type="text" class="form-control{{ $errors->has('surname') ? ' is-invalid' : '' }}" value="{{ $instructor->surname }}" name="surname" />
-							    @if ($errors->has('surname'))
+								<input type="text" class="form-control{{ $errors->has('holder_name') ? ' is-invalid' : '' }}" value="{{ old('holder_name', $bankAccount ? $bankAccount->holder_name : '') }}" name="holder_name" @if($formDisabled) readonly="" @endif />
+							    @if ($errors->has('holder_name'))
 							        <span class="invalid-feedback" role="alert">
-							            <strong>{{ $errors->first('surname') }}</strong>
+							            <strong>{{ $errors->first('holder_name') }}</strong>
 							        </span>
 							    @endif
 							</div>
 						</div>
-
 						<div class="row add_bottom_30">
 							<div class="col-6">
-								<strong>Número de teléfono</strong>
+								<strong>Número de documento</strong>
 							</div>
 							<div class="col-5">
-								<input type="text" class="form-control{{ $errors->has('phone_number') ? ' is-invalid' : '' }}" value="{{ $instructor->phone_number }}" name="phone_number" />
-							    @if ($errors->has('phone_number'))
+								<input type="text" class="form-control{{ $errors->has('document_number') ? ' is-invalid' : '' }}" value="{{ old('document_number', $bankAccount ? $bankAccount->document_number : '') }}" name="document_number" @if($formDisabled) readonly="" @endif />
+							    @if ($errors->has('document_number'))
 							        <span class="invalid-feedback" role="alert">
-							            <strong>{{ $errors->first('phone_number') }}</strong>
+							            <strong>{{ $errors->first('document_number') }}</strong>
+							        </span>
+							    @endif
+							</div>
+						</div>
+						<div class="row add_bottom_30">
+							<div class="col-6">
+								<strong>CUIL/CUIT</strong>
+							</div>
+							<div class="col-5">
+								<input type="text" class="form-control{{ $errors->has('cuil_cuit') ? ' is-invalid' : '' }}" value="{{ old('cuil_cuit', $bankAccount ? $bankAccount->cuil_cuit : '') }}" name="cuil_cuit" @if($formDisabled) readonly="" @endif />
+							    @if ($errors->has('cuil_cuit'))
+							        <span class="invalid-feedback" role="alert">
+							            <strong>{{ $errors->first('cuil_cuit') }}</strong>
 							        </span>
 							    @endif
 							</div>
@@ -67,24 +90,7 @@
 
 					</div>
 					
-					<h4 class="add_bottom_30">Mi perfil</h4>
-
-					<div class="more_padding_left add_bottom_60">
-						<div class="row add_bottom_30">
-							<div class="col-6">
-								<strong>Cuenta de instagram</strong>
-							</div>
-							<div class="col-5">
-								<input type="text" class="form-control{{ $errors->has('instagram_username') ? ' is-invalid' : '' }}" value="{{ $instructor->instagram_username }}" name="instagram_username" />
-							    @if ($errors->has('instagram_username'))
-							        <span class="invalid-feedback" role="alert">
-							            <strong>{{ $errors->first('instagram_username') }}</strong>
-							        </span>
-							    @endif
-							</div>
-						</div>
-					</div>
-
+					@if(!$formDisabled)
 					<div class="row">
 						<div class="col-11">
 							<div style="text-align: right;">
@@ -92,7 +98,9 @@
 							</div>
 						</div>	
 					</div>
+					@endif
 				</form>
+
 			</div>
 
 		</div>

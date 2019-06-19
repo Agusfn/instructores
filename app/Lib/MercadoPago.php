@@ -2,9 +2,7 @@
 
 namespace App\Lib;
 
-
 use MercadoPago\SDK;
-use MercadoPago\Payment;
 
 class MercadoPago
 {
@@ -18,8 +16,15 @@ class MercadoPago
 	const ACCESS_TOKEN_SANDBOX = "TEST-6705395561099232-052309-1580f7548ef0b8472cd109ec6e86c361-92382327";
 
 	// These production keys must be enabled first
-	const PUBLIC_KEY_PRODUCTION = "TEST-4dc699b4-f988-46cf-945d-48c4ec565ef9";
-	const ACCESS_TOKEN_PRODUCTION = "TEST-6705395561099232-052309-1580f7548ef0b8472cd109ec6e86c361-92382327";
+	const PUBLIC_KEY_PRODUCTION = "APP_USR-0117a576-7259-494a-84dd-4e66bcfda82d";
+	const ACCESS_TOKEN_PRODUCTION = "APP_USR-6705395561099232-052309-438a3e46ae113c86f51ef3313de0ece3-92382327";
+
+
+	/**
+	 * The text that will be displayed on the card statement.
+	 */
+	const STATEMENT_DESCRIPTOR = "INSTRUCTORES";
+
 
 
 	private static $initialized = false;
@@ -59,11 +64,63 @@ class MercadoPago
 	 */
 	public static function getAccessToken() 
 	{
-		if(config("app.env") == "production")
+		if(!config("app.env") == "production")
 			return self::ACCESS_TOKEN_PRODUCTION;
 		else
 			return self::ACCESS_TOKEN_SANDBOX;
 	}
+
+
+
+	public static function createPayment($cardToken, $issuerId, $payMethodId, $installments, $total, $description, $payer, $extReference)
+	{
+		self::initialize();
+
+	    $payment = new \MercadoPago\Payment();
+	    $payment->transaction_amount = $total;
+	    $payment->token = $cardToken;
+	    $payment->description = $description;
+	    $payment->statement_descriptor = self::STATEMENT_DESCRIPTOR;
+	    $payment->installments = $installments;
+	    $payment->external_reference = $extReference;
+	    $payment->payment_method_id = $payMethodId;
+	    
+	    if($issuerId) {
+	    	$payment->issuer_id = $issuerId;
+	    }
+	    
+	    $payment->payer = $payer;
+
+	    $payment->save();
+
+	    return $payment;
+	}
+
+
+
+	/**
+	 * Simple helper to make the payer array that MP API expects.
+	 */
+	public static function payerArray($email, $name, $surname)
+	{
+		return array(
+	    	"first_name" => $name,
+	    	"last_name" => $surname,
+	    	"email" => $email
+	    );
+	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	/**
@@ -73,7 +130,7 @@ class MercadoPago
 	 * @param  string $redirectUrl
 	 * @return string
 	 */
-	public static function marketplaceAssociationUrl($redirUrlParams)
+	/*public static function marketplaceAssociationUrl($redirUrlParams)
 	{
 		// redirect uri must be within https://instructores.com.ar. So to test this, after being redirected to fake url in production site,
 		// the first part of the url should be replaced with the test/local hostname.
@@ -84,7 +141,7 @@ class MercadoPago
 		
 
 		return "https://auth.mercadopago.com.ar/authorization?client_id=".self::APP_ID."&response_type=code&platform_id=mp&redirect_uri=".urlencode($redirectUrl);
-	}
+	}*/
 
 
 
@@ -97,7 +154,7 @@ class MercadoPago
 	 * @param string 	$urlParams
 	 * @return array|false
 	 */
-	public static function processMarketplaceAssociation($authCode, $urlParams)
+	/*public static function processMarketplaceAssociation($authCode, $urlParams)
 	{
 		self::initialize();
 
@@ -128,12 +185,12 @@ class MercadoPago
 			return false;
 		}
 
-	}
+	}*/
 
 
 
 
-	public static function makeMarketplacePayment($itemName, $externalRef, $total, $payer, $cardToken, $payMethodId, $installments, $issuerId = null)
+	/*public static function makeMarketplacePayment($itemName, $externalRef, $total, $payer, $cardToken, $payMethodId, $installments, $issuerId = null)
 	{
 		self::initialize();
 
@@ -155,12 +212,12 @@ class MercadoPago
 	    // Print the payment status
 	    echo $payment->status;
 
-	}
+	}*/
 
 
 
 
-	public static function testAdvPayment()
+	/*public static function testAdvPayment()
 	{
 		self::initialize();
 
@@ -203,6 +260,7 @@ class MercadoPago
 		$response = SDK::post("/v1/advanced_payments?access_token=".self::getAccessToken(), $payload);
 
 		dump($response);
-	}
+	}*/
+
 
 }

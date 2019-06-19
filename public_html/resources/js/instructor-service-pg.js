@@ -173,8 +173,8 @@ $(document).ready(function() {
 	
 	$("#btn_submit_range").click(function() {
 
-		/*if(!validate_range_form())
-			return;*/
+		if(!validate_range_form())
+			return;
 
 		var date_start = $("#date_start").val();
 		var date_end = $("#date_end").val();
@@ -241,6 +241,9 @@ $(document).ready(function() {
 
 			beforeSend: function() {
 				disable_range_form_btn(button);
+			},
+			complete: function() {
+				enable_range_form_btn(button);
 			},
 			success: function(response) {
 				console.log(response); // debug

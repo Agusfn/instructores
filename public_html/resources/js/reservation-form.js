@@ -1,4 +1,4 @@
-var doSubmit = false;
+//var doSubmit = false;
 var installmentInfo;
 
 $(document).ready(function() {
@@ -18,14 +18,11 @@ $(document).ready(function() {
 		if(!validateForm())
 			return;
 
-        $("#payment-form").submit();
-		/*Mercadopago.createToken($("#payment-form"), function(status, response) {
-
-			console.log(response);
+		Mercadopago.createToken($("#payment-form"), function(status, response) {
 
 			if (status != 200 && status != 201) {
 		        if(typeof response.cause != "undefined")
-		        	displayCardErrors(response.cause);
+		        	displayCardError(response.cause);
 		        else
 		        	alert("Error obteniendo autorización de tarjeta.");
 
@@ -40,12 +37,14 @@ $(document).ready(function() {
 	       $("input[name=card_token]").val(response.id);
 
 	       $("#payment-form").submit();
-		});*/
+		});
 
 	});
 
 
-
+    /**
+     * Update total breakdown with MercadoPago interests if chosen with installments.
+     */
 	$("#installments").change(function() {
 		
 		var installment_amount = $(this).val();
@@ -60,8 +59,6 @@ $(document).ready(function() {
 
 			for(let info of installmentInfo) {
 				
-				console.log(info);
-
 				if(info.installments == installment_amount) {
 					$("#installment-number").text(info.installments);
 					$("#interest-amt").text( "$" + round(info.total_amount - $("#amount").val()) );
@@ -82,7 +79,7 @@ $(document).ready(function() {
 /**
  * Displays card errors returned from MP SDK's createToken()
  */
-function displayCardErrors(causes)
+function displayCardError(causes)
 {
 	causes.forEach(function(cause) {
 
@@ -109,28 +106,25 @@ function displayCardErrors(causes)
 }
 
 
-// To do: display errors properly
+
 function validateForm()
 {
 	var errors = [];
 
-	if($("input[name=phone]").val() == "")
-		errors.push("Teléfono inválido");
+	if($('input[name=phone]').length && $("input[name=phone]").val() == "")
+		errors.push("Teléfono inválido.");
 
-	if($("input[name=address_street]").val() == "")
-		errors.push("Calle inválida");
-
-	if($("input[name=address_number]").val() == "")
-		errors.push("Altura calle inválida");
+	if($("input[name=address]").val() == "")
+		errors.push("Dirección de facturación inválida.");
 
 	if($("input[name=address_city]").val() == "")
-		errors.push("Ciudad inválida");
+		errors.push("Ciudad inválida.");
 
 	if($("input[name=address_state]").val() == "")
-		errors.push("Provincia inválida");
+		errors.push("Provincia inválida.");
 
 	if($("input[name=address_postal_code]").val() == "")
-		errors.push("Código postal inválido");
+		errors.push("Código postal inválido.");
 
 
 	if(errors.length == 0) 
@@ -171,7 +165,8 @@ function getBin() {
 function clearOptions() {
     var bin = getBin();
     if (bin.length == 0) {
-        document.querySelector("#issuer").style.display = 'none';
+        $("#issuer").parent().hide();
+        //document.querySelector("#issuer").style.display = 'none';
         document.querySelector("#issuer").innerHTML = "";
 
         var selectorInstallments = document.querySelector("#installments"),
@@ -251,7 +246,8 @@ function setPaymentMethodInfo(status, response) {
             Mercadopago.getIssuers(response[0].id, showCardIssuers);
             addEvent(document.querySelector('#issuer'), 'change', setInstallmentsByIssuerId);
         } else {
-            document.querySelector("#issuer").style.display = 'none';
+            //document.querySelector("#issuer").style.display = 'none';
+            $("#issuer").parent().hide();
             document.querySelector("#issuer").options.length = 0;
         }
     }
@@ -275,7 +271,9 @@ function showCardIssuers(status, issuers) {
     }
     issuersSelector.appendChild(fragment);
     issuersSelector.removeAttribute('disabled');
-    document.querySelector("#issuer").removeAttribute('style');
+
+    $("#issuer").parent().show();
+    //document.querySelector("#issuer").removeAttribute('style');
 };
 
 function setInstallmentsByIssuerId(status, response) {
@@ -295,9 +293,6 @@ function setInstallmentsByIssuerId(status, response) {
 
 function setInstallmentInfo(status, response) {
 
-	installmentInfo = response[0].payer_costs;
-	console.log(response);
-
     var selectorInstallments = document.querySelector("#installments"),
         fragment = document.createDocumentFragment();
 
@@ -306,6 +301,7 @@ function setInstallmentInfo(status, response) {
     if (response.length > 0) {
         var option = new Option("Elegir...", '-1'),
             payerCosts = response[0].payer_costs;
+        installmentInfo = payerCosts;
 
         fragment.appendChild(option);
         for (var i = 0; i < payerCosts.length; i++) {

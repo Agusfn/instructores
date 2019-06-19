@@ -29,12 +29,21 @@ class CreateReservationsTable extends Migration
             $table->decimal('price_per_block', 8, 2);
             $table->integer('adults_amount');
             $table->integer('kids_amount');
+
             $table->text('json_breakdown');
             $table->decimal('final_price', 8, 2);
             $table->decimal('instructor_pay', 8, 2);
             $table->decimal('service_fee', 8, 2);
-            $table->decimal('payment_proc_fee', 8, 2)->nullable();
-            $table->unsignedBigInteger('instructor_wallet_movement_id')->nullable(); // constraint is made when wallet movements table is done
+            $table->decimal('payment_proc_fee', 8, 2); // guessed before payment is excecuted.
+            $table->decimal('mp_financing_cost', 8, 2)->nullable();
+            $table->integer('mp_installment_amt')->nullable();
+
+            $table->string('billing_address');
+            $table->string('billing_city');
+            $table->string('billing_state');
+            $table->string('billing_postal_code');
+            $table->string('billing_country_code');
+            $table->unsignedBigInteger('instructor_wallet_movement_id')->nullable();
             $table->text('confirm_message')->nullable();
             $table->text('reject_message')->nullable();
 
@@ -44,6 +53,7 @@ class CreateReservationsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('instructor_id')->references('id')->on('instructors');
             $table->foreign('instructor_service_id')->references('id')->on('instructor_services');
+            $table->foreign('billing_country_code')->references('code_alpha3')->on('countries');
         });
     }
 

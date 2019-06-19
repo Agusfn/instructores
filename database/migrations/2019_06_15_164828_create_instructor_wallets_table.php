@@ -16,7 +16,7 @@ class CreateInstructorWalletsTable extends Migration
         Schema::create('instructor_wallets', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('instructor_id');
-            $table->decimal('balance', 8, 2);
+            $table->decimal('balance', 8, 2)->default(0);
             $table->string('currency_code');
             $table->timestamps();
 

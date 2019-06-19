@@ -63,9 +63,7 @@
 							<td>{{ $instructor->name.' '.$instructor->surname }}</td>
 							<td>{{ $instructor->email }}</td>
 							<td>
-								@if(!$instructor->hasVerifiedEmail())
-									<span class="badge badge-secondary">Pendiente verif email</span>
-								@elseif(!$instructor->isApproved())
+								@if(!$instructor->isApproved())
 									@if(!$instructor->approvalDocsSent())
 									<span class="badge badge-dark">Pendiente envío documentos</span>
 									@else
@@ -76,7 +74,13 @@
 								@endif
 							</td>
 							<td>{{ $instructor->reservations()->count() }}</td>
-							<td>${{ $instructor->balance }} ARS</td>
+							<td>
+								@if($instructor->isApproved())
+								${{ round($instructor->wallet->balance, 2) }} ARS
+								@else
+								-
+								@endif
+							</td>
 						</tr>
 						@endforeach
 					</tbody>

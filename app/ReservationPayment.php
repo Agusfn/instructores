@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Lib\PaymentMethods;
 use Illuminate\Database\Eloquent\Model;
 
 class ReservationPayment extends Model
@@ -17,6 +18,13 @@ class ReservationPayment extends Model
 
 
 	protected $dates = ["paid_at"];
+
+
+
+	public function mercadopagoPayment()
+	{
+		return $this->hasOne("App\MercadopagoPayment");
+	}
 
 
 	public function isProcessing()
@@ -43,5 +51,18 @@ class ReservationPayment extends Model
 	{
 		return $this->status == self::STATUS_CHARGEBACKED;
 	}			
+
+
+	/**
+	 * Check if the method of this payment is Mercadopago.
+	 * @return boolean
+	 */
+	public function isMercadoPago()
+	{
+		return $this->payment_method_code == PaymentMethods::CODE_MERCADOPAGO;
+	}
+
+
+
 
 }

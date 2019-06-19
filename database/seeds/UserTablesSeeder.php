@@ -49,9 +49,17 @@ class UserTablesSeeder extends Seeder
             'approved_at' => '2019-05-13 12:05:21',
             'identification_type' => 'dni',
             'identification_number' => '12345678',
-            'level' => 5,
-        	"balance" => 0
+            'level' => 5        
         ]);
+
+
+        // Agregamos billetera del instructor
+        DB::table('instructor_wallets')->insert([
+            "instructor_id" => 1,
+            "balance" => 0,
+            "currency_code" => "ARS"
+        ]);
+
 
 
         DB::table('instructor_services')->insert([

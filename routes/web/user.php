@@ -31,6 +31,6 @@ Route::post("panel/cuenta/img_perfil", "User\AccountDetailsController@changeProf
 Route::post("panel/cuenta/modificar", "User\AccountDetailsController@editAccount");
 
 
-
+// Reservations
 Route::get("panel/reservas", "User\ReservationsController@showList")->name("user.reservations");
 Route::get("panel/reservas/{reservation_code}", "User\ReservationsController@details")->name("user.reservation");

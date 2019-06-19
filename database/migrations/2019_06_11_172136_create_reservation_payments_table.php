@@ -16,13 +16,14 @@ class CreateReservationPaymentsTable extends Migration
         Schema::create('reservation_payments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('reservation_id');
-            $table->string('status');
+            $table->string('status'); // MP status or 'error'.
             $table->datetime('paid_at')->nullable();
             $table->string('payment_method_code');
-            $table->unsignedBigInteger('mercadopago_payment_id'); // nullable after new pay methods
+            $table->unsignedBigInteger('mercadopago_payment_id'); // nullable after new pay methods are developed
             $table->decimal('total_amount', 8, 2);
             $table->decimal('payment_provider_fee', 8, 2)->nullable();
-            $table->decimal('net_amount', 8, 2)->nullable();
+            $table->decimal('financing_costs', 8, 2)->nullable();
+            $table->decimal('net_received', 8, 2)->nullable();
             $table->string('currency_code');
             $table->timestamps();
 

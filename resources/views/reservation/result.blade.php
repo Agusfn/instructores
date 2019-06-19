@@ -25,7 +25,7 @@
 							<a href="cart-1.html" class="bs-wizard-dot"></a>
 						</div>
 
-						<div class="bs-wizard-step @if($payment->isFailed()) disabled @endif">
+						<div class="bs-wizard-step @if($lastPayment->isFailed()) disabled @endif">
 							<div class="text-center bs-wizard-stepnum">Pago</div>
 							<div class="progress">
 								<div class="progress-bar"></div>
@@ -45,16 +45,52 @@
 					<div id="confirm">
 						@if($reservation->isPendingConfirmation())
 							<h4>Se completó tu reserva!</h4>
-							<p>Te enviamos un email con los detalles de tu reserva. Gracias por elegirnos.</p>
+							<p>Te enviamos un email con los detalles de tu reserva, también podés verla haciendo <a href="{{ route('user.reservation', $reservation->code) }}">click acá</a>.<br/>
+							Gracias por elegirnos.</p>
 						@elseif($reservation->isPaymentPending())
-							@if($payment->status == App\ReservationPayment::STATUS_PROCESSING)
+							@if($lastPayment->isProcessing())
 							<h4><i class="far fa-clock"></i>&nbsp;&nbsp;&nbsp;El pago se está procesando</h4>
-							<p>Te notificaremos por e-mail cuando se haya completado.</p>
-							@elseif($payment->status == App\ReservationPayment::STATUS_FAILED)
-							<h4>El pago no pudo completarse</h4>
-							<!-- Detallar error!!! -->
-							<p>Hubo un error realizando el pago. <a href="">Intentalo nuevamente</a>.<br/>
-							La clase quedará reservada por 24horas.</p>
+							<p>
+								Te notificaremos por e-mail cuando se haya completado dentro de las próx. 48 hs.<br/>
+								También podés ver el estado del mismo haciendo <a href="{{ route('user.reservation', $reservation->code) }}">click acá</a>.
+							</p>
+							@elseif($lastPayment->isFailed())
+								<h4>El pago no pudo completarse</h4>
+								<p>
+									@if($lastPayment->isMercadoPago())
+
+										@php($detail = $lastPayment->mercadopagoPayment->status_detail)
+										
+										@if($detail == 'cc_rejected_bad_filled_card_number')
+											Revisa el número de la tarjeta.
+										@elseif($detail == 'cc_rejected_bad_filled_date')
+											Revisa la fecha de vencimiento.
+										@elseif($detail == 'cc_rejected_bad_filled_other')
+											Alguno de los datos de la tarjeta es incorrecto.
+										@elseif($detail == 'cc_rejected_bad_filled_security_code')
+											Revisa el código de seguridad.
+										@elseif($detail == 'cc_rejected_call_for_authorize')
+											No se pudo procesar el pago, llama a {{ ucfirst($lastPayment->mercadopagoPayment->payment_method_id) }} para autorizarlo.
+										@elseif($detail == 'cc_rejected_card_disabled')
+											La tarjeta no está activada. Llama a {{ ucfirst($lastPayment->mercadopagoPayment->payment_method_id) }} para activarla.
+										@elseif($detail == 'cc_rejected_duplicated_payment')
+											Este pago está duplicado, utiliza otro medio de pago.
+										@elseif($detail == 'cc_rejected_insufficient_amount')
+											La tarjeta no tiene fondos suficientes.
+										@elseif($detail == 'cc_rejected_invalid_installments')
+											{{ ucfirst($lastPayment->mercadopagoPayment->payment_method_id) }} no procesa la cantidad de cuotas seleccionadas.
+										@elseif($detail == 'cc_rejected_max_attempts')
+											Llegaste al límite de intentos permitidos. Utiliza otra tarjeta.
+										@elseif($detail == 'cc_rejected_other_reason')
+											{{ ucfirst($lastPayment->mercadopagoPayment->payment_method_id) }} no procesó el pago.
+										@else
+											No se pudo procesar el pago.
+										@endif
+
+									@endif
+									<a href="{{ route('reservation.retry-payment', $reservation->code) }}">Intentalo nuevamente</a>.<br/>
+									La reserva se mantendrá por 24 horas.
+								</p>
 							@endif
 						@endif
 					</div>

@@ -10,7 +10,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
 
     use Notifiable, HasProfilePicture;
@@ -62,10 +62,10 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-    public function sendWelcomeAndVerificationEmail()
+    /*public function sendWelcomeAndVerificationEmail()
     {
         return Mail::to($this)->send(new UserWelcomeEmail($this));
-    }
+    }*/
 
 
 
