@@ -1,11 +1,19 @@
 	<header class="header menu_fixed">
 		<div id="preloader"><div data-loader="circle-side"></div></div><!-- /Page Preload -->
 		<div id="logo">
+
 			<a href="{{ route('home') }}">
 				<img src="" width="150" height="36" data-retina="true" alt="" class="logo_normal">
 				<img src="" width="150" height="36" data-retina="true" alt="" class="logo_sticky">
 			</a>
-		</div>
+		</div> 
+        
+                <div class="container" >  
+                <div class="col-lg-6 col-md-6 float-left" id="barraofertas" >                       
+                            <a id="ofertas" href="{{ route('become-instructor') }}" class="btn_1 rounded">¡Ofertas disponibles! Finalizan en: 05:40:03 Horas</a>
+                </div>
+                 </div>
+            
 		
 		<a href="#menu" class="btn_mobile">
 			<div class="hamburger hamburger--spin" id="hamburger">
@@ -16,6 +24,11 @@
 		</a>
 		<nav id="menu" class="main-menu">
 			<ul>
+
+				<li>
+					<span><a href="{{ route('user.login') }}">SOY INSTRUCTOR</a></span>
+				</li>
+
 				<li><span><a href="{{ route('faq') }}">PREGUNTAS FRECUENTES</a></span>
 				</li>
 				
@@ -53,5 +66,6 @@
 			</ul>
 		</nav>
 
+       
 
 	</header>
