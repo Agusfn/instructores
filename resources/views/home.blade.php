@@ -166,7 +166,7 @@
                     <a class="box_feat" id="contben">
                         <i class="pe-7s-headphones"></i>
                         <h3>Soporte por chat</h3>
-                        <p>Te brindamos servicio de soporte via chat 24/7 todo el año.</p>
+                        <p>Te brindamos servicio de soporte via chat 24/7.</p>
                     </a>
                 </div>
 
@@ -203,7 +203,7 @@
                          
                        <div class="row" id="bannerbox1">
 
-                        <div class="col-lg-5"> 
+                        <div class="col-lg-5" class="whatsapp"> 
                         <h5>Whatsapp </h5>
                         <h3>+54 9294 4305811</h3>
                        </div>
@@ -211,9 +211,9 @@
                        
                     
                      </div>
-
+                                <!--
                                 <div class="col-lg-6 col-md-12 offset-0 float-left">
-            <div class="rev-content">
+                                      <div class="rev-content">
                                         <div class="rating">
                                             <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i>
                                         </div>
@@ -227,7 +227,8 @@
                                         </div>
                                     </div>
             
-            </div>  
+                                   </div> 
+                                   --> 
 
 
 

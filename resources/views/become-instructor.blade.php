@@ -6,11 +6,11 @@
         
 
         
-        <div class="container margin_80_55">
+        <div class="container">
             <div class="main_title_2">
                 <span><em></em></span>
-                <h2>Por qué elegirnos</h2>
-                <p>Brindamos confianza</p>
+                <h2></h2>
+                <p></p>
             </div>
             <div class="row">
                 <div class="col-lg-4 col-md-6">
@@ -58,91 +58,27 @@
                 </div>
             </div>
             <!--/row-->
-        </div>      
-                
-
-        
-                
-            <hr class="large">
-        </div>
-        <!-- /container -->
-        
-        <div class="container-fluid margin_30_95 pl-lg-5 pr-lg-5">
-            <section class="add_bottom_45">
-                <div class="main_title_3">
-                
-                    <h2>Testimonios</h2>
-                    <p></p>
-                </div>
-                <div class="row">
-                    <div class="col-xl-3 col-lg-6 col-md-6">
-                        <a href="#" class="grid_item">
-                            <figure>
-                                <div class="score"><strong>8.9</strong></div>
-                                <img src="{{ asset('resources/img/hotel_1.jpg') }}" class="img-fluid" alt="">
-                                <div class="info">
-                                    <div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div>
-                                    <h3></h3>
-                                </div>
-                            </figure>
-                        </a>
-                    </div>
-                
-                
-                    <!-- /grid_item -->
-                    <div class="col-xl-3 col-lg-6 col-md-6">
-                        <a href="#" class="grid_item">
-                            <figure>
-                                <div class="score"><strong>7.0</strong></div>
-                                <img src="{{ asset('resources/img/hotel_3.jpg') }}" class="img-fluid" alt="">
-                                <div class="info">
-                                    <div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div>
-                                    <h3></h3>
-                                </div>
-                            </figure>
-                        </a>
-                    </div>
-                    <!-- /grid_item -->
-                    <div class="col-xl-3 col-lg-6 col-md-6">
-                        <a href="#" class="grid_item">
-                            <figure>
-                                <div class="score"><strong>8.9</strong></div>
-                                <img src="{{ asset('resources/img/hotel_4.jpg') }}" class="img-fluid" alt="">
-                                <div class="info">
-                                    <div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div>
-                                    <h3></h3>
-                                </div>
-                            </figure>
-                        </a>
-                    </div>
-                    <!-- /grid_item -->
-                </div>
-                <!-- /row -->
-                <a href="#"><strong> <i class="arrow_carrot-right"></i></strong></a>
-            </section>
-            
-                    
-                
-            
-        </div>
-        <!-- /container -->
-
-        <!-- /bg_color_1 -->
-
-        <div class="call_section">
-            <div class="container clearfix">
+              <div class="container clearfix">
                 <div class="col-lg-5 col-md-6 float-right wow" data-wow-offset="250">
                     <div class="block-reveal">
                         <div class="block-vertical"></div>
                         <div class="box_1">
                             {{--<a href="{{ route('instructor.register') }}" class="btn_1 rounded">Registrarse</a>--}}
-                            <a href="{{ route('instructor.login') }}" class="btn_1 rounded">Iniciar sesión</a>
+                            <a href="{{ route('instructor.login') }}" class="btn_1 rounded">Registrarse</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!--/call_section-->
+        </div>      
+  
+        <!-- /container -->
+        
+       
+
+        <!-- /bg_color_1 -->
+
+        
+          
 @endsection
 
 
