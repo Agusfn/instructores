@@ -47,6 +47,8 @@
 
 				<h4 class="add_bottom_30">Reserva #{{ $reservation->code }}</h4>
 
+				@include('layouts.errors')
+
 				<div class="row">
 
 					<div class="col-md-7">

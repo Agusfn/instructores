@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Instructor;
 
 use App\Reservation;
+use App\Lib\MercadoPago;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -86,7 +87,7 @@ class ReservationsController extends Controller
 		]);
 		$reservation->save();
 
-		// send email to user
+		// <send email to user>
 
 
 		return redirect()->route("instructor.reservation", $reservation_code);
@@ -110,18 +111,17 @@ class ReservationsController extends Controller
 
 		$reservation = $instructor->reservations()->withCode($reservation_code)->first();
 
-		if(!$reservation)
+		if(!$reservation || !$reservation->isPendingConfirmation())
 			return redirect()->route("instructor.reservations");
 
 
-		// reject
-		$reservation->fill([
-			"status" => Reservation::STATUS_REJECTED,
-			"reject_message" => $request->reject_reason
-		]);
-		$reservation->save();
+		if(!$reservation->lastPayment()->refund())
+			return redirect()->back()->withErrors("Ha ocurrido un error intentando reembolsar el pago, contacta a soporte.");
 
-		// send email to user
+		$reservation->reject($request->reject_reason);
+
+
+		// <send email to user>
 		
 
 		return redirect()->route("instructor.reservation", $reservation_code);

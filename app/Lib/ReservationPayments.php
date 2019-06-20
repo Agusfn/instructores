@@ -65,7 +65,7 @@ class ReservationPayments
 		return $reservationPayment;
 	}
 
-
+	// Some of these created from api data or update from api data methods can be put inside their respective entity class
 
 	/**
 	 * Create a MercadopagoPayment entity out of a SUCCESSFUL response (payment may fail or not) of mercadopago api

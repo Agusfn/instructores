@@ -168,6 +168,38 @@ class Reservation extends Model
     }
 
 
+    public function isPaymentPending()
+    {
+        return $this->status == self::STATUS_PAYMENT_PENDING;
+    }
+
+    public function isPendingConfirmation()
+    {
+        return $this->status == self::STATUS_PENDING_CONFIRMATION;
+    }
+
+    public function isFailed()
+    {
+        return $this->status == self::STATUS_PAYMENT_FAILED;
+    }
+
+    public function isRejected()
+    {
+        return $this->status == self::STATUS_REJECTED;
+    }
+
+    public function isConfirmed()
+    {
+        return $this->status == self::STATUS_CONFIRMED;
+    }
+
+    public function isCanceled() 
+    {
+        return $this->status == self::STATUS_CANCELED;
+    }
+
+
+
     /**
      * Get the reserved time blocks that span this reservation.
      * @return int[]
@@ -213,39 +245,6 @@ class Reservation extends Model
 
 
 
-    public function isPaymentPending()
-    {
-        return $this->status == self::STATUS_PAYMENT_PENDING;
-    }
-
-    public function isPendingConfirmation()
-    {
-        return $this->status == self::STATUS_PENDING_CONFIRMATION;
-    }
-
-    public function isFailed()
-    {
-        return $this->status == self::STATUS_PAYMENT_FAILED;
-    }
-
-    public function isRejected()
-    {
-        return $this->status == self::STATUS_REJECTED;
-    }
-
-    public function isConfirmed()
-    {
-        return $this->status == self::STATUS_CONFIRMED;
-    }
-
-    public function isCanceled() 
-    {
-        return $this->status == self::STATUS_CANCELED;
-    }
-
-
-
-
     /**
      * Called when its payment has been completed. It updates the reservation data.
      * @return [type] [description]
@@ -271,6 +270,20 @@ class Reservation extends Model
         }
     }
 
+
+    /**
+     * Reject a reservation and save it.
+     * @param  string $reason
+     * @return null
+     */
+    public function reject($reason)
+    {
+        $this->fill([
+            "status" => self::STATUS_REJECTED,
+            "reject_message" => $reason
+        ]);
+        $this->save();
+    }
 
 
 

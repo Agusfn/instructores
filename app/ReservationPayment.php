@@ -75,6 +75,30 @@ class ReservationPayment extends Model
 	}
 
 
+	/**
+	 * Refund the payment.
+	 * @return boolean
+	 */
+	public function refund()
+	{
+		if(!$this->isSuccessful())
+			return false;
+
+		if($this->isMercadoPago()) {
+
+			if(!$this->mercadopagoPayment->refund())
+				return false;
+
+			$this->status = self::STATUS_REFUNDED;
+			$this->save();
+			return true;
+		}
+		else {
+			return false;
+		}
+
+	}
+
 
 
 }

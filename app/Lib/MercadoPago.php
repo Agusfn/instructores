@@ -2,6 +2,7 @@
 
 namespace App\Lib;
 
+use Log;
 use MercadoPago\SDK;
 
 class MercadoPago
@@ -82,6 +83,31 @@ class MercadoPago
 
 		return \MercadoPago\Payment::find_by_id($paymentId);
 	}
+
+
+
+	/**
+	 * Refund a payment totally. Must be done to approved payments within 360 days.
+	 * @param  int $paymentId 	id of the mercadopago's payment entity.
+	 * @return boolean
+	 */
+	public static function refundPayment($paymentId)
+	{
+		self::initialize();
+
+		$refund = new \MercadoPago\Refund();
+		$refund->payment_id = $paymentId;
+		
+		if($refund->save()) {
+			return true;
+		}
+		else {
+			Log::notice("Refund to MP Payment id ".$paymentId." could not be done. Message: ".$refund->error->message." (code ".$refund->error->causes[0]->code.")");
+			return false;
+		}
+
+	}
+
 
 
 	/**
