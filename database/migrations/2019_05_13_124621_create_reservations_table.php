@@ -35,8 +35,8 @@ class CreateReservationsTable extends Migration
             $table->decimal('instructor_pay', 8, 2);
             $table->decimal('service_fee', 8, 2);
             $table->decimal('payment_proc_fee', 8, 2); // guessed before payment is excecuted.
-            $table->decimal('mp_financing_cost', 8, 2)->nullable();
-            $table->integer('mp_installment_amt')->nullable();
+            $table->decimal('mp_financing_cost', 8, 2)->nullable(); // not assigned until payment is successful
+            $table->integer('mp_installment_amt')->nullable(); // not assigned until payment is successful
 
             $table->string('billing_address');
             $table->string('billing_city');

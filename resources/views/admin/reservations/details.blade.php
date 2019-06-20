@@ -3,9 +3,10 @@
 
 @section('custom-css')
 <style type="text/css">
-	.table-borderless td {
-		border-top: 0;
+	.table-borderless td, .table-borderless th {
+		border: 0 !important;
 	}
+
 	.profile-pic {
 		width: 120px;
 		height: 120px;
@@ -107,65 +108,90 @@
 					</div>
 					<div class="list_general">
 
-						@foreach($reservation->payments as $payment)
+						@foreach($reservation->payments()->newestsFirst()->get() as $payment)
 
-						@if(!$loop->first)
-						<hr>
-						@endif
-						
-						<div class="row" style="margin-bottom: 15px">
+							@if(!$loop->first)
+							<hr>
+							@endif
+							
 
-							<div class="col-md-3">
-								<strong>ID pago</strong><br>
-								{{ $payment->id }}
-							</div>
-							<div class="col-md-3">
-								<strong>Estado</strong><br>
-								<div style="font-size: 16px">
-									@if($payment->isProcessing())
-									<span class="badge badge-primary">Procesando</span>
-									@elseif($payment->isSuccessful())
-									<span class="badge badge-success">Exitoso</span>
-									@elseif($payment->isFailed())
-									<span class="badge badge-danger">Fallido</span>
-									@elseif($payment->isRefunded())
-									<span class="badge badge-info">Reembolsado</span>
-									@elseif($payment->isChargebacked())
-									<span class="badge badge-danger">Contracargado</span>
-									@endif
-								</div>
-							</div>
-							<div class="col-md-3">
-								<strong>Medio de pago</strong><br>
-								@if($payment->payment_method_code == App\Lib\PaymentMethods::CODE_MERCADOPAGO)
-								MercadoPago (tarj. crédito)
-								@endif
-							</div>
+							<table class="table table-borderless table-sm">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Fecha</th>
+										<th>Estado</th>
+										<th>Medio de pago</th>
+										<th>Cuotas</th>
+										<th>Total</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{{ $payment->id }}</td>
+										<td>{{ $payment->created_at->format('d/m/Y H:i') }}</td>
+										<td>
+											<div style="font-size: 16px">
+												@if($payment->isProcessing())
+												<span class="badge badge-primary">Procesando</span>
+												@elseif($payment->isSuccessful())
+												<span class="badge badge-success">Exitoso</span>
+												@elseif($payment->isFailed())
+												<span class="badge badge-danger">Fallido</span>
+												@elseif($payment->isRefunded())
+												<span class="badge badge-info">Reembolsado</span>
+												@elseif($payment->isChargebacked())
+												<span class="badge badge-danger">Contracargado</span>
+												@endif
+											</div>
+										</td>
+										<td>
+											@if($payment->isMercadoPago())
+												@if($payment->mercadopagoPayment->payment_method_id != null)
+													{{ ucfirst($payment->mercadopagoPayment->payment_method_id).' ...'.$payment->mercadopagoPayment->last_four_digits }} (MP)
+												@else
+													MercadoPago (T.C.)
+												@endif
+											@endif
+										</td>
+										<td>
+											@if($payment->isMercadoPago())
+												@if($payment->mercadopagoPayment->installment_amount != null)
+													{{ $payment->mercadopagoPayment->installment_amount }}
+												@else
+													-
+												@endif
+											@endif
+										</td>
+										<td>{{ round($payment->total_amount, 2).' '.$payment->currency_code }}</td>
+									</tr>
+								</tbody>
+							</table>
+							
+							
 
-							<div class="col-md-3">
-								<strong>Total</strong><br>
-								{{ round($payment->total_amount, 2).' '.$payment->currency_code }}
-							</div>
-						</div>
+							@if($payment->isSuccessful())
+							
+							<table class="table table-borderless table-sm">
+								<thead>
+									<tr>
+										<th>Fecha pago</th>
+										<th>Tarifa proc.</th>
+										<th>Interés finan.</th>
+										<th>Recibido neto</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>{{ $payment->paid_at->format('d/m/Y H:i') }}</td>
+										<td>{{ round($payment->payment_provider_fee, 2).' '.$payment->currency_code }}</td>
+										<td>{{ round($payment->financing_costs, 2).' '.$payment->currency_code }}</td>
+										<td>{{ round($payment->net_received, 2).' '.$payment->currency_code }}</td>
+									</tr>
+								</tbody>
+							</table>
 
-						@if($payment->isSuccessful())
-						<div class="row">
-
-							<div class="col-md-3">
-								<strong>Fecha pagado</strong><br>
-								{{ $payment->paid_at->format('d/m/Y H:i:s') }}
-							</div>
-							<div class="col-md-3">
-								<strong>Tarifa proc. pago</strong><br>
-								{{ round($payment->payment_provider_fee, 2).' '.$payment->currency_code }}
-							</div>
-							<div class="col-md-3">
-								<strong>Monto neto</strong><br>
-								{{ round($payment->net_amount, 2).' '.$payment->currency_code }}
-							</div>
-
-						</div>
-						@endif
+							@endif
 
 						@endforeach
 
@@ -210,7 +236,7 @@
 										<td></td>
 										<td></td>
 										<td></td>
-										<td>${{ round($reservation->final_price - $reservation->payment_proc_fee, 2) }}</td>
+										<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
 									</tr>
 								</tbody>
 
@@ -279,6 +305,13 @@
 
 
 						<hr>
+
+						@if($reservation->lastPayment()->isProcessing() && $reservation->lastPayment()->isMercadoPago() && $reservation->lastPayment()->mercadopagoPayment->installment_amount > 0)
+						<div class="alert alert-info">
+							La información del precio total con el costo financiero se actualizará una vez acreditado el pago.
+						</div>
+						@endif
+
 						<table class="table table-sm table-borderless price-details-table">
 							<tbody>
 								<tr>
@@ -289,6 +322,12 @@
 									<td>Tarifa servicio pagos</td>
 									<td>${{ round($reservation->payment_proc_fee, 2) }}</td>
 								</tr>
+								@if($reservation->mp_financing_cost > 0)
+								<tr>
+									<td>Financiación MercadoPago</td>
+									<td>${{ round($reservation->mp_financing_cost, 2) }}</td>
+								</tr>
+								@endif
 								<tr style="font-size: 18px">
 									<td>Total</td>
 									<td>${{ round($reservation->final_price, 2) }}</td>
@@ -296,21 +335,23 @@
 							</tbody>
 						</table>
 						<hr style="margin: 4px 0;">
-						<label style="margin-top: 15px; font-size: 17px; color:#444;">Composición total</label>
+						<label style="margin-top: 15px; font-size: 17px; color:#444;">Pago a instructor</label>
 						<table class="table table-sm table-borderless price-details-table">
 							<tbody>
 								<tr>
-									<td>Tarifa servicio pagos</td>
-									<td>${{ round($reservation->payment_proc_fee, 2) }}</td>
+									<td>Precio clases</td>
+									<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
 								</tr>
 								<tr>
-									<td>Comisión servicio ({{ round($reservation->service_fee / ($reservation->instructor_pay + $reservation->service_fee) * 100) }}% de precio clases)</td>
-									<td>${{ round($reservation->service_fee, 2) }}</td>
+									<td>Comisión servicio ({{ round($reservation->service_fee / ($reservation->instructor_pay + $reservation->service_fee) * 100) }}%)</td>
+									<td>-${{ round($reservation->service_fee, 2) }}</td>
 								</tr>
 								<tr>
 									<td>Pago instructor</td>
 									<td>${{ round($reservation->instructor_pay, 2) }}</td>
 								</tr>
+
+
 							</tbody>
 						</table>
 

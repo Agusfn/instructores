@@ -131,18 +131,25 @@
 									</div>
 									<div class="col-md-6">
 										<label>Medio de pago:</label><br/>
-
-										{{-- The client does not know that mercadopago processes the payment --}}
-
-										@if($payment->payment_method_code == App\Lib\PaymentMethods::CODE_MERCADOPAGO)
-										Tarjeta de crédito
+										@if($payment->isMercadoPago())
+										Tarj. de crédito - {{ ucfirst($payment->mercadopagoPayment->payment_method_id) }}
 										@endif
-
-									</div>								
+									</div>							
 								</div>
 
 								<div class="row" style="margin-top: 15px">
-									(Fecha de pago, tipo de tarjeta...)
+									@if(!$payment->isFailed() && !$payment->isProcessing())
+									<div class="col-md-6">
+										<label>Fecha pagado:</label><br/>
+										{{ $payment->paid_at->format('d/m/Y H:i') }}
+									</div>
+									@endif
+									@if($payment->isMercadoPago())
+									<div class="col-md-6">
+										<label>Cuotas:</label><br/>
+										{{ $payment->mercadopagoPayment->installment_amount }}
+									</div>	
+									@endif
 								</div>
 
 							</div>
@@ -187,7 +194,7 @@
 												<td></td>
 												<td></td>
 												<td></td>
-												<td>${{ round($reservation->final_price - $reservation->payment_proc_fee, 2) }}</td>
+												<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
 											</tr>
 										</tbody>
 									</table>
@@ -249,6 +256,12 @@
 											<td>Tarifa servicio pagos</td>
 											<td>${{ round($reservation->payment_proc_fee, 2) }}</td>
 										</tr>
+										@if($reservation->mp_financing_cost > 0)
+										<tr>
+											<td>Financiación MercadoPago</td>
+											<td>${{ round($reservation->mp_financing_cost, 2) }}</td>
+										</tr>
+										@endif
 										<tr style="font-size: 18px">
 											<td>Total</td>
 											<td>${{ round($reservation->final_price, 2) }}</td>

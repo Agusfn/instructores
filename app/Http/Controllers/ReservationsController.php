@@ -170,7 +170,7 @@ class ReservationsController extends Controller
 		]);
 
 
-		$reservPayment = ReservationPayments::processMpApiPayment(
+		$reservPayment = ReservationPayments::makeMpApiPayment(
 			$request->card_token,
 			$request->issuer,
 			$request->paymentMethodId,
@@ -179,22 +179,7 @@ class ReservationsController extends Controller
 			$reservation
 		);
 
-
-		if($reservPayment->isSuccessful()) {
-
-			$reservation->adjustPayProcessorFee($reservPayment->payment_provider_fee);
-
-			$reservation->fill([
-				"status" => Reservation::STATUS_PENDING_CONFIRMATION,
-				"final_price" => $reservPayment->total_amount,
-				"mp_financing_cost" => $reservPayment->financing_costs,
-				"mp_installment_amt" => $reservPayment->mercadopagoPayment->installment_amount
-			]);
-
-			$reservation->save();
-
-			// Send email
-		}
+		$reservation->updateStatusIfPaid();
 
 
 		// <Update instructor calendar availability>
@@ -244,20 +229,18 @@ class ReservationsController extends Controller
 		$user = Auth::user();
 		$reservation = $user->reservations()->withCode($reservationCode)->first();
 
-		if(!$reservation) {
+		if(!$reservation)
 			return redirect()->route("home");
-		}
 
-		if($reservation->isPaymentPending() && $reservation->lastPayment()->isFailed()) {
-			return view("reservation.retry-mp-payment")->with([
-				"user" => $user,
-				"reservation" => $reservation,
-				"countries" => Country::getNamesAndCodes()
-			]);
-		}
-		else
+		if(!$reservation->isPaymentPending() || !$reservation->lastPayment()->isFailed())
 			return redirect()->route("user.reservation", $reservationCode);
+		
 
+		return view("reservation.retry-mp-payment")->with([
+			"user" => $user,
+			"reservation" => $reservation,
+			"countries" => Country::getNamesAndCodes()
+		]);
 	}
 
 
@@ -277,9 +260,11 @@ class ReservationsController extends Controller
 		$user = Auth::user();
 		$reservation = $user->reservations()->withCode($reservationCode)->first();
 
-		if(!$reservation) {
+		if(!$reservation)
 			return redirect()->route("home");
-		}
+
+		if(!$reservation->isPaymentPending() || !$reservation->lastPayment()->isFailed())
+			return redirect()->route("user.reservation", $reservationCode);
 
 
 		$reservation->fill([
@@ -289,7 +274,7 @@ class ReservationsController extends Controller
 			"billing_postal_code" => $request->address_postal_code,
 			"billing_country_code" => $request->address_country,
 		]);
-
+		$reservation->save();
 
 		$reservPayment = ReservationPayments::processMpApiPayment(
 			$request->card_token,
@@ -300,23 +285,7 @@ class ReservationsController extends Controller
 			$reservation
 		);
 
-
-		if($reservPayment->isSuccessful()) {
-
-			$reservation->adjustPayProcessorFee($reservPayment->payment_provider_fee);
-			
-			$reservation->fill([
-				"status" => Reservation::STATUS_PENDING_CONFIRMATION,
-				"final_price" => $reservPayment->total_amount,
-				"mp_financing_cost" => $reservPayment->financing_costs,
-				"mp_installment_amt" => $reservPayment->mercadopagoPayment->installment_amount
-			]);
-
-			$reservation->save();
-
-			// Send email
-		}
-
+		$reservation->updateStatusIfPaid();
 
 		return redirect()->route("reservation.result", $reservation->code);
 	}

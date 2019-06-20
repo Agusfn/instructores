@@ -43,20 +43,21 @@
 							<td><a href="{{ url('instructor/panel/reservas/'.$reservation->code) }}"><i class="fa fa-search" aria-hidden="true"></i></a></td>
 							<td>{{ $reservation->code }}</td>
 							<td>
-								@if($reservation->status == App\Reservation::STATUS_PAYMENT_PENDING)
+								@if($reservation->isPaymentPending())
 								Pago pendiente
-								@elseif($reservation->status == App\Reservation::STATUS_PENDING_CONFIRMATION)
+								@elseif($reservation->isPendingConfirmation())
 								Pagada - confirmar
-								@elseif($reservation->status == App\Reservation::STATUS_PAYMENT_FAILED)
+								@elseif($reservation->isFailed())
 								Pago fallido
-								@elseif($reservation->status == App\Reservation::STATUS_REJECTED)
+								@elseif($reservation->isRejected())
 								Rechazada
-								@elseif($reservation->status == App\Reservation::STATUS_CONFIRMED)
+								@elseif($reservation->isConfirmed())
 								Confirmada
+								@elseif($reservation->isCanceled())
 								@endif
 								
 							</td>
-							<td>{{ $reservation->user->name.' '.$reservation->user->surname }}</td>
+							<td>{{ $reservation->user->name.' '.$reservation->user->surname[0].'.' }}</td>
 							<td>{{ $reservation->reserved_class_date->format('d/m') }}</td>
 							<td>{{ $reservation->reserved_time_start.'-'.$reservation->reserved_time_end.'hs' }}</td>
 							<td>{{ $reservation->adults_amount + $reservation->kids_amount }}</td>

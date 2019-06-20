@@ -51,7 +51,7 @@ class ReservationsController extends Controller
 		if(!$reservation)
 			return redirect()->route("instructor.reservations");
 
-		return view("instructor.reservation.details")->with([
+		return view("instructor.reservations.details")->with([
 			"reservation" => $reservation,
 			"payment" => $reservation->lastPayment()
 		]);

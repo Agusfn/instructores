@@ -247,6 +247,34 @@ class Reservation extends Model
 
 
     /**
+     * Called when its payment has been completed. It updates the reservation data.
+     * @return [type] [description]
+     */
+    public function updateStatusIfPaid()
+    {
+        $reservPayment = $this->lastPayment();
+
+        if($this->isPaymentPending() && $reservPayment->isSuccessful()) {
+
+            $this->adjustPayProcessorFee($reservPayment->payment_provider_fee);
+
+            $this->fill([
+                "status" => Reservation::STATUS_PENDING_CONFIRMATION,
+                "final_price" => $reservPayment->total_amount,
+                "mp_financing_cost" => $reservPayment->financing_costs,
+                "mp_installment_amt" => $reservPayment->mercadopagoPayment->installment_amount
+            ]);
+
+            $this->save();
+
+            // Send email / event
+        }
+    }
+
+
+
+
+    /**
      * In the reservation process, the Reservation is created and then the payment is excecuted and created.
      * After a payment is excecuted, the processing fee might be slightly different than the one predicted and saved into the reservation.
      * This method is to adjust and reflect that difference into the reservation, to keep storing real data. As the total remains the same, 
@@ -265,9 +293,13 @@ class Reservation extends Model
             $this->service_fee += $feeDifference;
 
             if($feeDifference < 0) // against
-                \Log::notice("MP fee difference of ".$feeDifference." ARS for reservation ".$this->code);
+                \Log::notice("Fee difference of ".$feeDifference." ARS for reservation ".$this->code);
         }
     }
+
+
+
+
 
 
 

@@ -65,7 +65,7 @@
 										@elseif($payment->isFailed())
 										<div>
 											No se pudo realizar el pago.<br>
-											<a href="">Reintentalo</a> dentro de las sgtes 24hs.
+											<a href="{{ route('reservation.retry-payment', $reservation->code) }}">Reintentalo</a> dentro de las sgtes 24hs.
 										</div>
 										@endif
 									@elseif($reservation->isPendingConfirmation())
@@ -131,18 +131,25 @@
 									</div>
 									<div class="col-md-6">
 										<label>Medio de pago:</label><br/>
-
-										{{-- The client does not know that mercadopago processes the payment --}}
-
-										@if($payment->payment_method_code == App\Lib\PaymentMethods::CODE_MERCADOPAGO)
-										Tarjeta de crédito
+										@if($payment->isMercadoPago())
+										Tarj. de crédito - {{ ucfirst($payment->mercadopagoPayment->payment_method_id) }}
 										@endif
-
 									</div>								
 								</div>
 
 								<div class="row" style="margin-top: 15px">
-									(Fecha de pago, tipo de tarjeta...)
+									@if(!$payment->isFailed() && !$payment->isProcessing())
+									<div class="col-md-6">
+										<label>Fecha pagado:</label><br/>
+										{{ $payment->paid_at->format('d/m/Y H:i') }}
+									</div>
+									@endif
+									@if($payment->isMercadoPago())
+									<div class="col-md-6">
+										<label>Cuotas:</label><br/>
+										{{ $payment->mercadopagoPayment->installment_amount }}
+									</div>	
+									@endif
 								</div>
 
 							</div>
@@ -192,6 +199,13 @@
 									@endif
 								</div>
 								<hr>
+
+								@if($payment->isProcessing() && $payment->isMercadoPago() && $payment->mercadopagoPayment->installment_amount > 1)
+								<div class="alert alert-info">
+									La información del precio total con el costo financiero se actualizará una vez acreditado el pago.
+								</div>
+								@endif
+								
 								<table class="table table-sm table-borderless price-details-table">
 									<tbody>
 										<tr>
@@ -202,6 +216,12 @@
 											<td>Tarifa servicio pagos</td>
 											<td>${{ round($reservation->payment_proc_fee, 2) }}</td>
 										</tr>
+										@if($reservation->mp_financing_cost > 0)
+										<tr>
+											<td>Financiación MercadoPago</td>
+											<td>${{ round($reservation->mp_financing_cost, 2) }}</td>
+										</tr>
+										@endif
 										<tr style="font-size: 18px">
 											<td>Total</td>
 											<td>${{ round($reservation->final_price, 2) }}</td>

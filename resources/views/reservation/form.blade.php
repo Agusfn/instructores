@@ -199,9 +199,7 @@
 											<div class="form-group">
 												<label>País</label>
 												<select class="form-control add_bottom_15" name="address_country" autocomplete="off">
-													@foreach($countries as $code => $name)
-													<option value="{{ $code }}" @if($code=='ARG') selected="" @endif>{{ $name }}</option>
-													@endforeach
+													@foreach($countries as $code => $name)<option value="{{ $code }}" @if($code=='ARG') selected="" @endif>{{ $name }}</option>@endforeach
 												</select>
 											</div>
 										</div>
@@ -306,7 +304,7 @@
 @section('custom-js')
 <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
 <script>
-Mercadopago.setPublishableKey("{{ App\Lib\MercadoPago::getPublicKey() }}");
+Mercadopago.setPublishableKey("{{ config('services.mercadopago.public_key') }}");
 </script>
 <script src="{{ asset('resources/js/reservation-form.js') }}"></script>
 @endsection

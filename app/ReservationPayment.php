@@ -21,6 +21,18 @@ class ReservationPayment extends Model
 
 
 
+	public function scopeNewestsFirst($query)
+	{
+		return $query->orderBy("created_at", "DESC");
+	}
+
+
+	public function reservation()
+	{
+		return $this->belongsTo("App\Reservation");
+	}
+	
+
 	public function mercadopagoPayment()
 	{
 		return $this->hasOne("App\MercadopagoPayment");

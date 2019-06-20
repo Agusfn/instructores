@@ -26,7 +26,7 @@ class ReservationPayments
 	 * @param  App\Reservation 	$reservation  [description]
 	 * @return App\ReservationPayment
 	 */
-	public static function processMpApiPayment($cardToken, $issuerId, $payMethodId, $installments, $user, $reservation)
+	public static function makeMpApiPayment($cardToken, $issuerId, $payMethodId, $installments, $user, $reservation)
 	{
 	    
 	    $description = self::paymentDescription($reservation);
@@ -42,7 +42,6 @@ class ReservationPayments
 	    	$reservation->code
 	    );
 
-	    
 	    if($mpApiPayment->status != null) {
 	    	$mpPayment = self::createMpPaymentFromApiPayment($mpApiPayment);
 	    }
@@ -78,10 +77,8 @@ class ReservationPayments
 	    $mpPayment = new MercadopagoPayment();
 
 	    $mpPayment->fill([
-	    	"status" => $mpApiPayment->status,
-			"status_detail" => $mpApiPayment->status_detail,
+	    	"mp_payment_id" => $mpApiPayment->id,
 			"date_created" => Dates::iso8601ToMysql($mpApiPayment->date_created),
-			"date_updated" => Dates::iso8601ToMysql($mpApiPayment->date_last_updated),
 			"payment_method_id" => $mpApiPayment->payment_method_id,
 			"payment_type_id" => $mpApiPayment->payment_type_id,
 			"installment_amount" => $mpApiPayment->installments,
@@ -93,7 +90,30 @@ class ReservationPayments
 			"cardholder_id" => $mpApiPayment->card->cardholder->identification->number
 	    ]);
 
-	    if($mpApiPayment->status == "approved") {
+	    self::updateMpPaymentStatusFromApiPayment($mpPayment, $mpApiPayment);
+
+	    $mpPayment->save();
+
+	    return $mpPayment;
+	}
+
+
+
+	/**
+	 * Given an updated mercadopago api payment entity, update a MercadopagoPayment with its status and payment information in case it has been approved.
+	 * @param  App\MercadopagoPayment 	 $mpPayment     Entity to be updated.
+	 * @param  \MercadoPago\Payment 	 $mpApiPayment 	MP payment entity.
+	 * @return null
+	 */
+	public static function updateMpPaymentStatusFromApiPayment($mpPayment, $mpApiPayment)
+	{
+		$mpPayment->fill([
+	    	"status" => $mpApiPayment->status,
+			"status_detail" => $mpApiPayment->status_detail,
+			"date_updated" => Dates::iso8601ToMysql($mpApiPayment->date_last_updated)
+		]);
+
+	    if($mpApiPayment->status == "approved") { // data only stored when approved
 	    	$mpPayment->fill([
 	    		"date_approved" => Dates::iso8601ToMysql($mpApiPayment->date_approved),
 	    		"collector_fee" => $mpApiPayment->installments == 1 ? $mpApiPayment->fee_details[0]->amount : $mpApiPayment->fee_details[1]->amount,
@@ -101,9 +121,6 @@ class ReservationPayments
 	    		"net_received" => $mpApiPayment->transaction_details->net_received_amount,
 	    	]);
 	    }
-
-	    $mpPayment->save();
-	    return $mpPayment;
 	}
 
 
@@ -121,12 +138,29 @@ class ReservationPayments
 
 		$reservationPayment->fill([
 			"reservation_id" => $reservation->id,
-			"status" => self::mpStatusToPaymentStatus($mpPayment->status),
 			"payment_method_code" => PaymentMethods::CODE_MERCADOPAGO,
 			"mercadopago_payment_id" => $mpPayment->id,
 			"total_amount" => $mpPayment->total_amount ?: $reservation->final_price, // $mpPayment->total_amount = null if status = 'error'
 			"currency_code" => "ARS"
 		]);
+
+		self::updateReservPaymentStatusFromMpPayment($reservationPayment, $mpPayment);
+
+		$reservationPayment->save();
+
+		return $reservationPayment;
+	}
+
+
+	/**
+	 * Given an updated MercadopagoPayment, update a ReservationPayment with its payment information.
+	 * @param  App\ReservationPayment $reservationPayment  	Payment to be updated
+	 * @param  App\MercadopagoPayment $mpPayment          	Updated entity.
+	 * @return null
+	 */
+	public static function updateReservPaymentStatusFromMpPayment($reservationPayment, $mpPayment)
+	{	
+		$reservationPayment->status = self::mpStatusToPaymentStatus($mpPayment->status);
 
 		if($mpPayment->status == "approved") {
 			$reservationPayment->fill([
@@ -136,9 +170,6 @@ class ReservationPayments
 				"net_received" => $mpPayment->net_received
 			]);
 		}
-
-		$reservationPayment->save();
-		return $reservationPayment;
 	}
 
 
