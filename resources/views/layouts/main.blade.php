@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+	
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -32,6 +33,8 @@
     <link href="{{ asset('resources/css/custom.css') }}" rel="stylesheet">
 
     @yield('custom-css')
+
+    
 
 </head>
 
@@ -115,7 +118,14 @@
     <script src="{{ asset('resources/js/common_scripts.js') }}"></script>
     <script src="{{ asset('resources/js/main.js') }}"></script>
 	<script src="{{ asset('resources/assets/validate.js') }}"></script>
+    
+       <!--SCROLLREVEAL-->
+    <script src="https://unpkg.com/scrollreveal@4.0.0/dist/scrollreveal.min.js"></script>
+    <script src="{{ asset('resources/js/Scrollreveal.js') }}"></script>
 
+
+ 
+      
 	@yield('custom-js')
 
 
