@@ -20,7 +20,6 @@ class CreateInstructorBankAccountsTable extends Migration
             $table->string("holder_name");
             $table->string("document_number");
             $table->string("cuil_cuit");
-            $table->boolean("invalid")->default(false);
             $table->timestamps();
 
             $table->foreign('instructor_id')->references('id')->on('instructors');

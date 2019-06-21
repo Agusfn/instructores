@@ -28,11 +28,11 @@
 					<thead>
 						<tr>
 							<th></th>
+							<th>Fecha</th>
 							<th>Código</th>
 							<th>Estado</th>
 							<th>Cliente</th>
-							<th>Fecha</th>
-							<th>Horas</th>
+							<th>Fecha clase</th>
 							<th>Pers.</th>
 							<th>Total</th>
 						</tr>
@@ -41,32 +41,35 @@
 						@foreach($reservations as $reservation)
 						<tr>
 							<td><a href="{{ url('instructor/panel/reservas/'.$reservation->code) }}"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+							<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
 							<td>{{ $reservation->code }}</td>
 							<td>
 								@if($reservation->isPaymentPending())
-								Pago pendiente
+								<span class="badge badge-secondary">Pago pendiente</span>
 								@elseif($reservation->isPendingConfirmation())
-								Pagada - confirmar
+								<span class="badge badge-primary">Pagada - Confirmar</span>
 								@elseif($reservation->isFailed())
-								Pago fallido
+								<span class="badge badge-danger">Pago fallido</span>
 								@elseif($reservation->isRejected())
-								Rechazada
+								<span class="badge badge-danger">Rechazada por instructor</span>
 								@elseif($reservation->isConfirmed())
-								Confirmada
+								<span class="badge badge-success">Confirmada</span>
+								@elseif($reservation->isConcluded())
+								<span class="badge badge-danger">Concluída</span>
 								@elseif($reservation->isCanceled())
+								<span class="badge badge-danger">Cancelada</span>
 								@endif
-								
 							</td>
 							<td>{{ $reservation->user->name.' '.$reservation->user->surname[0].'.' }}</td>
-							<td>{{ $reservation->reserved_class_date->format('d/m') }}</td>
-							<td>{{ $reservation->reserved_time_start.'-'.$reservation->reserved_time_end.'hs' }}</td>
-							<td>{{ $reservation->adults_amount + $reservation->kids_amount }}</td>
+							<td>{{ $reservation->reserved_class_date->format('d/m') }}&nbsp;&nbsp;&nbsp;{{ $reservation->readableHourRange(true) }}</td>
+							<td>{{ $reservation->personAmount() }}</td>
 							<td>${{ floatval($reservation->final_price) }}</td>
 						</tr>
 						@endforeach
 					</tbody>
 				</table>
 
+				{{ $reservations->links() }}
 				@else
 				<div class="alert alert-warning">
 					Tu cuenta no ha sido aprobada aún. Para empezar a ofrecer tus servicios debés verificar tu documentación de identidad y certificación.

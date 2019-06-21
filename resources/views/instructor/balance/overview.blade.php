@@ -121,9 +121,9 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($wallet->movements as $movement)
+								@foreach($walletMovements as $movement)
 								<tr>
-									<td>{{ date('d/m/Y', strtotime($movement->date)) }}</td>
+									<td>{{ $movement->date->format('d/m/Y') }}</td>
 									<td>
 										@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
 										Pago de reserva
@@ -133,15 +133,17 @@
 									</td>
 									<td>
 										@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
-										<a href="">{{ $movement->reservation->code }}</a>
+										<a href="{{ route('instructor.reservation', $movement->reservation->code) }}">#{{ $movement->reservation->code }}</a>
 										@endif
 									</td>
-									<td>${{ floatval($movement->net_ammount) }}</td>
-									<td></td>
+									<td>${{ round($movement->net_amount, 2) }}</td>
+									<td>${{ round($movement->new_balance, 2) }}</td>
 								</tr>
 								@endforeach
 							</tbody>
 						</table>
+
+						<div style="text-align: center;">{{ $walletMovements->links() }}</div>
 					</div>
 				</div>
 				@else

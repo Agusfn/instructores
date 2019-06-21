@@ -8,12 +8,12 @@
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
         
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+        <!--li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
           <a class="nav-link" href="{{ route('admin.home') }}">
             <i class="fa fa-fw fa-dashboard"></i>
             <span class="nav-link-text">Inicio</span>
           </a>
-        </li>
+        </li-->
 
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
           <a class="nav-link" href="{{ route('admin.instructors.list') }}">
@@ -39,7 +39,7 @@
 
 
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-          <a class="nav-link" href="{{ route('admin.reservations.list') }}">
+          <a class="nav-link" href="{{ route('admin.instructor-collections.list') }}">
             <i class="fa fa-fw fa-usd"></i>
             <span class="nav-link-text">Pagos a instructores</span>
           </a>
@@ -63,7 +63,7 @@
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item dropdown">
+        <!--li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle mr-lg-2" id="messagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-fw fa-envelope"></i>
             <span class="d-lg-none">Messages
@@ -151,7 +151,7 @@
               </span>
             </div>
           </form>
-        </li>
+        </li-->
         <li class="nav-item">
           <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
             <i class="fa fa-fw fa-sign-out"></i>Logout</a>

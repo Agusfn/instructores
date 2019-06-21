@@ -5,22 +5,47 @@ namespace App;
 use Carbon\Carbon;
 use App\Lib\Reservations;
 use App\Lib\Helpers\Dates;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
    
     /**
-     * Length of reservation code.
+     * Length in characters of reservation code.
      */
     const CODE_LENGTH = 7;
+
+
+
+    /**
+     * Time in hours after a reservation being created in which it gets cancelled if it's not paid.
+     */
+    const RETRY_PAYMENT_TIME_HS = 2;
+
+    /**
+     * Time in hours given to an instructor to confirm a paid reservation. After this time, the reservation gets rejected automatically.
+     */
+    const AUTO_REJECT_TIME_HS = 24;
+
+
+    /**
+     * Time in hours that must pass after the classes have been dictated in a confirmed reservation, in order to conclude it AND pay the instructor.
+     * Concluded reservations can't be refunded or have claims.
+     */
+    const CONCLUDE_TIME_HS = 24;
+
+
+
 
     const STATUS_PAYMENT_PENDING = "payment-pending"; // Waiting for payment. Either it's processing or it failed, and another one must be done within x time.
     const STATUS_PENDING_CONFIRMATION = "pending-confirmation"; // Paid. Pending instructor confirmation.
     const STATUS_PAYMENT_FAILED = "payment-failed"; // Payment not done within time, so reservation failed as well.
     const STATUS_REJECTED = "rejected"; // Paid but later rejected by the instructor.
     const STATUS_CONFIRMED = "confirmed"; // Paid and confirmed by the instructor.
+    const STATUS_CONCLUDED = "concluded"; // 24hs after classes. Can't be canceled/refunded/claimed.
     const STATUS_CANCELED = "canceled"; // conceled voluntarily (with refund), or chargebacked
+    
 
 
     protected $guarded = [];
@@ -45,30 +70,6 @@ class Reservation extends Model
     {
         return self::where("code", $code)->first();
     }
-
-
-    /**
-     * Generate a unique reservation code.
-     * @return string
-     */
-    public static function generateCode()
-    {
-        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
-        srand((double)microtime()*1000000); 
-        $i = 0; 
-        $pass = '' ; 
-
-        while ($i < self::CODE_LENGTH) { 
-            $num = rand() % 33; 
-            $tmp = substr($chars, $num, 1); 
-            $pass = $pass . $tmp; 
-            $i++; 
-        } 
-
-        return $pass; 
-    }
-
-
 
 
     /**
@@ -116,7 +117,7 @@ class Reservation extends Model
      */
     public function lastPayment()
     {
-        return $this->payments()->orderBy("created_at", "DESC")->first();
+        return $this->hasOne('App\ReservationPayment')->latest();
     }
 
 
@@ -131,9 +132,6 @@ class Reservation extends Model
     {
         return $query->where("code", $code);
     }
-
-
-
 
 
 
@@ -162,10 +160,59 @@ class Reservation extends Model
     public function scopeActive($query)
     {
         return $query->whereIn("status", [
+            self::STATUS_PAYMENT_PENDING,
             self::STATUS_PENDING_CONFIRMATION,
             self::STATUS_CONFIRMED
         ]);
     }
+
+
+    /**
+     * Scope a query to retrieve reservations which have not been paid and passed their payment retry period.
+     * @param  [type] $query [description]
+     * @return [type]        [description]
+     */
+    public function scopePaymentTimeExpired($query)
+    {
+        return $query->where([
+            ["status", "=", self::STATUS_PAYMENT_PENDING],
+            ["created_at", "<=", date("Y-m-d H:i:s", strtotime("-".self::RETRY_PAYMENT_TIME_HS." hour"))]
+        ]);
+    }
+
+    /**
+     * Scope a query to retrieve paid reservations that are pending instructor confirmation, but have not been confirmed for a certain time.
+     * @param  [type] $query [description]
+     * @return [type]        [description]
+     */
+    public function scopeConfirmationTimeExpired($query)
+    {
+        return $query->where([
+            ["status", "=", self::STATUS_PENDING_CONFIRMATION],
+            ["updated_at", "<=", date("Y-m-d H:i:s", strtotime("-".self::AUTO_REJECT_TIME_HS." hour"))]
+        ]);
+    }
+
+
+
+    /**
+     * Get collection of confirmed reservations in which a certain amount of hours passed since the classes have finished, and are considered concluded.
+     * These reservations must have their status change to concluded.
+     * @return [type] [description]
+     */
+    public static function getReservationsToConclude()
+    {
+        $reservations = DB::table('reservations')
+            ->where("status", self::STATUS_CONFIRMED)
+            ->whereRaw(
+                "STR_TO_DATE(concat(reserved_class_date,' ',reserved_time_end,':00:00'),'%Y-%m-%d %H:%i:%s') < ?",
+                date("Y-m-d H:i:s", strtotime("-".self::CONCLUDE_TIME_HS." hour"))
+            )
+            ->get();
+
+        return self::hydrate($reservations->toArray());
+    }
+
 
 
     public function isPaymentPending()
@@ -191,6 +238,11 @@ class Reservation extends Model
     public function isConfirmed()
     {
         return $this->status == self::STATUS_CONFIRMED;
+    }
+
+    public function isConcluded()
+    {
+        return $this->status == self::STATUS_CONCLUDED;
     }
 
     public function isCanceled() 
@@ -251,17 +303,16 @@ class Reservation extends Model
      */
     public function updateStatusIfPaid()
     {
-        $reservPayment = $this->lastPayment();
 
-        if($this->isPaymentPending() && $reservPayment->isSuccessful()) {
+        if($this->isPaymentPending() && $this->lastPayment->isSuccessful()) {
 
-            $this->adjustPayProcessorFee($reservPayment->payment_provider_fee);
+            $this->adjustPayProcessorFee($this->lastPayment->payment_provider_fee);
 
             $this->fill([
                 "status" => Reservation::STATUS_PENDING_CONFIRMATION,
-                "final_price" => $reservPayment->total_amount,
-                "mp_financing_cost" => $reservPayment->financing_costs,
-                "mp_installment_amt" => $reservPayment->mercadopagoPayment->installment_amount
+                "final_price" => $this->lastPayment->total_amount,
+                "mp_financing_cost" => $this->lastPayment->financing_costs,
+                "mp_installment_amt" => $this->lastPayment->mercadopagoPayment->installment_amount
             ]);
 
             $this->save();
@@ -282,6 +333,7 @@ class Reservation extends Model
             "status" => self::STATUS_REJECTED,
             "reject_message" => $reason
         ]);
+        
         $this->save();
     }
 
@@ -311,6 +363,45 @@ class Reservation extends Model
     }
 
 
+    /**
+     * Conclude a reservation and pay the instructor the ammount to their wallet.
+     * @return null
+     */
+    public function conclude()
+    {
+
+        if($this->status != self::STATUS_CONFIRMED)
+            return;
+
+        $movement = $this->instructor->wallet->addInstructorPayment($this->id, $this->instructor_pay);
+
+        $this->status = self::STATUS_CONCLUDED;
+        $this->instructor_wallet_movement_id = $movement->id;
+        $this->save();
+    }
+
+
+
+    /**
+     * Generate a unique reservation code.
+     * @return string
+     */
+    public static function generateCode()
+    {
+        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; 
+        srand((double)microtime()*1000000); 
+        $i = 0; 
+        $pass = '' ; 
+
+        while ($i < self::CODE_LENGTH) { 
+            $num = rand() % 33; 
+            $tmp = substr($chars, $num, 1); 
+            $pass = $pass . $tmp; 
+            $i++; 
+        } 
+
+        return $pass; 
+    }
 
 
 

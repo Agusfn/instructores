@@ -28,7 +28,7 @@ class InstructorsController extends Controller
 	 */
 	public function list()
 	{
-		$instructors = Instructor::with("wallet")->get();
+		$instructors = Instructor::with("wallet")->orderBy("created_at", "DESC")->paginate(15);
 		return view("admin.instructors.list")->with("instructors", $instructors);
 	}
 
@@ -48,7 +48,8 @@ class InstructorsController extends Controller
 
 		return view("admin.instructors.details")->with([
 			"instructor" => $instructor,
-			"service" => $instructor ? $instructor->service : null
+			"service" => $instructor->service,
+			"walletMovements" => $instructor->isApproved() ? $instructor->wallet->movements()->latest('date')->paginate(10) : null,
 		]);
 	}
 

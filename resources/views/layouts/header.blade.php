@@ -26,13 +26,13 @@
 			<ul>
 
 				<li>
-					<span><a href="{{ route('user.login') }}">SOY INSTRUCTOR</a></span>
-				</li>
-
-				<li><span><a href="{{ route('faq') }}">PREGUNTAS FRECUENTES</a></span>
+					<span><a href="{{ route('faq') }}">PREGUNTAS FRECUENTES</a></span>
 				</li>
 				
 				@guest
+				<li>
+					<span><a href="{{ route('instructor.login') }}">SOY INSTRUCTOR</a></span>
+				</li>
 				<li>
 					<span><a href="{{ route('user.login') }}">INGRESAR</a></span>
 				</li>

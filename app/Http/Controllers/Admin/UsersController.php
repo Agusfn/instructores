@@ -16,7 +16,7 @@ class UsersController extends Controller
 
 	public function list()
 	{
-		$users = User::all();
+		$users = User::orderBy("created_at", "DESC")->paginate(15);
 		return view("admin.users.list")->with("users", $users);
 	}
 

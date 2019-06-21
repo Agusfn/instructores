@@ -8,7 +8,7 @@ class InstructorCollection extends Model
 {
    
 	const STATUS_PENDING = "pending"; // can be canceled.
-    const STATUS_IN_PROCESS ="in_process"; // can't be canceled now.
+    //const STATUS_IN_PROCESS = "in_process"; // can't be canceled now.
 	const STATUS_COMPLETED = "completed"; // Done.
 	const STATUS_REJECTED = "rejected"; // Rejected by admin
     const STATUS_CANCELED = "canceled"; // Canceled by instructor
@@ -19,7 +19,7 @@ class InstructorCollection extends Model
 
     public function instructorWallet()
     {
-    	return $this->hasOne("App\InstructorWallet");
+    	return $this->belongsTo("App\InstructorWallet");
     }
 
 
@@ -37,7 +37,7 @@ class InstructorCollection extends Model
      */
     public function scopePending($query)
     {
-        return $query->where("status", self::STATUS_PENDING)->orWhere("status", self::STATUS_IN_PROCESS);
+        return $query->where("status", self::STATUS_PENDING);/*->orWhere("status", self::STATUS_IN_PROCESS);*/
     }
 
 
@@ -47,10 +47,10 @@ class InstructorCollection extends Model
         return $this->status == self::STATUS_PENDING;
     }
 
-    public function isInProcess()
+    /*public function isInProcess()
     {
         return $this->status == self::STATUS_IN_PROCESS;
-    }
+    }*/
 
     public function isCompleted()
     {

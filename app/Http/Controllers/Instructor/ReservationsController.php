@@ -27,8 +27,9 @@ class ReservationsController extends Controller
 	{
 		$instructor = Auth::user();
 
-		if($instructor->isApproved())
-			$reservations = $instructor->service->reservations;
+		if($instructor->isApproved()) {
+			$reservations = $instructor->reservations()->orderBy("created_at", "DESC")->paginate(10);
+		}
 		else
 			$reservations = null;
 		
@@ -54,7 +55,7 @@ class ReservationsController extends Controller
 
 		return view("instructor.reservations.details")->with([
 			"reservation" => $reservation,
-			"payment" => $reservation->lastPayment()
+			"payment" => $reservation->lastPayment
 		]);
 	}
 
@@ -115,7 +116,7 @@ class ReservationsController extends Controller
 			return redirect()->route("instructor.reservations");
 
 
-		if(!$reservation->lastPayment()->refund())
+		if(!$reservation->lastPayment->refund())
 			return redirect()->back()->withErrors("Ha ocurrido un error intentando reembolsar el pago, contacta a soporte.");
 
 		$reservation->reject($request->reject_reason);

@@ -312,10 +312,11 @@
 					</div>
 				</div>
 
+				@if($instructor->isApproved())
 				<div class="box_general padding_bottom">
 					<div class="header_box">
 						<h2 class="d-inline-block">Balance</h2>
-						<h2 style="float: right; color: #5292e6 !important;">${{ $instructor->balance }}</h2>
+						<h2 style="float: right; color: #5292e6 !important;">${{ $instructor->wallet->balance }}</h2>
 					</div>
 					<div class="list_general">
 						
@@ -326,16 +327,40 @@
 									<th>ID</th>
 									<th>Fecha</th>
 									<th>Concepto</th>
+									<th>Reserva</th>
 									<th>Monto</th>
 									<th>Saldo</th>
 								</tr>
 							</thead>
+							<tbody>
+								@foreach($walletMovements as $movement)
+								<tr>
+									<td>{{ $movement->id }}</td>
+									<td>{{ $movement->date->format('d/m/Y') }}</td>
+									<td>
+										@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
+										Pago de reserva
+										@elseif($movement->motive == App\InstructorWalletMovement::MOTIVE_COLLECTION)
+										Retiro de dinero
+										@endif
+									</td>
+									<td>
+										@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
+										<a href="{{ route('admin.reservations.details', $movement->reservation->id) }}">#{{ $movement->reservation->code }}</a>
+										@endif
+									</td>
+									<td>${{ round($movement->net_amount, 2) }}</td>
+									<td>${{ round($movement->new_balance, 2) }}</td>
+								</tr>
+								@endforeach
+							</tbody>
 						</table>
-						
+
 						
 					</div>
+					{{ $walletMovements->links() }}
 				</div>
-
+				@endif
 
 
 

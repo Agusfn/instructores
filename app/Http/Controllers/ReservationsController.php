@@ -208,7 +208,7 @@ class ReservationsController extends Controller
 		if($reservation->isPaymentPending() || $reservation->isPendingConfirmation()) {
 			return view("reservation.result")->with([
 				"reservation" => $reservation,
-				"lastPayment" => $reservation->lastPayment()
+				"lastPayment" => $reservation->lastPayment
 			]);
 		}
 		else 
@@ -232,7 +232,7 @@ class ReservationsController extends Controller
 		if(!$reservation)
 			return redirect()->route("home");
 
-		if(!$reservation->isPaymentPending() || !$reservation->lastPayment()->isFailed())
+		if(!$reservation->isPaymentPending() || !$reservation->lastPayment->isFailed())
 			return redirect()->route("user.reservation", $reservationCode);
 		
 
@@ -263,7 +263,7 @@ class ReservationsController extends Controller
 		if(!$reservation)
 			return redirect()->route("home");
 
-		if(!$reservation->isPaymentPending() || !$reservation->lastPayment()->isFailed())
+		if(!$reservation->isPaymentPending() || !$reservation->lastPayment->isFailed())
 			return redirect()->route("user.reservation", $reservationCode);
 
 

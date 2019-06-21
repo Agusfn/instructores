@@ -23,14 +23,7 @@
 					<!--<div style="float:right; color: #2e79b9">$14610.50</div>-->
 				</h4>
 
-                @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ $errors->first() }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                @endif
+				@include('layouts.errors')
 
 				@if(\Session::has("mp_assoc_success"))
 				<div class="alert alert-success alert-dismissible fade show" role="alert">

@@ -19,7 +19,10 @@ Route::post("admin/logout", "Admin\Auth\LoginController@logout")->name("admin.lo
 
 
 // Home
-Route::get("admin", "Admin\HomeController@index")->name("admin.home");
+//Route::get("admin", "Admin\HomeController@index")->name("admin.home");
+Route::get('admin', function () {
+    return redirect()->route("admin.instructors.list");
+})->name("admin.home");
 
 
 // Instructors
@@ -38,6 +41,13 @@ Route::get("admin/usuarios/{id}", "Admin\UsersController@details")->name("admin.
 // Reservations
 Route::get("admin/reservas", "Admin\ReservationsController@list")->name("admin.reservations.list");
 Route::get("admin/reservas/{id}", "Admin\ReservationsController@details")->name("admin.reservations.details");
+Route::post("admin/reservas/{id}/cancelar", "Admin\ReservationsController@cancel");
+
+
+// Instructor collections
+Route::get("admin/pagos-instructores", "Admin\InstructorCollectionsController@list")->name("admin.instructor-collections.list");
+Route::post("admin/pagos-instructores/confirmar", "Admin\InstructorCollectionsController@confirmCollection");
+Route::post("admin/pagos-instructores/rechazar", "Admin\InstructorCollectionsController@rejectCollection");
 
 
 // Settings

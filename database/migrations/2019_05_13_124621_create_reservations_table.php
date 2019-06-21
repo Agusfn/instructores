@@ -21,6 +21,7 @@ class CreateReservationsTable extends Migration
             $table->unsignedBigInteger('instructor_id');
             $table->unsignedBigInteger('instructor_service_id');
             $table->string('status');
+            
             $table->string('sport_discipline');
             $table->date('reserved_class_date');
             $table->integer('reserved_time_start');

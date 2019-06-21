@@ -29,14 +29,14 @@
 		<div class="box_general">
 			<div class="header_box">
 				<h2 class="d-inline-block">Lista de instructores</h2>
-				<div class="filter">
+				<!--div class="filter">
 					<select name="orderby" class="selectbox">
 						<option value="Any status">Any status</option>
 						<option value="Approved">Approved</option>
 						<option value="Pending">Pending</option>
 						<option value="Cancelled">Cancelled</option>
 					</select>
-				</div>
+				</div-->
 			</div>
 			<div class="list_general">
 				
@@ -85,11 +85,11 @@
 						@endforeach
 					</tbody>
 				</table>
-
+				{{ $instructors->links() }}
 			</div>
 		</div>
 		<!-- /box_general-->
-		<nav aria-label="...">
+		<!--nav aria-label="...">
 			<ul class="pagination pagination-sm add_bottom_30">
 				<li class="page-item disabled">
 					<a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -101,7 +101,7 @@
 					<a class="page-link" href="#">Next</a>
 				</li>
 			</ul>
-		</nav>
+		</nav-->
 		<!-- /pagination-->
 
 @endsection

@@ -23,7 +23,8 @@ class ReservationsController extends Controller
 		$reservations = Reservation::with([
 			"user:id,name,surname",
 			"instructor:id,name,surname"
-		])->get();
+		])->orderBy("created_at", "DESC")
+		->paginate(15);
 
 		return view("admin.reservations.list")->with("reservations", $reservations);
 	}
@@ -42,6 +43,44 @@ class ReservationsController extends Controller
 
 		return view("admin.reservations.details")->with("reservation", $reservation);
 	}
+
+
+
+	/**
+	 * Cancel a pending and not concluded reservation by admin, refunding payment if paid.
+	 * @param  Request $request [description]
+	 * @param  [type]  $id      [description]
+	 * @return [type]           [description]
+	 */
+	public function cancel(Request $request, $id)
+	{
+		$reservation = Reservation::find($id);
+
+		if(!$reservation)
+			return redirect()->route("admin.reservations.list");
+
+		if(!$reservation->isPaymentPending() && !$reservation->isPendingConfirmation() && !$reservation->isConfirmed())
+			return redirect()->back();
+
+
+		if($reservation->isPaymentPending() && $reservation->lastPayment->isProcessing())
+			return redirect()->back()->withErrors("El pago de esta reserva se está procesando. Espera a que se termine de procesar para cancelarla.");
+
+
+		if($reservation->isPendingConfirmation()) {
+			if(!$reservation->lastPayment->refund()) {
+				return redirect()->back()->withErrors("Ha ocurrido un error intentando reembolsar el pago, contacta a soporte.");
+			}
+		}
+
+		$reservation->status = Reservation::STATUS_CANCELED;
+		$reservation->save();
+
+		// <Enviar mails>
+
+		return redirect()->back();
+	}
+
 
 
 }

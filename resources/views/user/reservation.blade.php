@@ -79,6 +79,11 @@
 										<i class="far fa-check-circle status-icon"></i><br/>
 										Reserva confirmada
 									</div>
+									@elseif($reservation->isConcluded())
+									<div style="color: #3d9630">
+										<i class="far fa-check-circle status-icon"></i><br/>
+										Reserva concluida
+									</div>
 									@elseif($reservation->isRejected())
 									<div style="color: #bc2f2f">
 										<i class="far fa-times-circle status-icon"></i><br/>

@@ -13,18 +13,18 @@
 		<div class="box_general">
 			<div class="header_box">
 				<h2 class="d-inline-block">Reservas</h2>
-				<div class="filter">
+				<!--div class="filter">
 					<select name="orderby" class="selectbox">
 						<option value="Any status">Any status</option>
 						<option value="Approved">Approved</option>
 						<option value="Pending">Pending</option>
 						<option value="Cancelled">Cancelled</option>
 					</select>
-				</div>
+				</div-->
 			</div>
 			<div class="list_general">
 				
-				<table class="table table-sm">
+				<table class="table">
 					<thead>
 						<tr>
 							<th></th>
@@ -49,9 +49,9 @@
 							<td>
 								@if($reservation->isPaymentPending())
 									<span class="badge badge-secondary">Pago pendiente - 
-									@if($reservation->lastPayment()->isProcessing())
+									@if($reservation->lastPayment->isProcessing())
 									Procesando
-									@elseif($reservation->lastPayment()->isFailed())
+									@elseif($reservation->lastPayment->isFailed())
 									Reintentar
 									@endif
 									</span>
@@ -63,6 +63,8 @@
 									<span class="badge badge-danger">Rechazada por instructor</span>
 								@elseif($reservation->isConfirmed())
 									<span class="badge badge-success">Confirmada</span>
+								@elseif($reservation->isConcluded())
+									<span class="badge badge-success">Concluída</span>
 								@elseif($reservation->isCanceled())
 									<span class="badge badge-danger">Cancelada</span>
 								@endif
@@ -90,7 +92,7 @@
 			</div>
 		</div>
 		<!-- /box_general-->
-		<nav aria-label="...">
+		<!--nav aria-label="...">
 			<ul class="pagination pagination-sm add_bottom_30">
 				<li class="page-item disabled">
 					<a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -102,7 +104,8 @@
 					<a class="page-link" href="#">Next</a>
 				</li>
 			</ul>
-		</nav>
+		</nav-->
+		{{ $reservations->links() }}
 		<!-- /pagination-->
 
 @endsection

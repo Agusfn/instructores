@@ -22,6 +22,7 @@ class CreateInstructorWalletMovementsTable extends Migration
             $table->unsignedBigInteger('reservation_id')->nullable();
             $table->dateTime('date');
             $table->decimal('net_amount', 8, 2);
+            $table->decimal('new_balance', 8, 2);
 
             $table->foreign('instructor_wallet_id')->references('id')->on('instructor_wallets');
             $table->foreign('reservation_id')->references('id')->on('reservations');

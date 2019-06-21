@@ -24,14 +24,80 @@
 </style>
 @endsection
 
+
+@section('body-start')
+
+
+@if($reservation->isPaymentPending() || $reservation->isPendingConfirmation() || $reservation->isConfirmed())
+<div class="modal" tabindex="-1" role="dialog" id="cancel-reservation-modal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Cancelar reserva</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+
+				<div class="alert alert-info">
+					Se enviará un e-mail al instructor y al usuario, y se reembolsará el pago si este fue realizado.
+				</div>
+				<form action="{{ url('admin/reservas/'.$reservation->id.'/cancelar') }}" method="POST" id="cancel-reservation-form">
+					@csrf
+					<div class="form-group">
+						<label>Ingrese un motivo (Opcional)</label>
+						<textarea class="form-control" name="cancel_reason"></textarea>
+					</div>
+				</form>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Seguro?')) $('#cancel-reservation-form').submit();">Confirmar</button>
+			</div>
+		</div>
+	</div>
+</div>
+@endif
+
+
+
+@endsection
+
+
+
 @section('content')
 
-	<!-- Breadcrumbs-->
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-        <li class="breadcrumb-item active">Lista de usuarios</li>
-        <li class="breadcrumb-item active">Detalles de usuario</li>
-      </ol>
+		<!-- Breadcrumbs-->
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+			<li class="breadcrumb-item active">Lista de usuarios</li>
+			<li class="breadcrumb-item active">Detalles de usuario</li>
+		</ol>
+
+
+		@include('layouts.errors')
+
+		<div class="row">
+			<div class="col-md-10">
+				<div class="box_general padding_bottom">
+					<div class="list_general">
+						
+						@if($reservation->isPaymentPending() || $reservation->isPendingConfirmation() || $reservation->isConfirmed())
+							@if($reservation->isPaymentPending())
+							<button class="btn btn-danger" data-toggle="modal" data-target="#cancel-reservation-modal">Cancelar</button>
+							@elseif($reservation->isPendingConfirmation() || $reservation->isConfirmed())
+							<button class="btn btn-danger" data-toggle="modal" data-target="#cancel-reservation-modal">Cancelar y reembolsar</button>
+							@endif
+						@endif
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+
       	<div class="row">
 
       		<div class="col-md-6">
@@ -56,9 +122,9 @@
 								<div style="font-size: 16px"> 
 								@if($reservation->isPaymentPending())
 									<span class="badge badge-secondary">Pago pendiente - 
-									@if($reservation->lastPayment()->isProcessing())
+									@if($reservation->lastPayment->isProcessing())
 									Procesando
-									@elseif($reservation->lastPayment()->isFailed())
+									@elseif($reservation->lastPayment->isFailed())
 									Reintentar
 									@endif
 									</span>
@@ -70,6 +136,8 @@
 									<span class="badge badge-danger">Rechazada por instructor</span>
 								@elseif($reservation->isConfirmed())
 									<span class="badge badge-success">Confirmada</span>
+								@elseif($reservation->isConcluded())
+									<span class="badge badge-danger">Concluída</span>
 								@elseif($reservation->isCanceled())
 									<span class="badge badge-danger">Cancelada</span>
 								@endif
@@ -119,7 +187,7 @@
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Fecha</th>
+										<th>Fecha realiz.</th>
 										<th>Estado</th>
 										<th>Medio de pago</th>
 										<th>Cuotas</th>
@@ -306,7 +374,7 @@
 
 						<hr>
 
-						@if($reservation->lastPayment()->isProcessing() && $reservation->lastPayment()->isMercadoPago() && $reservation->lastPayment()->mercadopagoPayment->installment_amount > 0)
+						@if($reservation->lastPayment->isProcessing() && $reservation->lastPayment->isMercadoPago() && $reservation->lastPayment->mercadopagoPayment->installment_amount > 0)
 						<div class="alert alert-info">
 							La información del precio total con el costo financiero se actualizará una vez acreditado el pago.
 						</div>

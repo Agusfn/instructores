@@ -23,7 +23,8 @@ class ReservationsController extends Controller
 	{
 		$user = Auth::user();
 
-		$reservations = $user->reservations;
+		$reservations = $user->reservations()->orderBy("created_at", "DESC")->paginate(10);
+		
 		return view("user.reservations")->with("reservations", $reservations);
 	}
 
@@ -43,7 +44,7 @@ class ReservationsController extends Controller
 
 		return view("user.reservation")->with([
 			"reservation" => $reservation,
-			"payment" => $reservation->lastPayment()
+			"payment" => $reservation->lastPayment
 		]);
 	}
 
