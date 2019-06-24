@@ -18,6 +18,7 @@ class ReservationPayments
 
 	/**
 	 * Process a MercadoPago API payment.
+	 * @param  string 			$paymentType  "card" or "offline"
 	 * @param  string 			$cardToken    [description]
 	 * @param  int 				$issuerId     [description]
 	 * @param  string 			$payMethodId  [description]
@@ -26,28 +27,41 @@ class ReservationPayments
 	 * @param  App\Reservation 	$reservation  [description]
 	 * @return App\ReservationPayment
 	 */
-	public static function makeMpApiPayment($cardToken, $issuerId, $payMethodId, $installments, $user, $reservation)
+	public static function makeMpApiPayment($user, $reservation, $paymentType, $payMethodId, $cardToken = null, $issuerId = null, $installments = null)
 	{
-	    
-	    $description = self::paymentDescription($reservation);
+	 	
+	    if($paymentType == "card") {
 
-	    $mpApiPayment = MercadoPago::createPayment(
-	    	$cardToken, 
-	    	$issuerId, 
-	    	$payMethodId, 
-	    	$installments, 
-	    	$reservation->final_price, 
-	    	$description, 
-	    	MercadoPago::payerArray($user->email, $user->name, $user->surname), 
-	    	$reservation->code
-	    );
+		    $mpApiPayment = MercadoPago::makeCardPayment(
+		    	$cardToken, 
+		    	$issuerId, 
+		    	$payMethodId, 
+		    	$installments, 
+		    	$reservation->final_price, 
+		    	self::paymentDescription($reservation), 
+		    	MercadoPago::payerArray($user->email, $user->name, $user->surname), 
+		    	$reservation->code
+		    );
+	    }
+		else if($paymentType == "offline") { // atm or ticket
+
+	    	$mpApiPayment = MercadoPago::makeTicketPayment(
+	    		$payMethodId,
+	    		$reservation->final_price,
+	    		self::paymentDescription($reservation),
+	    		MercadoPago::payerArray($user->email, $user->name, $user->surname),
+	    		$reservation->code
+	    	);
+
+	    }
+
 
 	    if($mpApiPayment->status != null) {
 	    	$mpPayment = self::createMpPaymentFromApiPayment($mpApiPayment);
 	    }
 	    else {
 	    	$errorText = $mpApiPayment->error->message." (code ".$mpApiPayment->error->causes[0]->code.")";
-	    	
+	   
 	    	$mpPayment = MercadopagoPayment::create([
 	    		"status" => "error",
 	    		"error_msg" => $errorText
@@ -76,19 +90,30 @@ class ReservationPayments
 	{
 	    $mpPayment = new MercadopagoPayment();
 
+
 	    $mpPayment->fill([
 	    	"mp_payment_id" => $mpApiPayment->id,
 			"date_created" => Dates::iso8601ToMysql($mpApiPayment->date_created),
 			"payment_method_id" => $mpApiPayment->payment_method_id,
 			"payment_type_id" => $mpApiPayment->payment_type_id,
-			"installment_amount" => $mpApiPayment->installments,
 			"total_amount" => $mpApiPayment->transaction_details->total_paid_amount,
-			"last_four_digits" => $mpApiPayment->card->last_four_digits,
-			"issuer_id" => $mpApiPayment->issuer_id,
-			"cardholder_name" => $mpApiPayment->card->cardholder->name,
-			"cardholder_id_type" => $mpApiPayment->card->cardholder->identification->type,
-			"cardholder_id" => $mpApiPayment->card->cardholder->identification->number
+			"installment_amount" => $mpApiPayment->installments
 	    ]);
+
+
+	    if($mpApiPayment->payment_type_id == "ticket" || $mpApiPayment->payment_type_id == "atm") {
+	    	$mpPayment->ext_resource_url = $mpApiPayment->transaction_details->external_resource_url;
+	    }
+	    else {
+		    $mpPayment->fill([
+				"last_four_digits" => $mpApiPayment->card->last_four_digits,
+				"issuer_id" => $mpApiPayment->issuer_id,
+				"cardholder_name" => $mpApiPayment->card->cardholder->name,
+				"cardholder_id_type" => $mpApiPayment->card->cardholder->identification->type,
+				"cardholder_id" => $mpApiPayment->card->cardholder->identification->number
+		    ]);
+	    }
+
 
 	    self::updateMpPaymentStatusFromApiPayment($mpPayment, $mpApiPayment);
 
@@ -196,8 +221,11 @@ class ReservationPayments
 		if($mpStatus == "approved") {
 			return ReservationPayment::STATUS_SUCCESSFUL;
 		}
-		else if($mpStatus == "in_process") {
+		else if($mpStatus == "in_process") { // credit card
 			return ReservationPayment::STATUS_PROCESSING;
+		}
+		else if($mpStatus == "pending") {
+			return ReservationPayment::STATUS_PENDING;
 		}
 		else { // "rejected" or "error"
 			return ReservationPayment::STATUS_FAILED;

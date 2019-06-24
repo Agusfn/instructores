@@ -7,7 +7,9 @@ use App\Lib\MercadoPago;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\User\Reservations\ReservationConfirmedByInstructor;
+use App\Mail\User\Reservations\ReservationRejectedByInstructor;
 
 class ReservationsController extends Controller
 {
@@ -15,7 +17,8 @@ class ReservationsController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware("auth:instructor");
+		$this->middleware("auth:instructor")->only("index");
+		$this->middleware("instructor.approved")->except("index");
 	}
 
 
@@ -88,7 +91,8 @@ class ReservationsController extends Controller
 		]);
 		$reservation->save();
 
-		// <send email to user>
+
+		Mail::to($reservation->user)->send(new ReservationConfirmedByInstructor($reservation->user, $reservation));
 
 
 		return redirect()->route("instructor.reservation", $reservation_code);
@@ -122,7 +126,7 @@ class ReservationsController extends Controller
 		$reservation->reject($request->reject_reason);
 
 
-		// <send email to user>
+		Mail::to($reservation->user)->send(new ReservationRejectedByInstructor($reservation->user, $reservation, $request->reject_reason));
 		
 
 		return redirect()->route("instructor.reservation", $reservation_code);

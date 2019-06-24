@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Reservation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 
 class ReservationsController extends Controller
 {
@@ -67,16 +68,27 @@ class ReservationsController extends Controller
 			return redirect()->back()->withErrors("El pago de esta reserva se está procesando. Espera a que se termine de procesar para cancelarla.");
 
 
-		if($reservation->isPendingConfirmation()) {
+		// Refund if paid, cancel if pending/processing.
+		if($reservation->isPendingConfirmation() || $reservation->isConfirmed()) {
 			if(!$reservation->lastPayment->refund()) {
 				return redirect()->back()->withErrors("Ha ocurrido un error intentando reembolsar el pago, contacta a soporte.");
 			}
 		}
+		else if($reservation->isPaymentPending() && ($reservation->lastPayment->isPending() || $reservation->lastPayment->isProcessing())) {
+
+			if(!$reservation->lastPayment->cancel()) {
+				return redirect()->back()->withErrors("Ha ocurrido un error intentando cancelar el pago, contacta a soporte.");
+			}
+
+		}
+
 
 		$reservation->status = Reservation::STATUS_CANCELED;
 		$reservation->save();
 
-		// <Enviar mails>
+
+		Mail::to($reservation->instructor)->send(new App\Mail\Instructor\Reservations\ReservationCanceledByAdmin($reservation->instructor, $reservation, $request->cancel_reason));
+		Mail::to($reservation->user)->send(new App\Mail\User\Reservations\ReservationCanceledByAdmin($reservation->user, $reservation, $request->cancel_reason));
 
 		return redirect()->back();
 	}

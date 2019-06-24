@@ -48,8 +48,10 @@
 							<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
 							<td>
 								@if($reservation->isPaymentPending())
-									<span class="badge badge-secondary">Pago pendiente - 
-									@if($reservation->lastPayment->isProcessing())
+									<span class="badge badge-secondary">Pago pendiente -
+									@if($reservation->lastPayment->isPending()) 
+									Efectivo
+									@elseif($reservation->lastPayment->isProcessing())
 									Procesando
 									@elseif($reservation->lastPayment->isFailed())
 									Reintentar

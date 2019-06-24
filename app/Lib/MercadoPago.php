@@ -46,7 +46,19 @@ class MercadoPago
 	}
 
 
-	public static function createPayment($cardToken, $issuerId, $payMethodId, $installments, $total, $description, $payer, $extReference)
+	/**
+	 * Make a credit card payment using a card token.
+	 * @param  [type] $cardToken    [description]
+	 * @param  [type] $issuerId     [description]
+	 * @param  [type] $payMethodId  [description]
+	 * @param  [type] $installments [description]
+	 * @param  [type] $total        [description]
+	 * @param  [type] $description  [description]
+	 * @param  [type] $payer        [description]
+	 * @param  [type] $extReference [description]
+	 * @return [type]               [description]
+	 */
+	public static function makeCardPayment($cardToken, $issuerId, $payMethodId, $installments, $total, $description, $payer, $extReference)
 	{
 		self::initialize();
 
@@ -70,6 +82,34 @@ class MercadoPago
 
 	    return $payment;
 	}
+
+
+	/**
+	 * Create a ticket payment.
+	 * @param  [type] $payMethodId  [description]
+	 * @param  [type] $total        [description]
+	 * @param  [type] $description  [description]
+	 * @param  [type] $payer        [description]
+	 * @param  [type] $extReference [description]
+	 * @return [type]               [description]
+	 */
+	public static function makeTicketPayment($payMethodId, $total, $description, $payer, $extReference)
+	{
+		self::initialize();
+
+	    $payment = new \MercadoPago\Payment();
+	    $payment->transaction_amount = $total;
+	    $payment->description = $description;
+	    $payment->external_reference = $extReference;
+	    $payment->payment_method_id = $payMethodId;
+	    $payment->notification_url = config("services.mercadopago.webhook_url");
+	    $payment->payer = $payer;
+
+	    $payment->save();
+
+	    return $payment;
+	}
+
 
 
 	/**
@@ -106,6 +146,42 @@ class MercadoPago
 			return false;
 		}
 
+	}
+
+
+	/**
+	 * Cancel a mercadopago payment. Must only be done with pending (ticket or atm) or in_process (credit cards) payments.
+	 * @param  int $paymentId
+	 * @return \MercadoPago\Payment|false
+	 */
+	public static function cancelPayment($paymentId)
+	{
+		self::initialize();
+
+		$payment = \MercadoPago\Payment::find_by_id($paymentId);
+
+		if(!$payment)
+			return false;
+
+		$payment->status = "cancelled";
+
+		if(@$payment->update())
+			return true;
+		else
+			return false;
+	}
+
+
+
+	/**
+	 * Get current available payment methods
+	 * @return [type] [description]
+	 */
+	public static function getPaymentMethods()
+	{
+		self::initialize();
+
+		return SDK::get("/v1/payment_methods");
 	}
 
 

@@ -28,6 +28,7 @@ class CreateMercadopagoPaymentsTable extends Migration
             $table->datetime('date_updated')->nullable();
             $table->string('payment_method_id')->nullable();
             $table->string('payment_type_id')->nullable();
+            $table->string('ext_resource_url')->nullable();
             $table->integer('installment_amount')->nullable();
             $table->decimal('total_amount', 8, 2)->nullable();
             $table->decimal('collector_fee', 8, 2)->nullable();

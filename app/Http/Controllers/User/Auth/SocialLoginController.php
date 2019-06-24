@@ -5,13 +5,21 @@ namespace App\Http\Controllers\User\Auth;
 use App\User;
 use Socialite;
 use App\Instructor;
-use App\Lib\Helpers\Strings;
+use App\Lib\SocialLogin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class SocialLoginController extends Controller
 {
+
+
+    /**
+     * Redirect users after logging in (if no intended redirection)
+     * @var string
+     */
+    public $redirectTo = "/";
+
 
 
 	public function __construct()
@@ -67,25 +75,18 @@ class SocialLoginController extends Controller
     	$user = User::findByProviderNameAndId($provider, $socialUser->id);
 
     	if(!$user) {
-
+            
     		if(Instructor::findByProviderNameAndId($provider, $socialUser->id)) {
     			return redirect()->route("user.login")->withErrors("Ya existe una cuenta de instructor registrada con esta cuenta de ".$provider.".");
     		}
 
-    		$user = User::create([
-                "name" => isset($socialUser->user["given_name"]) ? $socialUser->user["given_name"] : Strings::getFirstName($socialUser->name),
-                "surname" => isset($socialUser->user["family_name"]) ? $socialUser->user["family_name"] : Strings::getLastName($socialUser->name),
-    			"email" => $socialUser->email,
-    			"provider" => $provider,
-    			"provider_id" => $socialUser->id,
-    		]);
-
-    		$user->setProfilePicFromImgUrl(str_replace("type=normal", "type=large", $socialUser->avatar));
-
+            $user = SocialLogin::createUser($socialUser, $provider);
     	}
 
     	Auth::guard("user")->login($user);
-    	return redirect()->route("home");
+
+
+    	return redirect()->intended($this->redirectTo);
     }
 
 
@@ -99,6 +100,7 @@ class SocialLoginController extends Controller
 
     	return redirect()->route("home");
     }
+
 
 
 }

@@ -5,7 +5,7 @@
 
 @section('custom-css')
 <style type="text/css">
-	.hero_in .wrapper a {
+	.hero_in .wrapper p a {
 		color: #FFF;
 		text-decoration: underline;
 	}
@@ -44,16 +44,30 @@
 					<!-- End bs-wizard -->
 					<div id="confirm">
 						@if($reservation->isPendingConfirmation())
+
 							<h4>Se completó tu reserva!</h4>
 							<p>Te enviamos un email con los detalles de tu reserva, también podés verla haciendo <a href="{{ route('user.reservation', $reservation->code) }}">click acá</a>.<br/>
 							Gracias por elegirnos.</p>
+
 						@elseif($reservation->isPaymentPending())
+
 							@if($lastPayment->isProcessing())
-							<h4><i class="far fa-clock"></i>&nbsp;&nbsp;&nbsp;El pago se está procesando</h4>
-							<p>
-								Te notificaremos por e-mail cuando se haya completado dentro de las próx. 48 hs.<br/>
-								También podés ver el estado del mismo haciendo <a href="{{ route('user.reservation', $reservation->code) }}">click acá</a>.
-							</p>
+								<h4><i class="far fa-clock"></i>&nbsp;&nbsp;&nbsp;El pago se está procesando</h4>
+								<p>
+									Te notificaremos por e-mail cuando se haya completado dentro de las próx. 48 hs.<br/>
+									También podés ver el estado del mismo haciendo <a href="{{ route('user.reservation', $reservation->code) }}">click acá</a>.
+								</p>
+							@elseif($lastPayment->isPending() && $lastPayment->isMercadoPago())
+								<h4><i class="far fa-clock"></i>&nbsp;&nbsp;&nbsp;Pago pendiente</h4>
+								@if($lastPayment->mercadopagoPayment->payment_type_id == 'ticket')
+								<a href="{{ $lastPayment->mercadopagoPayment->ext_resource_url }}" target="_blank" class="btn btn-secondary" style="margin: 10px 0"><i class="fas fa-ticket-alt"></i> Cupón de pago</a>
+								@else
+								<a href="{{ $lastPayment->mercadopagoPayment->ext_resource_url }}" target="_blank" class="btn btn-secondary" style="margin: 10px 0">Instrucciones de pago</a>
+								@endif
+								<p>
+									Abona el pago dentro de los próximos 3 días, te mantendremos la reserva durante este tiempo.<br/>
+									Podés ver el estado de la reserva haciendo <a href="{{ route('user.reservation', $reservation->code) }}">click acá</a>.
+								</p>							
 							@elseif($lastPayment->isFailed())
 								<h4>El pago no pudo completarse</h4>
 								<p>
@@ -92,6 +106,7 @@
 									La reserva se mantendrá por 24 horas.
 								</p>
 							@endif
+
 						@endif
 					</div>
 				</div>

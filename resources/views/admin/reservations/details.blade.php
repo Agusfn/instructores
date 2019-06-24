@@ -122,7 +122,9 @@
 								<div style="font-size: 16px"> 
 								@if($reservation->isPaymentPending())
 									<span class="badge badge-secondary">Pago pendiente - 
-									@if($reservation->lastPayment->isProcessing())
+									@if($reservation->lastPayment->isPending()) 
+									Efectivo
+									@elseif($reservation->lastPayment->isProcessing())
 									Procesando
 									@elseif($reservation->lastPayment->isFailed())
 									Reintentar
@@ -187,7 +189,7 @@
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Fecha realiz.</th>
+										<th>Fecha creado</th>
 										<th>Estado</th>
 										<th>Medio de pago</th>
 										<th>Cuotas</th>
@@ -202,8 +204,12 @@
 											<div style="font-size: 16px">
 												@if($payment->isProcessing())
 												<span class="badge badge-primary">Procesando</span>
+												@elseif($payment->isPending())
+												<span class="badge badge-secondary">Pendiente</span>
 												@elseif($payment->isSuccessful())
 												<span class="badge badge-success">Exitoso</span>
+												@elseif($payment->isCanceled())
+												<span class="badge badge-danger">Expirado/cancelado</span>
 												@elseif($payment->isFailed())
 												<span class="badge badge-danger">Fallido</span>
 												@elseif($payment->isRefunded())
@@ -215,11 +221,17 @@
 										</td>
 										<td>
 											@if($payment->isMercadoPago())
-												@if($payment->mercadopagoPayment->payment_method_id != null)
-													{{ ucfirst($payment->mercadopagoPayment->payment_method_id).' ...'.$payment->mercadopagoPayment->last_four_digits }} (MP)
+
+												@if($payment->mercadopagoPayment->isWithCreditCard())
+													@if($payment->mercadopagoPayment->payment_method_id != null)
+														{{ ucfirst($payment->mercadopagoPayment->payment_method_id).' ...'.$payment->mercadopagoPayment->last_four_digits }} (MP)
+													@else
+														MercadoPago (T.C.)
+													@endif
 												@else
-													MercadoPago (T.C.)
+													{{ ucfirst($payment->mercadopagoPayment->payment_method_id) }}
 												@endif
+
 											@endif
 										</td>
 										<td>

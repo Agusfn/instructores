@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Instructor;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -15,7 +15,12 @@ class InstructorDocsRejected extends Mailable
     /**
      * @var App\Instructor
      */
-    private $instructor;
+    public $instructor;
+
+    /**
+     * @var string
+     */
+    public $reason;
 
 
     /**
@@ -23,9 +28,10 @@ class InstructorDocsRejected extends Mailable
      *
      * @return void
      */
-    public function __construct($instructor)
+    public function __construct($instructor, $reason)
     {
         $this->instructor = $instructor;
+        $this->reason = $reason;
     }
 
     /**
@@ -35,6 +41,8 @@ class InstructorDocsRejected extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name')->with("instructor", $this->instructor);
+        $this->subject("No se aprobó la documentación de instructor enviada");
+        
+        return $this->view('emails.instructor.instructor-docs-rejected');
     }
 }

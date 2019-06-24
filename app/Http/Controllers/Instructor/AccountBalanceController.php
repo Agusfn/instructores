@@ -7,7 +7,11 @@ use App\InstructorCollection;
 use App\InstructorBankAccount;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Lib\AdminEmailNotifications;
+use App\Mail\Instructor\BankAccountChanged;
 use App\Http\Validators\Instructor\RequestCollection;
+use App\Mail\Admin\Collections\CollectionRequestCreated;
 
 class AccountBalanceController extends Controller
 {
@@ -94,7 +98,7 @@ class AccountBalanceController extends Controller
 		}
 
 
-		// ******* SEND EMAIL **********
+		Mail::to($instructor)->send(new BankAccountChanged($instructor));
 
 
 
@@ -124,12 +128,14 @@ class AccountBalanceController extends Controller
 		}
 
 
-		InstructorCollection::create([
+		$collection = InstructorCollection::create([
 			"instructor_wallet_id" => $instructor->wallet->id,
 			"status" => InstructorCollection::STATUS_PENDING,
 			"amount" => $request->amount
 		]);
 
+
+		Mail::to(AdminEmailNotifications::recipients())->send(new CollectionRequestCreated($instructor, $collection));
 
 		return redirect()->back();
 	}

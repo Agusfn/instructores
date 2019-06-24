@@ -64,7 +64,7 @@
 											<i class="far fa-clock status-icon"></i><br/>
 											Procesando pago<br/>
 										</div>
-										@elseif($payment->isFailed())
+										@elseif($payment->isFailed() || $payment->isPending())
 										<div>
 											<i class="far fa-clock status-icon"></i><br/>
 											Pago pendiente<br/>
@@ -127,10 +127,14 @@
 								<div class="row">
 									<div class="col-md-6">
 										<label>Estado:</label><br/>
-										@if($payment->isProcessing())
+										@if($payment->isPending())
+										<span class="badge badge-secondary">Pendiente de pago</span>
+										@elseif($payment->isProcessing())
 										<span class="badge badge-primary">Procesando</span>
 										@elseif($payment->isSuccessful())
 										<span class="badge badge-success">Exitoso</span>
+										@elseif($payment->isCanceled())
+										<span class="badge badge-secondary">Expirado/cancelado</span>
 										@elseif($payment->isRefunded())
 										<span class="badge badge-secondary">Reembolsado</span>
 										@elseif($payment->isChargebacked())
@@ -140,13 +144,19 @@
 									<div class="col-md-6">
 										<label>Medio de pago:</label><br/>
 										@if($payment->isMercadoPago())
-										Tarj. de crédito - {{ ucfirst($payment->mercadopagoPayment->payment_method_id) }}
+
+											@if($payment->mercadopagoPayment->isWithCreditCard())
+												Tarj. de crédito - {{ ucfirst($payment->mercadopagoPayment->payment_method_id) }}
+											@else
+												{{ ucfirst($payment->mercadopagoPayment->payment_method_id) }}
+											@endif
+
 										@endif
 									</div>							
 								</div>
 
 								<div class="row" style="margin-top: 15px">
-									@if(!$payment->isFailed() && !$payment->isProcessing())
+									@if($payment->isSuccessful() || $payment->isRefunded() || $payment->isChargebacked())
 									<div class="col-md-6">
 										<label>Fecha pagado:</label><br/>
 										{{ $payment->paid_at->format('d/m/Y H:i') }}

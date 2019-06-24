@@ -171,13 +171,16 @@ class ReservationsController extends Controller
 
 
 		$reservPayment = ReservationPayments::makeMpApiPayment(
+			$user,
+			$reservation,
+			$request->payment_type,
+			$request->paymentMethodId,
 			$request->card_token,
 			$request->issuer,
-			$request->paymentMethodId,
-			$request->installments,
-			$user,
-			$reservation
+			$request->installments
 		);
+
+
 
 		$reservation->updateStatusIfPaid();
 

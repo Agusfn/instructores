@@ -16,10 +16,12 @@ class ProcessReservation extends Validator
         "address_state" => "required",
         "address_postal_code" => "required",
 
-        "paymentMethodId" => "required", // visa/master/amex..
-        "card_token" => "required",
-        "installments" => "required|integer", // number of installments to pay in
-        "issuer" => "nullable|integer", // id of the card issuer (when using non mainstream cards)
+        "payment_type" => "required|in:card,offline",
+        "paymentMethodId" => "required", // visa, master, amex, cabal, rapipago, atm, ...
+
+        "card_token" => "required_if:payment_type,card",
+        "installments" => "required_if:payment_type,card|integer", // number of installments to pay in
+        "issuer" => "nullable|integer", // id number of card issuer (when using non mainstream cards)
 
         "total_amount" => "required|numeric" // to check last moment price changes
     );

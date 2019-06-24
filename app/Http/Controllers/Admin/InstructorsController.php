@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Admin;
 use Validator;
 use App\Instructor;
 use Illuminate\Http\Request;
-use Mail\InstructorApproved;
-use Mail\InstructorDocsRejected;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Mail\Instructor\InstructorApproved;
+use Mail\Instructor\InstructorDocsRejected;
 use Intervention\Image\ImageManagerStatic as Image;
 
 
@@ -85,7 +85,7 @@ class InstructorsController extends Controller
 			$request->level
 		);
 
-		//Mail::to($instructor)->send(new InstructorApproved($instructor));
+		Mail::to($instructor)->send(new InstructorApproved($instructor));
 
 		return redirect()->back();
 	}
@@ -115,7 +115,7 @@ class InstructorsController extends Controller
 
 		$instructor->rejectDocs();
 
-		//Mail::to($instructor)->send(new InstructorDocsRejected($instructor));
+		Mail::to($instructor)->send(new InstructorDocsRejected($instructor, $request->reason));
 
 		return redirect()->back();
 	}

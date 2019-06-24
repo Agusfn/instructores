@@ -12,6 +12,12 @@ use App\Lib\ReservationPayments;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
+use App\Lib\AdminEmailNotifications;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Admin\Payments\PaymentChargebacked;
+use App\Mail\User\Payments\ProcessingPaymentFailed;
+use App\Mail\Instructor\Reservations\ReservationCanceledByChargeback as MailReservChargebackedInstructor;
+use App\Mail\User\Reservations\ReservationCanceledByChargeback as MailReservChargebackedUser;
 
 class MercadoPagoWebhookController extends Controller
 {
@@ -37,40 +43,50 @@ class MercadoPagoWebhookController extends Controller
 		$mpPayment = $this->mpPayment;
 		$mpApiPayment = $this->mpApiPayment;
 
+		$reservPayment = $mpPayment->reservationPayment;
 
-		if($mpPayment->reservationPayment->isProcessing()) {
+
+		if($reservPayment->isPending() || $reservPayment->isProcessing() || $reservPayment->isExpired()) { // ticket or atm will be pending or expired, credit card will be processing.
 
 			if($mpApiPayment->status == "approved" || $mpApiPayment->status == "rejected") {
 
 				ReservationPayments::updateMpPaymentStatusFromApiPayment($mpPayment, $mpApiPayment);
 				$mpPayment->save();
 
-				ReservationPayments::updateReservPaymentStatusFromMpPayment($mpPayment->reservationPayment, $mpPayment);
-				$mpPayment->reservationPayment->save();
+				ReservationPayments::updateReservPaymentStatusFromMpPayment($reservPayment, $mpPayment);
+				$reservPayment->save();
 
-				$mpPayment->reservationPayment->reservation->updateStatusIfPaid();
+				if($reservPayment->reservation->isPaymentPending()) {
+					$reservPayment->reservation->updateStatusIfPaid();
+				}
 
-				if($mpApiPayment->status == "rejected") {
-					// <send mail>
+				if($mpApiPayment->status == "rejected") { // only credit card
+					Mail::to($reservPayment->reservation->user)->send(new ProcessingPaymentFailed($reservPayment->reservation->user, $reservPayment, $reservPayment->reservation));
 				}
 
 			}
 			
 		}
-		else if($mpPayment->reservationPayment->isSuccessful()) {
+		else if($reservPayment->isSuccessful()) {
 
-			if($mpApiPayment->status == "charged_back") {
+			if($mpApiPayment->status == "charged_back") { // credit card (and ticket?)
 
 				ReservationPayments::updateMpPaymentStatusFromApiPayment($mpPayment, $mpApiPayment);
 				$mpPayment->save();
 
-				$mpPayment->reservationPayment->status = ReservationPayment::STATUS_CHARGEBACKED;
-				$mpPayment->reservationPayment->save();
+				$reservPayment->status = ReservationPayment::STATUS_CHARGEBACKED;
+				$reservPayment->save();
 
-				$mpPayment->reservationPayment->reservation->status = Reservation::STATUS_CANCELED;
-				$mpPayment->reservationPayment->reservation->save();
+				if(!$reservPayment->reservation->isConcluded()) {
+					$reservPayment->reservation->status = Reservation::STATUS_CANCELED;
+					$reservPayment->reservation->save();
 
-				// <mail, events, etc>
+					Mail::to($reservPayment->reservation->instructor)->send(new MailReservChargebackedInstructor($reservPayment->reservation->instructor, $reservPayment->reservation));
+					Mail::to($reservPayment->reservation->user)->send(new MailReservChargebackedUser($reservPayment->reservation->user, $reservPayment->reservation));
+				}
+
+
+				Mail::to(AdminEmailNotifications::recipients())->send(new PaymentChargebacked($reservPayment, $reservPayment->reservation));
 			}
 
 		}

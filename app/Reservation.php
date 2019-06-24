@@ -7,6 +7,8 @@ use App\Lib\Reservations;
 use App\Lib\Helpers\Dates;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
+
 
 class Reservation extends Model
 {
@@ -21,7 +23,7 @@ class Reservation extends Model
     /**
      * Time in hours after a reservation being created in which it gets cancelled if it's not paid.
      */
-    const RETRY_PAYMENT_TIME_HS = 2;
+    const RETRY_PAYMENT_TIME_HS = 72;
 
     /**
      * Time in hours given to an instructor to confirm a paid reservation. After this time, the reservation gets rejected automatically.
@@ -44,7 +46,7 @@ class Reservation extends Model
     const STATUS_REJECTED = "rejected"; // Paid but later rejected by the instructor.
     const STATUS_CONFIRMED = "confirmed"; // Paid and confirmed by the instructor.
     const STATUS_CONCLUDED = "concluded"; // 24hs after classes. Can't be canceled/refunded/claimed.
-    const STATUS_CANCELED = "canceled"; // conceled voluntarily (with refund), or chargebacked
+    const STATUS_CANCELED = "canceled"; // canceled (with refund), or chargebacked
     
 
 
@@ -317,7 +319,8 @@ class Reservation extends Model
 
             $this->save();
 
-            // Send email / event
+            Mail::to($this->instructor)->send(new App\Mail\Instructor\Reservations\ReservationPaid($this->instructor, $this));
+            Mail::to($this->user)->send(new App\Mail\User\Reservations\ReservationPaid($this->user, $this));
         }
     }
 

@@ -1,6 +1,7 @@
 //var doSubmit = false;
 var installmentInfo;
 
+
 $(document).ready(function() {
 
 
@@ -11,33 +12,57 @@ $(document).ready(function() {
 	addEvent(document.querySelector('input[data-checkout="cardNumber"]'), 'change', guessingPaymentMethod);
 	cardsHandler();
 
-	
+
+	var paymentType = $("#payment-method-select").val(); // "card" 
+
+    $("#payment-method-select").change(function() {
+
+        if($(this).val() == "card") {
+            paymentType = "card";
+            $("#credit_card_fields").show();
+            $("#card_number").val("");
+        }
+        else {
+            paymentType = "offline";
+            $("#credit_card_fields").hide();
+            $("input[name=paymentMethodId]").val($(this).val());            
+        }
+        $("input[name=payment_type]").val(paymentType);
+    });
+
+
 
 	$("button.purchase").click(function() {
 
 		if(!validateForm())
 			return;
 
-		Mercadopago.createToken($("#payment-form"), function(status, response) {
+        if(paymentType == "card") {
+            Mercadopago.createToken($("#payment-form"), function(status, response) {
 
-			if (status != 200 && status != 201) {
-		        if(typeof response.cause != "undefined")
-		        	displayCardError(response.cause);
-		        else
-		        	alert("Error obteniendo autorización de tarjeta.");
+                if (status != 200 && status != 201) {
+                    if(typeof response.cause != "undefined")
+                        displayCardError(response.cause);
+                    else
+                        alert("Error obteniendo autorización de tarjeta.");
 
-		        return;
-		    }
+                    return;
+                }
 
-		    if($("#installments").val() == null || $("#installments").val() == -1) {
-		    	alert("Selecciona la cantidad de cuotas a pagar.");
-		    	return;
-		    }
+                if($("#installments").val() == null || $("#installments").val() == -1) {
+                    alert("Selecciona la cantidad de cuotas a pagar.");
+                    return;
+                }
 
-	       $("input[name=card_token]").val(response.id);
+               $("input[name=card_token]").val(response.id);
 
-	       $("#payment-form").submit();
-		});
+               $("#payment-form").submit();
+            });
+        }
+        else {
+            $("#payment-form").submit();
+        }
+
 
 	});
 

@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Reservation;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Instructor\Reservations\ReservationConcluded;
 
 class ConcludeCompletedReservations extends Command
 {
@@ -42,7 +44,10 @@ class ConcludeCompletedReservations extends Command
         $reservations = Reservation::getReservationsToConclude();
 
         foreach ($reservations as $reservation) {
+
             $reservation->conclude();
+
+            Mail::to($reservation->instructor)->send(new ReservationConcluded($reservation->instructor, $reservation));
         }
 
     }

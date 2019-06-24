@@ -54,5 +54,40 @@ class MercadopagoPayment extends Model
 	}
 
 
+	/**
+	 * Cancel this mercadopago Payment.
+	 * @return [type] [description]
+	 */
+	public function cancel()
+	{
+		if($this->status != "pending" && $this->status != "in_process")
+			return false;
+
+		if(!MercadoPago::cancelPayment($this->mp_payment_id))
+			return false;
+
+		$this->fill([
+			"status" => "cancelled",
+			"status_detail" => "by_collector",
+			"date_updated" => date("Y-m-d H:i:s")
+		]);
+		$this->save();
+
+		return true;
+	}
+
+
+
+	/**
+	 * Check whether this payment is done with a credit card.
+	 * @return boolean [description]
+	 */
+	public function isWithCreditCard()
+	{
+		return ($this->payment_type_id != "ticket" && $this->payment_type_id != "atm");
+	}
+
+
+
 
 }

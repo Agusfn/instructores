@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Log;
 use App\Reservation;
 use Illuminate\Console\Command;
 
@@ -44,7 +45,18 @@ class CancelUnpaidReservations extends Command
 
         foreach($reservations as $reservation) {
 
-            if($reservation->lastPayment->isFailed()) {
+            if($reservation->lastPayment->isFailed() || $reservation->lastPayment->isPending()) {
+
+                
+                // cancel unpaid ticket/atm payment
+                if($reservation->lastPayment->isPending() && $reservation->lastPayment->isMercadoPago()) {
+
+                    if(!$reservation->lastPayment->cancel()) {
+                        Log::warning("CRON: Error cancelando pago de reserva ".$reservation->code." expirada por falta de pago del ticket/cajero.");
+                        continue;
+                    }
+
+                }
 
                 $reservation->status = Reservation::STATUS_PAYMENT_FAILED;
                 $reservation->save();  

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Instructor;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -12,10 +12,11 @@ class InstructorApproved extends Mailable
     use Queueable, SerializesModels;
 
 
+
     /**
      * @var App\Instructor
      */
-    private $instructor;
+    public $instructor;
 
 
     /**
@@ -35,6 +36,8 @@ class InstructorApproved extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name')->with("instructor", $this->instructor);
+        $this->subject("Tu cuenta ha sido aprobada");
+
+        return $this->view('emails.instructor.instructor-approved');
     }
 }

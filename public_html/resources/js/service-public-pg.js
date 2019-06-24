@@ -222,11 +222,19 @@ function addPricesAndDisableUnavailables()
 		var day = parseInt(elem.innerText);
 
 
-		if($(elem).hasClass("start-date") && selected_date == null)
+		// unmark initial selected date if no date has been chosen yet (datepicker doesn't support no initial date)
+		if($(elem).hasClass("start-date") && selected_date == null) 
 			$(elem).removeClass("active start-date end-date");
 
 
-		if(typeof calendar[month][day] !== 'undefined') // some dates may not exist in the array: they belong to other months, or outside the activity period, or the calendar didn't load yet
+		// Ignore old or current dates to add prices.
+		var cellDate = moment().month(month-1).date(day).startOf("day");
+		if(cellDate.isSameOrBefore(moment().startOf("day"))) {
+			return;
+		}
+
+
+		if(typeof calendar[month][day] !== 'undefined') // some dates in the <td> may not exist in the array: they belong to other months, or outside the activity period, or the calendar didn't load yet
 		{
 			if(calendar[month][day].available == true) {
 				$(elem).html(day + "<div class='date-min-price'>$" + kFormatter(calendar[month][day]["ppb"]) + "</div>");

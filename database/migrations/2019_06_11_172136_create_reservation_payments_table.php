@@ -22,8 +22,8 @@ class CreateReservationPaymentsTable extends Migration
             $table->unsignedBigInteger('mercadopago_payment_id'); // nullable after new pay methods are developed
             $table->decimal('total_amount', 8, 2);
             $table->decimal('payment_provider_fee', 8, 2)->nullable();
-            $table->decimal('financing_costs', 8, 2)->nullable();
-            $table->decimal('net_received', 8, 2)->nullable();
+            $table->decimal('financing_costs', 8, 2)->nullable(); // determined after it's accredited
+            $table->decimal('net_received', 8, 2)->nullable(); // determined after it's accredited
             $table->string('currency_code');
             $table->timestamps();
 

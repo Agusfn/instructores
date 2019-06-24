@@ -32,6 +32,10 @@ class LoginController extends Controller
     }
 
 
+    /**
+     * The guard that users log into.
+     * @return [type] [description]
+     */
     protected function guard()
     {
         return Auth::guard('admin');

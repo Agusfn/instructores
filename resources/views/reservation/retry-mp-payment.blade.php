@@ -5,7 +5,6 @@
 
 
 @section('content')
-
 		<div class="hero_in cart_section">
 			<div class="wrapper">
 				<div class="container">

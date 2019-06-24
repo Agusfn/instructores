@@ -3,6 +3,7 @@
 namespace App;
 
 
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Lib\Reservations;
 use App\Lib\Helpers\Dates;
@@ -372,6 +373,8 @@ class InstructorService extends Model
 	}
 
 
+	/********* Make the calendar only include future days, not present day nor past *************/
+
 	/**
 	 * Rebuilds the booking calendar json (stored in booking_calendar_json).
 	 * The json stores, for each day of each month of activity of the current year, the price per block and the availability of each block.
@@ -392,6 +395,7 @@ class InstructorService extends Model
 	/**
 	 * Gets a reduced booking calendar as an array, adapted for use on the date picker. 
 	 * The calendar includes only the availability and the block price for each day.
+	 * May have older dates, but we don't filter them here, we do that client side.
 	 * 
 	 * @return array
 	 */

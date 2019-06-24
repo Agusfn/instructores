@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use Log;
 use App\Reservation;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Instructor\Reservations\ReservationAutoRejected;
+use App\Mail\User\Reservations\ReservationRejectAutomatic;
 
 class RejectUnconfirmedReservations extends Command
 {
@@ -50,8 +53,8 @@ class RejectUnconfirmedReservations extends Command
 
             $reservation->reject("Reserva rechazada de forma automática por falta de confirmación del instructor.");
                 
-            //<mail>
-
+            Mail::to($reservation->instructor)->send(new ReservationAutoRejected($reservation->instructor, $reservation));
+            Mail::to($reservation->user)->send(new ReservationRejectAutomatic($reservation->user, $reservation));
         }
     }
 }

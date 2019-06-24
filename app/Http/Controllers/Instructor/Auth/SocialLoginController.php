@@ -15,6 +15,15 @@ class SocialLoginController extends Controller
 {
 	
 
+    /**
+     * Redirect instructors after logging in (if no intended redirection)
+     * @var string
+     */
+    public $redirectTo = "/";
+
+
+
+
 	public function __construct()
 	{
 		$this->middleware('guest:user,instructor')->except('logout');
@@ -71,21 +80,12 @@ class SocialLoginController extends Controller
     			return redirect()->route("instructor.login")->withErrors("Ya existe una cuenta de usuario (no instructor) registrada con esta cuenta de ".$provider.".");
     		}
 
-    		$instructor = Instructor::create([
-    			"name" => isset($socialUser->user["given_name"]) ? $socialUser->user["given_name"] : Strings::getFirstName($socialUser->name),
-    			"surname" => isset($socialUser->user["family_name"]) ? $socialUser->user["family_name"] : Strings::getLastName($socialUser->name),
-    			"email" => $socialUser->email,
-    			"provider" => $provider,
-    			"provider_id" => $socialUser->id,
-    			"approved" => false,
-    		]);
-
-    		$instructor->setProfilePicFromImgUrl(str_replace("type=normal", "type=large", $socialUser->avatar));
-
+            $instructor = SocialLogin::createInstructor($socialUser, $provider);
     	}
 
     	Auth::guard("instructor")->login($instructor);
-    	return redirect()->route("home");
+
+    	return redirect()->intended($this->redirectTo);
     }
 
 
