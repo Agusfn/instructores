@@ -165,7 +165,7 @@
                     <div class="col-lg-4 col-md-6" id="box4">
                     <a class="box_feat" id="contben">
                         <i class="pe-7s-headphones"></i>
-                        <h3>Soporte por chat</h3>
+                        <h3>Soporte online</h3>
                         <p>Te brindamos servicio de soporte via chat 24/7.</p>
                     </a>
                 </div>

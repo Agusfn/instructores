@@ -18,7 +18,7 @@
         <!--BARRA DE OFERTAS-->
          <div class="container" >  
                 <div class="col-lg-6 col-md-6 float-left" id="barraofertas" >                       
-                            <a id="ofertas" href="{{ route('become-instructor') }}" class="btn_1 rounded">¡Ofertas disponibles! Finalizan en: 05:40:03 Horas</a>
+                            <a id="ofertas" href="{{ route('become-instructor') }}" class="btn_1 rounded">¡Ofertas disponibles! Finalizan en: 05:40:03 Horas.</a>
                 </div>
                  </div>
         <!--/BARRA DE OFERTAS-->        

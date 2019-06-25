@@ -78,7 +78,7 @@ header.header.sticky #logo p{
 }
 #bannerbox1{
 
-	padding: 25px 30px 41px 30px;
+	padding: 25px 30px 7px 30px;
 
      	
 } 
@@ -321,3 +321,14 @@ a.btn_1.full-width.purchase, .btn_1.full-width.purchase {
 #login p{
   color: black;
 }
+
+
+
+
+/*seccion sos instructor*/
+
+#contsosinsts h4{
+	margin-top: 12% !important;
+	
+}
+
