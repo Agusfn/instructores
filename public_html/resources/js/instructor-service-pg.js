@@ -31,6 +31,22 @@ $(document).ready(function() {
 		}
 	});
 
+
+	$("#date-range-selector").daterangepicker({
+		minDate: start_date,
+		maxDate: end_date,
+		locale: {
+            format: 'DD/MM/YYYY',
+            cancelLabel: 'Cancelar'
+		},
+	}, function(start, end, label) {
+		$("#date_start").val(start.format("DD/MM/YYYY"));
+		$("#date_end").val(end.format("DD/MM/YYYY"));
+	});
+
+
+
+
 	imgDropzone.on("success", function(file, response) {
    		file.name_in_server = response.img.name;
    		console.log(file);
@@ -332,8 +348,7 @@ function insert_date_range_row(date_start, date_end, block_price, range_id)
 {
 	var html = `
 	<tr>
-		<td>`+ date_start +`</td>
-		<td>` + date_end + `</td>
+		<td>`+ date_start +` - ` + date_end + `</td>
 		<td>$` + block_price + `</td>
 		<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="` + range_id + `"><i class="fa fa-times" aria-hidden="true"></i></button></td>
 	</tr>`;

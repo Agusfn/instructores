@@ -75,12 +75,22 @@
 				</div>
 				@endif
 
-				@include('layouts.errors')
+                @if(!$errors->has('cant_activate') && $errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ $errors->first() }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                @endif
+
 
 				<h5 style="margin-bottom: 20px">
-					Información del servicio <span style="font-size:15px">(<a href="{{ url('instructor/'.$service->number) }}" target="_blank">ver pag</a>)</span>
+					Información del servicio
 
 					@if($service->published)
+					<span style="font-size:15px">(<a href="{{ url('instructor/'.$service->number) }}" target="_blank">ver pag</a>)</span>
+
 					<form style="float:right;" action="{{ url('instructor/panel/servicio/pausar') }}" method="POST">
 						@csrf
 						<button class="btn btn-default">Pausar publicación</button>
@@ -121,8 +131,8 @@
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
-							<label>Características&nbsp;&nbsp;&nbsp;<i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Ingresa características que quieras resaltar de las clases brindadas, separandolas con saltos de linea."></i></label>
-							<textarea name="features" class="form-control{{ $errors->has('features') ? ' is-invalid' : '' }}" form="service-details" style="height: 130px;" placeholder="Ej:&#10;Todos los niveles&#10;Todas las edades">{{ $service->features }}</textarea>
+							<label>Características&nbsp;&nbsp;&nbsp;<i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Ingresa características que quieras resaltar de las clases brindadas, separandolas una por linea."></i></label>
+							<textarea name="features" class="form-control{{ $errors->has('features') ? ' is-invalid' : '' }}" form="service-details" style="height: 130px;" placeholder="Ej:&#10;Todos los niveles&#10;Todas las edades">{{ old('features') ?: $service->features }}</textarea>
 						    @if ($errors->has('features'))
 						        <span class="invalid-feedback" role="alert">
 						            <strong>{{ $errors->first('features') }}</strong>
@@ -143,44 +153,46 @@
 					</form>
 				</div>
 
+				<hr>
+
 				<form method="POST" action="{{ url('instructor/panel/servicio/guardar_cambios') }}" id="service-details">
 					@csrf
 					<h5 style="margin: 30px 0">Disponibilidad y precios</h5>
 
-
-					<table class="table table-sm">
-						<thead>
-							<tr>
-								<th>Desde</th>
-								<th>Hasta</th>
-								<th>Precio bloque 2hs</th>
-								<th></th>
-							</tr>
-						</thead>
-
-						<tbody>
-							@foreach($service->dateRanges()->orderBy('date_start', 'ASC')->get() as $dateRange)
-							<tr>
-								<td>{{ $dateRange->date_start->format('d/m/Y') }}</td>
-								<td>{{ $dateRange->date_end->format('d/m/Y') }}</td>
-								<td>${{ round($dateRange->price_per_block, 2) }}</td>
-								<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="{{ $dateRange->range_id }}"><i class="fa fa-times" aria-hidden="true"></i></button></td>
-							</tr>
-							@endforeach
-							<tr id="insert-form-row">
-								<td><input type="text" class="form-control" id="date_start"></td>
-								<td><input type="text" class="form-control" id="date_end"></td>
-								<td><input type="text" class="form-control" id="block_price"></td>
-								<td><button type="button" class="btn btn-success btn-sm" id="btn_submit_range"><i class="fa fa-plus" aria-hidden="true"></i></button></td>
-							</tr>
-						</tbody>
-					</table>
-
-					
 					<div class="row">
 
-						<div class="col-md-5">
+						<div class="col-md-7">
+							<table class="table table-sm">
+								<thead>
+									<tr>
+										<th>Rango</th>
+										<th>Precio bloque 2hs</th>
+										<th></th>
+									</tr>
+								</thead>
 
+								<tbody>
+									@foreach($service->dateRanges()->orderBy('date_start', 'ASC')->get() as $dateRange)
+									<tr>
+										<td>{{ $dateRange->date_start->format('d/m/Y')." - ".$dateRange->date_end->format('d/m/Y') }}</td>
+										<td>${{ round($dateRange->price_per_block, 2) }}</td>
+										<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="{{ $dateRange->range_id }}"><i class="fa fa-times" aria-hidden="true"></i></button></td>
+									</tr>
+									@endforeach
+									<tr id="insert-form-row">
+										<td>
+											<input type="text" class="form-control" id="date-range-selector">
+											<input type="hidden" class="form-control" id="date_start">
+											<input type="hidden" class="form-control" id="date_end">
+										</td>
+										<td><input type="text" class="form-control" id="block_price"></td>
+										<td><button type="button" class="btn btn-success btn-sm" id="btn_submit_range"><i class="fa fa-plus" aria-hidden="true"></i></button></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div class="col-md-1"></div>
+						<div class="col-md-4">
 							<h6>Horario de disponibilidad diario</h6>
 							<div style="padding: 45px 0;">
 								<div id="hour_slider"></div>
@@ -194,13 +206,16 @@
 							<input type="hidden" name="worktime_hour_end" value="{{ $service->worktime_hour_end }}" autocomplete="off">
 							<input type="hidden" name="worktime_alt_hour_start" value="{{ $service->worktime_alt_hour_start }}" autocomplete="off" @if(!$service->worktime_alt_hour_start) disabled="" @endif>
 							<input type="hidden" name="worktime_alt_hour_end" value="{{ $service->worktime_alt_hour_end }}" autocomplete="off" @if(!$service->worktime_alt_hour_end) disabled="" @endif>
-
 						</div>
 
-						<div class="col-md-2"></div>
+					</div>
+
+					<hr>
+					
+					<div class="row">
 
 						<div class="col-md-5">
-							
+
 							<div style="margin-top: 15px">
 								<input type="checkbox" id="allow-adults" autocomplete="off" name="allow_adults" @if($service->offered_to_adults) checked @endif>
 								<label for="allow-adults" style="cursor: pointer;margin-left: 10px;">Permitir clases a adultos</label>
@@ -211,6 +226,12 @@
 								<label for="allow-kids" style="cursor: pointer;margin-left: 10px;">Permitir clases a niños</label>
 							</div>
 
+						</div>
+
+						<div class="col-md-2"></div>
+
+						<div class="col-md-5">
+							
 							<div class="form-group" style="margin-top: 20px">
 								<input type="checkbox" id="allow-group-classes" autocomplete="off" name="allow_groups" @if($service->allows_groups) checked @endif>
 								<label for="allow-group-classes" style="cursor: pointer;margin-left: 10px;">Permitir clases grupales</label>
@@ -285,6 +306,8 @@
 		@else
 		var uploaded_imgs = [];
 		@endif
+		var start_date = "{{ $activityStartDate->isPast() ? (new Carbon\Carbon())->format('d/m/Y') : $activityStartDate->format('d/m/Y') }}";
+		var end_date = "{{ $activityEndDate->format('d/m/Y') }}";
 	</script>
 	@endif
 @endsection

@@ -48,41 +48,46 @@
 							<th></th>
 							<th>Nombre completo</th>
 							<th>Email</th>
-							<th>Verificado</th>
+							<th>Aprobación</th>
 							<th>Reservas</th>
 							<th>Saldo</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($instructors as $instructor)
-						<tr>
-							<td>
-								<a href="{{ route('admin.instructors.details', $instructor->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a>
-							</td>
-							<td><img src="{{ $instructor->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
-							<td>{{ $instructor->name.' '.$instructor->surname }}</td>
-							<td>{{ $instructor->email }}</td>
-							<td>
-								@if(!$instructor->isApproved())
-									@if(!$instructor->approvalDocsSent())
-									<span class="badge badge-dark">Pendiente envío documentos</span>
+						@if($instructors->count() == 0)
+							<tr><td colspan="7" style="text-align: center;">No hay instructores</td></tr>
+						@else
+							@foreach($instructors as $instructor)
+							<tr>
+								<td>
+									<a href="{{ route('admin.instructors.details', $instructor->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a>
+								</td>
+								<td><img src="{{ $instructor->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
+								<td>{{ $instructor->name.' '.$instructor->surname }}</td>
+								<td>{{ $instructor->email }}</td>
+								<td>
+									@if(!$instructor->isApproved())
+										@if(!$instructor->approvalDocsSent())
+										<span class="badge badge-dark">Pendiente envío documentos</span>
+										@else
+										<span class="badge badge-warning">Docs. enviados. Pendiente aprobacion.</span>
+										@endif
 									@else
-									<span class="badge badge-warning">Docs. enviados. Pendiente aprobacion.</span>
+										<span class="badge badge-success">Verificado</span>
 									@endif
-								@else
-									<span class="badge badge-success">Verificado</span>
-								@endif
-							</td>
-							<td>{{ $instructor->reservations()->count() }}</td>
-							<td>
-								@if($instructor->isApproved())
-								${{ round($instructor->wallet->balance, 2) }} ARS
-								@else
-								-
-								@endif
-							</td>
-						</tr>
-						@endforeach
+								</td>
+								<td>{{ $instructor->reservations()->count() }}</td>
+								<td>
+									@if($instructor->isApproved())
+									${{ round($instructor->wallet->balance, 2) }} ARS
+									@else
+									-
+									@endif
+								</td>
+							</tr>
+							@endforeach
+						@endif
+
 					</tbody>
 				</table>
 				{{ $instructors->links() }}

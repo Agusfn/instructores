@@ -38,7 +38,11 @@
     <!-- /RESULTADO DE LA BUSQUEDA -->
 	<div class="container margin_60_35">
 		
-		<h4 id="no-results" style="text-align: center; display: none">No se encontraron resultados</h4>
+		<div id="no-results" style="display: none;text-align: center;">
+			<h4>No se encontraron resultados</h4>
+			<a href="{{ route('home') }}">Volver a buscar</a>
+		</div>
+
 		<div class="wrapper-grid" id="search-results">
 			<div class="row">
 			

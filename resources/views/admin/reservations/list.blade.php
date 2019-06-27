@@ -39,54 +39,58 @@
 						</tr>
 					</thead>
 					<tbody>
-						
-						@foreach($reservations as $reservation)
+						@if($reservations->count() == 0)
+							<tr><td colspan="9" style="text-align: center;">No hay reservas</td></tr>
+						@else
+							@foreach($reservations as $reservation)
 
-						<tr>
-							<td><a href="{{ route('admin.reservations.details', $reservation->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
-							<td>{{ $reservation->code }}</td>
-							<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
-							<td>
-								@if($reservation->isPaymentPending())
-									<span class="badge badge-secondary">Pago pendiente -
-									@if($reservation->lastPayment->isPending()) 
-									Efectivo
-									@elseif($reservation->lastPayment->isProcessing())
-									Procesando
-									@elseif($reservation->lastPayment->isFailed())
-									Reintentar
+							<tr>
+								<td><a href="{{ route('admin.reservations.details', $reservation->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+								<td>{{ $reservation->code }}</td>
+								<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
+								<td>
+									@if($reservation->isPaymentPending())
+										<span class="badge badge-secondary">Pago pendiente -
+										@if($reservation->lastPayment->isPending()) 
+										Efectivo
+										@elseif($reservation->lastPayment->isProcessing())
+										Procesando
+										@elseif($reservation->lastPayment->isFailed())
+										Reintentar
+										@endif
+										</span>
+									@elseif($reservation->isPendingConfirmation())
+										<span class="badge badge-primary">Pend. confirmación instructor</span>
+									@elseif($reservation->isFailed())
+										<span class="badge badge-danger">Pago fallido</span>
+									@elseif($reservation->isRejected())
+										<span class="badge badge-danger">Rechazada por instructor</span>
+									@elseif($reservation->isConfirmed())
+										<span class="badge badge-success">Confirmada</span>
+									@elseif($reservation->isConcluded())
+										<span class="badge badge-success">Concluída</span>
+									@elseif($reservation->isCanceled())
+										<span class="badge badge-danger">Cancelada</span>
 									@endif
-									</span>
-								@elseif($reservation->isPendingConfirmation())
-									<span class="badge badge-primary">Pend. confirmación instructor</span>
-								@elseif($reservation->isFailed())
-									<span class="badge badge-danger">Pago fallido</span>
-								@elseif($reservation->isRejected())
-									<span class="badge badge-danger">Rechazada por instructor</span>
-								@elseif($reservation->isConfirmed())
-									<span class="badge badge-success">Confirmada</span>
-								@elseif($reservation->isConcluded())
-									<span class="badge badge-success">Concluída</span>
-								@elseif($reservation->isCanceled())
-									<span class="badge badge-danger">Cancelada</span>
-								@endif
-							</td>
-							<td>
-								<a href="{{ route('admin.users.details', $reservation->user->id) }}">
-								{{ $reservation->user->name.' '.$reservation->user->surname }}
-								</a>
-							</td>
-							<td>
-								<a href="{{ route('admin.instructors.details', $reservation->instructor->id) }}">
-								{{ $reservation->instructor->name.' '.$reservation->instructor->surname }}
-								</a>
-							</td>
-							<td>{{ $reservation->reserved_class_date->format('d/m/Y') }}&nbsp;&nbsp;&nbsp;{{ $reservation->readableHourRange(true) }}</td>
-							<td>{{ $reservation->personAmount() }}</td>
-							<td>${{ round($reservation->final_price, 2) }}</td>
-						</tr>
+								</td>
+								<td>
+									<a href="{{ route('admin.users.details', $reservation->user->id) }}">
+									{{ $reservation->user->name.' '.$reservation->user->surname }}
+									</a>
+								</td>
+								<td>
+									<a href="{{ route('admin.instructors.details', $reservation->instructor->id) }}">
+									{{ $reservation->instructor->name.' '.$reservation->instructor->surname }}
+									</a>
+								</td>
+								<td>{{ $reservation->reserved_class_date->format('d/m/Y') }}&nbsp;&nbsp;&nbsp;{{ $reservation->readableHourRange(true) }}</td>
+								<td>{{ $reservation->personAmount() }}</td>
+								<td>${{ round($reservation->final_price, 2) }}</td>
+							</tr>
 
-						@endforeach
+							@endforeach
+						@endif
+
 
 					</tbody>
 				</table>

@@ -394,8 +394,10 @@
 <script src="{{ asset('resources/js/service-public-pg.js') }}"></script>
 
 <script>
-var activity_start = "{{ App\Lib\Reservations::getCurrentYearActivityStart()->format('d/m/Y') }}";
-var activity_end = "{{ App\Lib\Reservations::getCurrentYearActivityEnd()->format('d/m/Y') }}";
+
+var start_date = "{{ $activityStartDate->isPast() ? (new Carbon\Carbon())->format('d/m/Y') : $activityStartDate->format('d/m/Y') }}";
+var end_date = "{{ $activityEndDate->format('d/m/Y') }}";
+
 var app_url = "{{ config('app.url').'/' }}";
 var serv_number = {{ $service->number }};
 var group_discounts = {!! json_encode($service->getGroupDiscounts()) !!};

@@ -68,7 +68,7 @@ class SocialLoginController extends Controller
     		$socialUser = Socialite::with($provider)->user();
     	}
     	catch(\Exception $e) {
-    		return redirect()->route('user.login')->withErrors("Ocurrió un error intentando iniciar sesión, intentalo nuevamente.");
+    		return redirect()->route("user.login")->withErrors("Ocurrió un error intentando iniciar sesión, intentalo nuevamente.");
     	}
 
 
@@ -84,7 +84,7 @@ class SocialLoginController extends Controller
     	}
 
         if($user->suspended) {
-            return redirect()->back()->withErrors("La cuenta de usuario está suspendida.");
+            return redirect()->route("user.login")->withErrors("La cuenta de usuario está suspendida.");
         }
 
     	Auth::guard("user")->login($user);

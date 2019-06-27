@@ -121,25 +121,29 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($walletMovements as $movement)
-								<tr>
-									<td>{{ $movement->date->format('d/m/Y') }}</td>
-									<td>
-										@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
-										Pago de reserva
-										@elseif($movement->motive == App\InstructorWalletMovement::MOTIVE_COLLECTION)
-										Retiro de dinero
-										@endif
-									</td>
-									<td>
-										@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
-										<a href="{{ route('instructor.reservation', $movement->reservation->code) }}">#{{ $movement->reservation->code }}</a>
-										@endif
-									</td>
-									<td>${{ round($movement->net_amount, 2) }}</td>
-									<td>${{ round($movement->new_balance, 2) }}</td>
-								</tr>
-								@endforeach
+								@if($walletMovements->count() == 0)
+									<tr><td colspan="5" style="text-align: center;">No tienes movimientos</td></tr>
+								@else
+									@foreach($walletMovements as $movement)
+									<tr>
+										<td>{{ $movement->date->format('d/m/Y') }}</td>
+										<td>
+											@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
+											Pago de reserva
+											@elseif($movement->motive == App\InstructorWalletMovement::MOTIVE_COLLECTION)
+											Retiro de dinero
+											@endif
+										</td>
+										<td>
+											@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
+											<a href="{{ route('instructor.reservation', $movement->reservation->code) }}">#{{ $movement->reservation->code }}</a>
+											@endif
+										</td>
+										<td>${{ round($movement->net_amount, 2) }}</td>
+										<td>${{ round($movement->new_balance, 2) }}</td>
+									</tr>
+									@endforeach
+								@endif
 							</tbody>
 						</table>
 
@@ -221,7 +225,7 @@
 
 @section('custom-js')
 
-@if(!$errors->collection->isEmpty() && $instructor->isApproved())
+@if($instructor->isApproved() && !$errors->collection->isEmpty())
 <script type="text/javascript">
 	$('#collection-modal').modal("show");
 </script>

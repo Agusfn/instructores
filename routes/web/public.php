@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Public Web Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -36,12 +36,6 @@ Route::post("reservar/{service_number}/procesar", "ReservationsController@proces
 Route::get("reservar/resultado/{reservation_code}", "ReservationsController@showResult")->name("reservation.result");
 Route::get("reservar/{reservation_code}/reintentar-pago", "ReservationsController@retryPaymentForm")->name("reservation.retry-payment");
 Route::post("reservar/{reservation_code}/reintentar-pago", "ReservationsController@retryMpPayment");
-
-
-/*Route::get('email/verificar', 'Auth\VerificationController@show')->name('verification.notice');
-Route::get('email/verificar/{email}', 'Auth\VerificationController@verify')->name('verification.verify');
-Route::get('email/reenviar', 'Auth\VerificationController@resend')->name('verification.resend');*/
-
 
 
 

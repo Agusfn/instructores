@@ -279,11 +279,11 @@
         $('input[name="date"]').daterangepicker({
             singleDatePicker: true,
             autoUpdateInput: false,
-            minDate: "{{ $activityStartDate->format('d/m/Y') }}",
+            minDate: "{{ $activityStartDate->isPast() ? (new Carbon\Carbon())->format('d/m/Y') : $activityStartDate->format('d/m/Y') }}",
             maxDate: "{{ $activityEndDate->format('d/m/Y') }}",
             locale: {
                 format: 'DD/MM/YYYY',
-                cancelLabel: 'Clear'
+                cancelLabel: 'Cancelar'
             }
         });
 

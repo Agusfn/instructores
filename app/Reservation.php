@@ -202,7 +202,6 @@ class Reservation extends Model
                     ->orWhereRaw("STR_TO_DATE(concat(reserved_class_date,' ',reserved_time_start,':00:00'),'%Y-%m-%d %H:%i:%s') >= NOW()");
 
             });
-        ]);
     }
 
 

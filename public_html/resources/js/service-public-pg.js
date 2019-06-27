@@ -13,8 +13,8 @@ $(document).ready(function() {
 
 
 	$('#date-picker-input').daterangepicker({
-		minDate: pickerStartDate(),
-		maxDate: activity_end,
+		minDate: start_date,
+		maxDate: end_date,
 		autoUpdateInput: false,
 		singleDatePicker: true,
 		opens: 'left',
@@ -276,18 +276,6 @@ function fetchCalendarData(callback)
 	    }
 	});
 
-}
-
-
-/**
- * Start date. Activity start date or today if it has already passed.
- */
-function pickerStartDate()
-{
-	if(moment() < moment(activity_start, DATE_FORMAT)) {
-		return activity_start;
-	}
-	return moment().format(DATE_FORMAT);
 }
 
 

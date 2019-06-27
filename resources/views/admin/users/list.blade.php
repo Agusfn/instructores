@@ -53,16 +53,21 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($users as $user)
-						<tr>
-							<td><a href="{{ route('admin.users.details', $user->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
-							<td><img src="{{ $user->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
-							<td>{{ $user->id }}</td>
-							<td>{{ $user->name.' '.$user->surname }}</td>
-							<td>{{ $user->email }}</td>
-							<td>{{ $user->reservations()->count() }}</td>
-						</tr>
-						@endforeach
+						@if($users->count() == 0)
+							<tr><td colspan="6" style="text-align: center;">No hay usuarios</td></tr>
+						@else
+							@foreach($users as $user)
+							<tr>
+								<td><a href="{{ route('admin.users.details', $user->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+								<td><img src="{{ $user->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
+								<td>{{ $user->id }}</td>
+								<td>{{ $user->name.' '.$user->surname }}</td>
+								<td>{{ $user->email }}</td>
+								<td>{{ $user->reservations()->count() }}</td>
+							</tr>
+							@endforeach
+						@endif
+
 					</tbody>
 				</table>
 

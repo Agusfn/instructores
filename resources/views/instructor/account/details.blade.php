@@ -157,6 +157,7 @@
 				@if(!$instructor->approvalDocsSent())
 
 					<hr>
+					<a name="verificar-cuenta"></a>
 					<h4 style="margin: 20px 0 30px">Verificar cuenta</h4>
 
 					<p>Necesitamos verificar tu identidad y tu certificación como instructor para que puedas empezar a ofrecer tus servicios.</p>
@@ -180,7 +181,7 @@
 					        </span>
 							</div>
 							<div class="form-group">
-								<label>Fotos de ambas caras del certificado profesional</label>
+								<label>Fotos de ambas caras del certificado profesional emitido por la AADIDESS</label>
 								<input type="file" style="display: block;" name="certificate_imgs[]" multiple="multiple" accept="image/*">
 							    @if ($errors->has('certificate_imgs'))
 							        <span class="invalid-feedback" role="alert" style="display: block;">
@@ -197,7 +198,7 @@
 						</form>
 
 					@else
-						<h6>Para comenzar, ingresá tu número de teléfono y seleccioná una foto de perfil.</h6>
+						<h6>Para comenzar, <a href="{{ url('instructor/panel/cuenta/modificar') }}">ingresá tu número de teléfono</a> y seleccioná una foto de perfil.</h6>
 					@endif
 
 

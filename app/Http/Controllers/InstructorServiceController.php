@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Lib\Reservations;
 use App\InstructorService;
 use Illuminate\Http\Request;
 
@@ -23,7 +24,9 @@ class InstructorServiceController extends Controller
 
 		return view("service")->with([
 			"service" => $service,
-			"instructor" => $service->instructor
+			"instructor" => $service->instructor,
+            "activityStartDate" => Reservations::getCurrentYearActivityStart(),
+            "activityEndDate" => Reservations::getCurrentYearActivityEnd()
 		]);
 	}
 

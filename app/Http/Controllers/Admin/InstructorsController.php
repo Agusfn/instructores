@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Mail\Instructor\InstructorApproved;
-use Mail\Instructor\InstructorDocsRejected;
+use \App\Mail\Instructor\InstructorApproved;
+use \App\Mail\Instructor\InstructorDocsRejected;
 use Intervention\Image\ImageManagerStatic as Image;
 
 

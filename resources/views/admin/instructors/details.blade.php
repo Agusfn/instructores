@@ -71,7 +71,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="$('#approve-form').submit();">Confirmar</button>
+				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Aprobar instructor?')) $('#approve-form').submit();">Confirmar</button>
 			</div>
 		</div>
 	</div>
@@ -105,7 +105,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="$('#reject-docs-form').submit();">Confirmar</button>
+				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Rechazar documentacion?')) $('#reject-docs-form').submit();">Confirmar</button>
 			</div>
 		</div>
 	</div>
@@ -131,12 +131,12 @@
 
 		<div class="box_general padding_bottom">
 			
-			<form action="{{ url('admin/instructores/'.$instructor->id.'/suspender') }}" method="POST">
+			<form action="{{ url('admin/instructores/'.$instructor->id.'/suspender') }}" method="POST" style="display: inline;margin-right: 30px">
 				@csrf
 				@if(!$instructor->suspended)
-				<button type="button" class="btn btn-danger" onclick="if(confirm('¿Suspender cuenta?')) $(this).parent().submit();">Suspender cuenta</button>
+				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿Suspender cuenta?')) $(this).parent().submit();">Suspender cuenta</button>
 				@else
-				<button type="button" class="btn btn-info" onclick="if(confirm('¿Reahabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
+				<button type="button" class="btn btn-info btn-sm" onclick="if(confirm('¿Reahabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
 				@endif
 			</form>
 
@@ -223,7 +223,7 @@
 								@if($instructor->approvalDocsSent())
 
 									@foreach(explode(',', $instructor->professional_cert_imgs) as $fileName)
-										<a href="{{ route('admin.instructors.documents', ['id' => $instructor->id, 'filename' => $fileName]) }}" target="_blank">Imágen</a><br/>
+										<a href="{{ route('admin.instructors.documents', ['id' => $instructor->id, 'filename' => $fileName]) }}" target="_blank">Imágen {{ ($loop->index+1) }}</a><br/>
 									@endforeach
 
 								@else
@@ -235,7 +235,7 @@
 								@if($instructor->approvalDocsSent())
 
 									@foreach(explode(',', $instructor->identification_imgs) as $fileName)
-										<a href="{{ route('admin.instructors.documents', ['id' => $instructor->id, 'filename' => $fileName]) }}" target="_blank">Imágen</a><br/>
+										<a href="{{ route('admin.instructors.documents', ['id' => $instructor->id, 'filename' => $fileName]) }}" target="_blank">Imágen {{ ($loop->index+1) }}</a><br/>
 									@endforeach
 
 								@else
@@ -304,7 +304,7 @@
 							<div class="col-md-3">
 								<label><strong>Registrado el</strong></label><br/>
 								@if($instructor->created_at)
-								{{ $instructor->created_at->format('d/m/Y H:i:s') }}
+								{{ $instructor->created_at->format('d/m/Y') }}
 								@else
 								-
 								@endif

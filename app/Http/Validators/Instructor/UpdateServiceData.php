@@ -9,10 +9,10 @@ class UpdateServiceData extends Validator
 {
     
     public static $rules = array(
-		"description" => "required|string",
+		"description" => "required|string|between:0,1500",
         "snowboard_discipline" => "required_without:ski_discipline",
         "ski_discipline" => "required_without:snowboard_discipline",
-		"features" => "required|string",
+		"features" => "required|string|between:0,300",
 		"worktime_hour_start" => "required|integer",
 		"worktime_hour_end" => "required|integer",
 		"worktime_alt_hour_start" => "integer|gt:worktime_hour_end",

@@ -32,12 +32,15 @@ class AccountBalanceController extends Controller
 		$instructor = Auth::user();
 		$instructor->load("bankAccount", "wallet");
 
-		$walletMovements = $instructor->wallet->movements()->orderBy("date", "DESC")->paginate(10);
+		if($instructor->isApproved())
+			$walletMovements = $instructor->wallet->movements()->orderBy("date", "DESC")->paginate(10);
+		else
+			$walletMovements = null;
 
 		return view("instructor.balance.overview")->with([
 			"instructor" => $instructor,
-			"bankAccount" => $instructor->bankAccount, // null if not configured by instructor
-			"wallet" => $instructor->wallet,
+			"bankAccount" => $instructor->bankAccount, // null if not approved/not configured by instructor
+			"wallet" => $instructor->wallet, // null if not approved
 			"walletMovements" => $walletMovements
 		]);
 	}

@@ -75,7 +75,7 @@ class AccountDetailsController extends Controller
 		$request->validate([
 			"name" => "required|string|between:3,50",
 			"surname" => "required|string|between:3,50",
-			"phone_number" => "nullable|string|between:5,20|regex:/^[0-9+ -]*$/"
+			"phone_number" => "nullable|string|between:5,30|regex:/^[0-9+ -]*$/"
 		]);
 
 		$user = Auth::user();

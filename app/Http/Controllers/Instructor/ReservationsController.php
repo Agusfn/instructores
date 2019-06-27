@@ -17,8 +17,8 @@ class ReservationsController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware("auth:instructor")->only("index");
-		$this->middleware("instructor.approved")->except("index");
+		$this->middleware("auth:instructor")->only("showList");
+		$this->middleware("instructor.approved")->except("showList");
 	}
 
 
@@ -31,7 +31,7 @@ class ReservationsController extends Controller
 		$instructor = Auth::user();
 
 		if($instructor->isApproved()) {
-			$reservations = $instructor->reservations()->orderBy("created_at", "DESC")->paginate(10);
+			$reservations = $instructor->reservations()->with("user")->orderBy("created_at", "DESC")->paginate(10);
 		}
 		else
 			$reservations = null;

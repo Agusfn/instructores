@@ -38,34 +38,38 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($reservations as $reservation)
-						<tr>
-							<td><a href="{{ url('instructor/panel/reservas/'.$reservation->code) }}"><i class="fa fa-search" aria-hidden="true"></i></a></td>
-							<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
-							<td>{{ $reservation->code }}</td>
-							<td>
-								@if($reservation->isPaymentPending())
-								<span class="badge badge-secondary">Pago pendiente</span>
-								@elseif($reservation->isPendingConfirmation())
-								<span class="badge badge-primary">Pagada - Confirmar</span>
-								@elseif($reservation->isFailed())
-								<span class="badge badge-danger">Pago fallido</span>
-								@elseif($reservation->isRejected())
-								<span class="badge badge-danger">Rechazada por instructor</span>
-								@elseif($reservation->isConfirmed())
-								<span class="badge badge-success">Confirmada</span>
-								@elseif($reservation->isConcluded())
-								<span class="badge badge-danger">Concluída</span>
-								@elseif($reservation->isCanceled())
-								<span class="badge badge-danger">Cancelada</span>
-								@endif
-							</td>
-							<td>{{ $reservation->user->name.' '.$reservation->user->surname[0].'.' }}</td>
-							<td>{{ $reservation->reserved_class_date->format('d/m') }}&nbsp;&nbsp;&nbsp;{{ $reservation->readableHourRange(true) }}</td>
-							<td>{{ $reservation->personAmount() }}</td>
-							<td>${{ floatval($reservation->final_price) }}</td>
-						</tr>
-						@endforeach
+						@if($reservations->count() == 0)
+							<tr><td colspan="8" style="text-align: center;">No tienes reservas</td></tr>
+						@else
+							@foreach($reservations as $reservation)
+							<tr>
+								<td><a href="{{ url('instructor/panel/reservas/'.$reservation->code) }}"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+								<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
+								<td>{{ $reservation->code }}</td>
+								<td>
+									@if($reservation->isPaymentPending())
+									<span class="badge badge-secondary">Pago pendiente</span>
+									@elseif($reservation->isPendingConfirmation())
+									<span class="badge badge-primary">Pagada - Confirmar</span>
+									@elseif($reservation->isFailed())
+									<span class="badge badge-danger">Pago fallido</span>
+									@elseif($reservation->isRejected())
+									<span class="badge badge-danger">Rechazada por instructor</span>
+									@elseif($reservation->isConfirmed())
+									<span class="badge badge-success">Confirmada</span>
+									@elseif($reservation->isConcluded())
+									<span class="badge badge-danger">Concluída</span>
+									@elseif($reservation->isCanceled())
+									<span class="badge badge-danger">Cancelada</span>
+									@endif
+								</td>
+								<td>{{ $reservation->user->name.' '.$reservation->user->surname[0].'.' }}</td>
+								<td>{{ $reservation->reserved_class_date->format('d/m') }}&nbsp;&nbsp;&nbsp;{{ $reservation->readableHourRange(true) }}</td>
+								<td>{{ $reservation->personAmount() }}</td>
+								<td>${{ floatval($reservation->final_price) }}</td>
+							</tr>
+							@endforeach
+						@endif
 					</tbody>
 				</table>
 

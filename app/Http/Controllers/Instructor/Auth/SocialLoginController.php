@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Instructor\Auth;
 use App\User;
 use Socialite;
 use App\Instructor;
-use App\Lib\Helpers\Strings;
+use App\Lib\SocialLogin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -68,7 +68,7 @@ class SocialLoginController extends Controller
     		$socialUser = Socialite::with($provider)->redirectUrl(config("services.".$provider.".redirect_instructor"))->user();
     	}
     	catch(\Exception $e) {
-    		return redirect()->back()->withErrors("Ocurrió un error intentando iniciar sesión, intentalo nuevamente.");
+    		return redirect()->route("instructor.login")->withErrors("Ocurrió un error intentando iniciar sesión, intentalo nuevamente.");
     	}
 
 
@@ -77,14 +77,14 @@ class SocialLoginController extends Controller
     	if(!$instructor) {
 
     		if(User::findByProviderNameAndId($provider, $socialUser->id)) {
-    			return redirect()->back()->withErrors("Ya existe una cuenta de usuario (no instructor) registrada con esta cuenta de ".$provider.".");
+    			return redirect()->route("instructor.login")->withErrors("Ya existe una cuenta de usuario (no instructor) registrada con esta cuenta de ".$provider.".");
     		}
 
             $instructor = SocialLogin::createInstructor($socialUser, $provider);
     	}
 
         if($instructor->suspended) {
-            return redirect()->back()->withErrors("La cuenta de instructor está suspendida.");
+            return redirect()->route("instructor.login")->withErrors("La cuenta de instructor está suspendida.");
         }
 
 

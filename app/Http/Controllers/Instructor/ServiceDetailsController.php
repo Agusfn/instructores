@@ -4,17 +4,13 @@ namespace App\Http\Controllers\Instructor;
 
 use Validator;
 
-use App\ServiceDateRange;
 
 use Carbon\Carbon;
-use App\Lib\Helpers\Images;
+use App\Lib\Reservations;
+use App\ServiceDateRange;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-//use App\Rules\InstructorWorkHours;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Validators\Instructor\CreateDateRange;
 use App\Http\Validators\Instructor\UpdateServiceData;
 
@@ -44,7 +40,9 @@ class ServiceDetailsController extends Controller
 
 		return view("instructor.service")->with([
 			"instructor" => $instructor,
-			"service" => $instructor->service
+			"service" => $instructor->service, // null if instructor not approved
+            "activityStartDate" => Reservations::getCurrentYearActivityStart(),
+            "activityEndDate" => Reservations::getCurrentYearActivityEnd()
 		]);			
 	}
 
@@ -230,7 +228,7 @@ class ServiceDetailsController extends Controller
 		$validator = new UpdateServiceData($request);
 
 		if($validator->fails()){ 
-			return redirect()->back()->withErrors($validator->messages());
+			return redirect()->back()->withErrors($validator)->withInput();
 		}
 
 		$service = Auth::user()->service;

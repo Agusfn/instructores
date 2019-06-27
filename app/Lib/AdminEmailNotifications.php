@@ -13,10 +13,7 @@ class AdminEmailNotifications
 	public static function recipients()
 	{
 		return [
-			(object)[
-				"email" => "agusfn20@gmail.com", // cambiar
-				"name" => "Agustin"
-			]
+			(object)(config("admin_notifications.recipients")[0])
 		];
 	}
 
