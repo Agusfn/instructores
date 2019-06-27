@@ -3,20 +3,17 @@
 namespace App;
 
 
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use App\Lib\Reservations;
 use App\Lib\Helpers\Dates;
-use App\Lib\BookingIndexes;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Lib\InstructorService\DescriptionImages;
+use App\Lib\InstructorService\BookingIndexes;
 
 
 class InstructorService extends Model
 {
 
-	use DescriptionImages;
+	use DescriptionImages, BookingIndexes;
 
 
 	const DISCIPLINE_SKI = "ski";
@@ -27,14 +24,6 @@ class InstructorService extends Model
      *
      * @var array
      */
-	/*protected $guarded = [
-		"number",
-		"published",
-		"instructor_id",
-		"instructor_level",
-		"images_json",
-		"booking_calendar_json"
-	];*/
 	protected $guarded = [];
 
 
@@ -362,101 +351,6 @@ class InstructorService extends Model
 		return true;
 	}
 
-
-
-
-
-
-	public function rebuildAvailabilityIndexes()
-	{
-
-	}
-
-
-	/********* Make the calendar only include future days, not present day nor past *************/
-
-	/**
-	 * Rebuilds the booking calendar json (stored in booking_calendar_json).
-	 * The json stores, for each day of each month of activity of the current year, the price per block and the availability of each block.
-	 * This json will serve as a pre-processed index for the datepicker on the service page.
-	 * 
-	 * @return null
-	 */
-	public function rebuildJsonBookingCalendar()
-	{
-		$calendar = BookingIndexes::buildBookingCalendar($this);
-
-		$this->booking_calendar_json = json_encode($calendar);
-		$this->save();
-	}
-
-
-
-	/**
-	 * Gets a reduced booking calendar as an array, adapted for use on the date picker. 
-	 * The calendar includes only the availability and the block price for each day.
-	 * May have older dates, but we don't filter them here, we do that client side.
-	 * 
-	 * @return array
-	 */
-	public function getAvailabilityAndPricePerDay()
-	{
-		$calendar = json_decode($this->booking_calendar_json, true);
-
-		foreach($calendar as $monthIndex => $monthData) {
-
-			foreach($monthData as $dayIndex => $dayData) {
-
-				unset($calendar[$monthIndex][$dayIndex]["working_day"]);
-
-				if(!$dayData["available"]) {
-					unset($calendar[$monthIndex][$dayIndex]["ppb"]);
-					unset($calendar[$monthIndex][$dayIndex]["blocks_available"]);
-				}
-
-			}
-
-		}
-
-		return $calendar;
-	}
-
-
-	/**
-	 * Deletes all the available dates registries of this service and creates them all again with the data of the json calendar, WHICH MUST BE UPDATED FIRST.
-	 * Makes an index of all the days that the instructor does offer their service WITHIN the annual activity period (season).
-	 * The index will be used exclusively for the search function.
-	 * This method has to be called every time a reservation is made or cancelled, or each time the instructor makes a change to its working time tables.
-	 * 
-	 * @return null
-	 */
-	public function rebuildAvailableDatesIndex()
-	{
-		
-		DB::table("service_available_dates")->where("instructor_service_id", $this->id)->delete();
-
-		
-		$calendar = json_decode($this->booking_calendar_json, true);
-
-		foreach($calendar as $monthIndex => $monthData) {
-
-			foreach($monthData as $dayIndex => $dayData) {
-
-				if($dayData["available"] == true) {
-
-					DB::table("service_available_dates")->insert([
-						"instructor_service_id" => $this->id,
-						"date" => date("Y")."-".$monthIndex."-".$dayIndex
-					]);
-
-				}
-
-			}
-
-		}
-
-
-	}
 
 
 	/**

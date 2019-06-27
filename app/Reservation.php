@@ -138,14 +138,17 @@ class Reservation extends Model
 
 
     /**
-     * Scope a query to only include reservations within this year's activity period.
+     * Scope a query to only include reservations within this year's activity period, ignoring days previous than today, if we are within the season.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWithinCurrentSeason($query)
+    public function scopeLeftWithinCurrentSeason($query)
     {
     	$startDate = date("Y")."-".Reservations::getActivityStartDate();
+        $today = date("Y-m-d");
+
+        $startDate = ($startDate < $today) ? $today : $startDate;
     	$endDate = date("Y")."-".Reservations::getActivityEndDate();
 
     	return $query->whereBetween("reserved_class_date", [$startDate, $endDate]);
@@ -170,28 +173,35 @@ class Reservation extends Model
 
 
     /**
-     * Scope a query to retrieve reservations which have not been paid and passed their payment retry period.
+     * Scope a query to retrieve reservations which have not been paid and: passed their payment retry period or have passed their classes start time.
      * @param  [type] $query [description]
      * @return [type]        [description]
      */
     public function scopePaymentTimeExpired($query)
     {
-        return $query->where([
-            ["status", "=", self::STATUS_PAYMENT_PENDING],
-            ["created_at", "<=", date("Y-m-d H:i:s", strtotime("-".self::RETRY_PAYMENT_TIME_HS." hour"))]
-        ]);
+        return $query->where("status", self::STATUS_PAYMENT_PENDING)
+            ->where(function ($query) { 
+
+                $query->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-".self::RETRY_PAYMENT_TIME_HS." hour")))
+                    ->orWhereRaw("STR_TO_DATE(concat(reserved_class_date,' ',reserved_time_start,':00:00'),'%Y-%m-%d %H:%i:%s') >= NOW()");
+
+            });
     }
 
     /**
-     * Scope a query to retrieve paid reservations that are pending instructor confirmation, but have not been confirmed for a certain time.
+     * Scope a query to retrieve paid reservations that are pending instructor confirmation and: passed the confirmation period or have passed their class start time.
      * @param  [type] $query [description]
      * @return [type]        [description]
      */
     public function scopeConfirmationTimeExpired($query)
     {
-        return $query->where([
-            ["status", "=", self::STATUS_PENDING_CONFIRMATION],
-            ["updated_at", "<=", date("Y-m-d H:i:s", strtotime("-".self::AUTO_REJECT_TIME_HS." hour"))]
+        return $query->where("status", self::STATUS_PENDING_CONFIRMATION)
+            ->where(function($query) {
+
+                $query->where('updated_at', '<=', date("Y-m-d H:i:s", strtotime("-".self::AUTO_REJECT_TIME_HS." hour")))
+                    ->orWhereRaw("STR_TO_DATE(concat(reserved_class_date,' ',reserved_time_start,':00:00'),'%Y-%m-%d %H:%i:%s') >= NOW()");
+
+            });
         ]);
     }
 
@@ -255,7 +265,7 @@ class Reservation extends Model
 
 
     /**
-     * Get the reserved time blocks that span this reservation.
+     * Get an array of the numbers of the reserved time blocks that span this reservation.
      * @return int[]
      */
     public function reservedTimeBlocks()
@@ -325,21 +335,77 @@ class Reservation extends Model
     }
 
 
+
+    /**
+     * Cancel the reservation for lack of payment.
+     */
+    public function cancelForPaymentFailed()
+    {
+        if(!$this->isPaymentPending())
+            return false;
+
+        $this->status = self::STATUS_PAYMENT_FAILED;
+        $this->save();
+
+        $this->releaseTimeFromInstructor();
+
+    }
+
+
+
     /**
      * Reject a reservation and save it.
      * @param  string $reason
      * @return null
      */
     public function reject($reason)
-    {
+    {   
+        if(!$this->isPendingConfirmation())
+            return;
+
         $this->fill([
             "status" => self::STATUS_REJECTED,
             "reject_message" => $reason
         ]);
         
         $this->save();
+
+        $this->releaseTimeFromInstructor();
     }
 
+
+
+    /**
+     * Cancel this reservation, if it's payment pending, pending confirmation, or confirmed only.
+     * Also, release the time from InstructorService booking indexes.
+     * @return [type] [description]
+     */
+    public function cancel()
+    {
+        if(!$this->isPaymentPending() && !$this->isPendingConfirmation() && !$this->isConfirmed())
+            return false;
+
+        $this->status = self::STATUS_CANCELED;
+        $this->save();
+
+        $this->releaseTimeFromInstructor();
+    }
+
+
+
+
+    /**
+     * Release the reservation occupied booked time from the instructor service.
+     * @return null
+     */
+    private function releaseTimeFromInstructor()
+    {
+        $this->service->unoccupyBlocksInIndexes(
+            $this->reserved_class_date->month, 
+            $this->reserved_class_date->day,
+            Reservations::hourRangeToBlocks($this->reserved_time_start, $this->reserved_time_end)
+        );
+    }
 
 
     /**

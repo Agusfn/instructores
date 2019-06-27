@@ -211,7 +211,7 @@ class Quote
 
 	/**
 	 * Set the length of these classes in ammount of time blocks.
-	 * Must be compatible with instructor working times in the given date, otherwise it's nonsense.
+	 * The important thing is the timeBlocksAmmt, but start and end times should be compatible with instructor working times in the given date.
 	 * @param int $ammount
 	 */
 	public function setBlocksSpan($blockStart, $blockEnd)

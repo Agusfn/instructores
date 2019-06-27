@@ -31,6 +31,7 @@ class CreateInstructorsTable extends Migration
             $table->string('identification_type')->nullable();
             $table->string('identification_number')->nullable();
             $table->integer('level')->nullable();
+            $table->boolean('suspended')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

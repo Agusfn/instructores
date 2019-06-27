@@ -31,11 +31,12 @@ Route::get("admin/instructores/{id}", "Admin\InstructorsController@details")->na
 Route::post("admin/instructores/{id}/aprobar", "Admin\InstructorsController@approve");
 Route::post("admin/instructores/{id}/rechazar_doc", "Admin\InstructorsController@rejectDocs");
 Route::get("admin/instructores/{id}/documentos/{filename}", "Admin\InstructorsController@displayDocumentImg")->name("admin.instructors.documents");
-
+Route::post("admin/instructores/{id}/suspender", "Admin\InstructorsController@toggleSuspend");
 
 // Users
 Route::get("admin/usuarios", "Admin\UsersController@list")->name("admin.users.list");
 Route::get("admin/usuarios/{id}", "Admin\UsersController@details")->name("admin.users.details");
+Route::post("admin/usuarios/{id}/suspender", "Admin\UsersController@toggleSuspend");
 
 
 // Reservations

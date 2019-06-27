@@ -78,8 +78,8 @@ class MercadoPagoWebhookController extends Controller
 				$reservPayment->save();
 
 				if(!$reservPayment->reservation->isConcluded()) {
-					$reservPayment->reservation->status = Reservation::STATUS_CANCELED;
-					$reservPayment->reservation->save();
+
+					$reservPayment->reservation->cancel();
 
 					Mail::to($reservPayment->reservation->instructor)->send(new MailReservChargebackedInstructor($reservPayment->reservation->instructor, $reservPayment->reservation));
 					Mail::to($reservPayment->reservation->user)->send(new MailReservChargebackedUser($reservPayment->reservation->user, $reservPayment->reservation));

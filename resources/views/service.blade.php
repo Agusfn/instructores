@@ -51,7 +51,7 @@
                 <div class="container">
                     <ul class="clearfix">
                         <li><a href="#description" class="active">Descripción</a></li>
-                        <li><a href="#reviews">Comentarios</a></li>
+                        {{--<li><a href="#reviews">Comentarios</a></li>--}}
                         <li><a href="#sidebar">Reservar</a></li>
                     </ul>
                 </div>
@@ -141,7 +141,7 @@
                         </section>
                         <!-- /section -->
                     
-                        <section id="reviews">
+                        {{--<section id="reviews">
                             <h2>Comentarios</h2>
                             <div class="reviews-container">
                                 <div class="row">
@@ -250,53 +250,55 @@
                         <!-- /section -->
                         <hr>
 
-                            <div class="add-review">
-                                <h5>Dejar un comentario</h5>
-                                <form>
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <label>Nombre y apellido*</label>
-                                            <input type="text" name="name_review" id="name_review" placeholder="" class="form-control">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label>Email *</label>
-                                            <input type="email" name="email_review" id="email_review" class="form-control">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label>Calificación </label>
-                                            <div class="custom-select-form">
-                                            <select name="rating_review" id="rating_review" class="wide">
-                                                <option value="1">1 (bajo)</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5" selected>5 (medio)</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10 (alto)</option>
-                                            </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-md-12">
-                                            <label>Comentario</label>
-                                            <textarea name="review_text" id="review_text" class="form-control" style="height:130px;"></textarea>
-                                        </div>
-                                        <div class="form-group col-md-12 add_top_20">
-                                            <input type="submit" value="Submit" class="btn_1" id="submit-review">
+                        <div class="add-review">
+                            <h5>Dejar un comentario</h5>
+                            <form>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label>Nombre y apellido*</label>
+                                        <input type="text" name="name_review" id="name_review" placeholder="" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Email *</label>
+                                        <input type="email" name="email_review" id="email_review" class="form-control">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>Calificación </label>
+                                        <div class="custom-select-form">
+                                        <select name="rating_review" id="rating_review" class="wide">
+                                            <option value="1">1 (bajo)</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5" selected>5 (medio)</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10 (alto)</option>
+                                        </select>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
+                                    <div class="form-group col-md-12">
+                                        <label>Comentario</label>
+                                        <textarea name="review_text" id="review_text" class="form-control" style="height:130px;"></textarea>
+                                    </div>
+                                    <div class="form-group col-md-12 add_top_20">
+                                        <input type="submit" value="Submit" class="btn_1" id="submit-review">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>--}}
+
                     </div>
                     <!-- /col -->
                     
                     <aside class="col-lg-4" id="sidebar">
                         <div class="box_detail booking">
                             <div class="price">
+                                <div id="price-from-label">Desde<br/></div>
                                 <span><span id="price-per-block"></span><small>/ bloque 2hs</small></span>
-                                <div class="score"><span>Excelente<em>350 votos</em></span><strong>9.6</strong></div>
+                                {{--<div class="score"><span>Excelente<em>350 votos</em></span><strong>9.6</strong></div>--}}
                             </div>
 
                             <form method="GET" action="{{ url('reservar/'.$service->number) }}" id="book-form">

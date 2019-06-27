@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('provider_id');
             $table->string('profile_picture')->nullable();
             $table->string('phone_number')->nullable();
+            $table->boolean('suspended')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

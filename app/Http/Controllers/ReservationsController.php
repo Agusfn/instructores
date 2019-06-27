@@ -169,6 +169,11 @@ class ReservationsController extends Controller
 			"billing_country_code" => $request->address_country,
 		]);
 
+		$this->service->occupyBlocksInIndexes(
+			$this->quote->serviceDate->month, 
+			$this->quote->serviceDate->day,
+			range($request->t_start, $request->t_end)
+		);
 
 		$reservPayment = ReservationPayments::makeMpApiPayment(
 			$user,
@@ -180,13 +185,7 @@ class ReservationsController extends Controller
 			$request->installments
 		);
 
-
-
 		$reservation->updateStatusIfPaid();
-
-
-		// <Update instructor calendar availability>
-		// <And update instructor daily availability index for search>
 
 		return redirect()->route("reservation.result", $reservation->code);
 	}

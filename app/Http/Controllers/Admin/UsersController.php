@@ -20,6 +20,8 @@ class UsersController extends Controller
 		return view("admin.users.list")->with("users", $users);
 	}
 
+
+
 	/**
 	 * Display user details page. **** PAGINATE RESERVATIONS ******
 	 * @param  [type] $id [description]
@@ -38,6 +40,26 @@ class UsersController extends Controller
 			"user" => $user,
 			"reservations" => $reservations
 		]);
+	}
+
+
+
+	/**
+	 * Suspender/habilitar usuario.
+	 * @return [type] [description]
+	 */
+	public function toggleSuspend($id)
+	{
+		$user = User::find($id);
+
+		if(!$user)
+			return redirect()->route("admin.users.list");
+
+
+		$user->suspended = $user->suspended ? false : true;
+		$user->save();
+
+		return redirect()->back();
 	}
 
 

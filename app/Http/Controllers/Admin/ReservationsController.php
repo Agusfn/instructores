@@ -82,10 +82,7 @@ class ReservationsController extends Controller
 
 		}
 
-
-		$reservation->status = Reservation::STATUS_CANCELED;
-		$reservation->save();
-
+		$reservation->cancel();
 
 		Mail::to($reservation->instructor)->send(new App\Mail\Instructor\Reservations\ReservationCanceledByAdmin($reservation->instructor, $reservation, $request->cancel_reason));
 		Mail::to($reservation->user)->send(new App\Mail\User\Reservations\ReservationCanceledByAdmin($reservation->user, $reservation, $request->cancel_reason));

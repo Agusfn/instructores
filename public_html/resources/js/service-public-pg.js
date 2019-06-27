@@ -26,8 +26,9 @@ $(document).ready(function() {
 
 	daterangepicker = $('#date-picker-input').data('daterangepicker');
 
-	fetchCalendarData(function(calendar_resp) {
-		calendar = calendar_resp;
+	fetchCalendarData(function(response) {
+		calendar = response["calendar"];
+		$("#price-per-block").text("$"+response["lowest_price"]);
 	});
 
 
@@ -76,7 +77,9 @@ $(document).ready(function() {
 		{
 			price_per_block = dayData.ppb;
 
-			updateTimeBlockButtons(dayData);
+			updateTimeBlockButtons(selected_date, dayData);
+
+			$("#price-from-label").hide();
 			$("#price-per-block").text("$"+Math.round(price_per_block));
 
 			updateTotalSummary();
@@ -227,9 +230,9 @@ function addPricesAndDisableUnavailables()
 			$(elem).removeClass("active start-date end-date");
 
 
-		// Ignore old or current dates to add prices.
+		// Ignore dates previous than today
 		var cellDate = moment().month(month-1).date(day).startOf("day");
-		if(cellDate.isSameOrBefore(moment().startOf("day"))) {
+		if(cellDate.isBefore(moment().startOf("day"))) {
 			return;
 		}
 
@@ -276,7 +279,9 @@ function fetchCalendarData(callback)
 }
 
 
-
+/**
+ * Start date. Activity start date or today if it has already passed.
+ */
 function pickerStartDate()
 {
 	if(moment() < moment(activity_start, DATE_FORMAT)) {
@@ -289,13 +294,41 @@ function pickerStartDate()
 /**
  * Enable or disable time block buttons using the data from json calendar, with a given date.
  */
-function updateTimeBlockButtons(dayData)
+function updateTimeBlockButtons(date, dayData)
 {
+	
+	
 	if(dayData.available) {
-		for(var i=0; i<4; i++) {
-			$("#hour-block-"+i).prop("disabled", !dayData["blocks_available"][i]);
+
+		// If it's today. Disable classes that start in 2 hours or less even if they are available.
+		if(date.isSame(moment().startOf("day")))
+		{
+			for(var i=0; i<4; i++) {
+
+				if(!dayData["block_availability"][i]) {
+					$("#hour-block-"+i).prop("disabled", true);
+				} else {
+
+					var classStartHour = 9 + (i*2);
+
+					if(classStartHour - moment().hour() >= 2)
+						$("#hour-block-"+i).prop("disabled", false);
+					else
+						$("#hour-block-"+i).prop("disabled", true);
+
+				}
+				
+			}
 		}
+		else {
+			for(var i=0; i<4; i++) {
+				$("#hour-block-"+i).prop("disabled", !dayData["block_availability"][i]);
+			}
+		}
+
 	}
+	
+
 }
 
 
@@ -422,6 +455,8 @@ function updateTotalSummary()
 
 }
 
+
+
 /**
  * Calculates the necessary fee that should be added to the provided ammount, to recieve in net that same provided ammount.
  */
@@ -435,6 +470,7 @@ function getServiceCharge(subtotal)
 {
 	return subtotal * 0.15;
 }
+
 
 
 function selectedPeopleAmount()

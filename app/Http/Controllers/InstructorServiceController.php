@@ -41,7 +41,7 @@ class InstructorServiceController extends Controller
 		if(!$service)
 			return response("Invalid service number.", 422);
 
-		return response()->json($service->getAvailabilityAndPricePerDay());
+		return response()->json($service->getCalendarForDatepicker());
 
 	}
 

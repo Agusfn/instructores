@@ -23,6 +23,21 @@
         <li class="breadcrumb-item active">Lista de usuarios</li>
         <li class="breadcrumb-item active">Detalles de usuario</li>
       </ol>
+
+		<div class="box_general padding_bottom">
+			
+			<form action="{{ url('admin/usuarios/'.$user->id.'/suspender') }}" method="POST">
+				@csrf
+				@if(!$user->suspended)
+				<button type="button" class="btn btn-danger" onclick="if(confirm('¿Suspender cuenta?')) $(this).parent().submit();">Suspender cuenta</button>
+				@else
+				<button type="button" class="btn btn-info" onclick="if(confirm('¿Reahabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
+				@endif
+			</form>
+
+		</div>
+
+
       	<div class="row">
 
       		<div class="col-lg-6">

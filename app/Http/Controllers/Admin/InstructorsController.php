@@ -122,7 +122,7 @@ class InstructorsController extends Controller
 
 
 
-	public function displayDocumentImg(Request $request, $id, $filename)
+	public function displayDocumentImg($id, $filename)
 	{	
 		$storagePath = "instructor_documents/".$id."/".$filename;
 		
@@ -134,6 +134,25 @@ class InstructorsController extends Controller
 			return abort(404);
 		}
 
+	}
+
+
+
+	/**
+	 * Suspender/habilitar instructor.
+	 * @return [type] [description]
+	 */
+	public function toggleSuspend($id)
+	{
+		$instructor = Instructor::find($id);
+
+		if(!$instructor)
+			return redirect()->route("admin.instructors.list");
+
+		$instructor->suspended = $instructor->suspended ? false : true;
+		$instructor->save();
+
+		return redirect()->back();
 	}
 
 

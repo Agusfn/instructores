@@ -128,10 +128,19 @@
 			<li class="breadcrumb-item active">Detalles de instructor</li>
 		</ol>
 
-		@if($instructor != null)
 
 		<div class="box_general padding_bottom">
 			
+			<form action="{{ url('admin/instructores/'.$instructor->id.'/suspender') }}" method="POST">
+				@csrf
+				@if(!$instructor->suspended)
+				<button type="button" class="btn btn-danger" onclick="if(confirm('¿Suspender cuenta?')) $(this).parent().submit();">Suspender cuenta</button>
+				@else
+				<button type="button" class="btn btn-info" onclick="if(confirm('¿Reahabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
+				@endif
+			</form>
+
+
 			@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
 			<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#approval-modal">Aprobar instructor</button>
 			<button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#reject-docs-modal">Rechazar documentación</button>
@@ -539,12 +548,6 @@
 
 		</div>
 		<!-- /box_general-->
-
-		@else
-
-		<h3>No se encontró el instructor</h3>
-
-		@endif
 		
 
 @endsection

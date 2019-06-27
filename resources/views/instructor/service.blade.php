@@ -75,6 +75,8 @@
 				</div>
 				@endif
 
+				@include('layouts.errors')
+
 				<h5 style="margin-bottom: 20px">
 					Información del servicio <span style="font-size:15px">(<a href="{{ url('instructor/'.$service->number) }}" target="_blank">ver pag</a>)</span>
 
@@ -190,8 +192,8 @@
 
 							<input type="hidden" name="worktime_hour_start" value="{{ $service->worktime_hour_start }}" autocomplete="off">
 							<input type="hidden" name="worktime_hour_end" value="{{ $service->worktime_hour_end }}" autocomplete="off">
-							<input type="hidden" name="worktime_alt_hour_start" value="{{ $service->worktime_alt_hour_start }}" autocomplete="off">
-							<input type="hidden" name="worktime_alt_hour_end" value="{{ $service->worktime_alt_hour_end }}" autocomplete="off">
+							<input type="hidden" name="worktime_alt_hour_start" value="{{ $service->worktime_alt_hour_start }}" autocomplete="off" @if(!$service->worktime_alt_hour_start) disabled="" @endif>
+							<input type="hidden" name="worktime_alt_hour_end" value="{{ $service->worktime_alt_hour_end }}" autocomplete="off" @if(!$service->worktime_alt_hour_end) disabled="" @endif>
 
 						</div>
 

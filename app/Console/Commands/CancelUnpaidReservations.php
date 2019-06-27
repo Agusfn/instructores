@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use Log;
 use App\Reservation;
 use Illuminate\Console\Command;
+use App\Mail\User\Reservations\ReservationUnpaidExpired;
+use Illuminate\Support\Facades\Mail;
+
 
 class CancelUnpaidReservations extends Command
 {
@@ -58,8 +61,9 @@ class CancelUnpaidReservations extends Command
 
                 }
 
-                $reservation->status = Reservation::STATUS_PAYMENT_FAILED;
-                $reservation->save();  
+                $reservation->cancelForPaymentFailed();
+
+                Mail::to($reservation->user)->send(new ReservationUnpaidExpired($reservation->user, $reservation));
             }
 
         }

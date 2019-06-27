@@ -384,16 +384,15 @@ function create_hour_slider(start1, end1, start2 = null, end2 = null)
 	hourSlider.noUiSlider.on('update', function (values, handle) {
 
 		if(values.length == 2) {
-			$("input[name=worktime_hour_start").val(values[0]);
-			$("input[name=worktime_hour_end").val(values[1]);
-			$("input[name=worktime_alt_hour_start").val("");
-			$("input[name=worktime_alt_hour_end").val("");
+			$("input[name=worktime_hour_start]").val(values[0]);
+			$("input[name=worktime_hour_end]").val(values[1]);
+			$("input[name=worktime_alt_hour_start], input[name=worktime_alt_hour_end]").prop('disabled', true);
 		}
 		else if(values.length == 4) {
-			$("input[name=worktime_hour_start").val(values[0]);
-			$("input[name=worktime_hour_end").val(values[1]);
-			$("input[name=worktime_alt_hour_start").val(values[2]);
-			$("input[name=worktime_alt_hour_end").val(values[3]);
+			$("input[name=worktime_hour_start]").val(values[0]);
+			$("input[name=worktime_hour_end]").val(values[1]);
+			$("input[name=worktime_alt_hour_start]").prop('disabled', false).val(values[2]);
+			$("input[name=worktime_alt_hour_end]").prop('disabled', false).val(values[3]);
 		}
 
 	});

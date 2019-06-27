@@ -119,7 +119,9 @@ class ServiceDetailsController extends Controller
 			"date_end" => $dateEnd->format("Y-m-d"),
 			"price_per_block" => $request->block_price
 		]);
+		$instructor->service->rebuildAvailabilityIndexes();
 
+		
 		return response()->json(["range_id" => $dateRange->id]);
 	}
 
@@ -153,6 +155,8 @@ class ServiceDetailsController extends Controller
 		}
 
 		$dateRange->delete();
+		$instructor->service->rebuildAvailabilityIndexes();
+
 		return response(200);
 	}
 
@@ -232,15 +236,32 @@ class ServiceDetailsController extends Controller
 		$service = Auth::user()->service;
 
 
-		$service->fill($request->except([
-			"snowboard_discipline",
-			"ski_discipline",
-			"allow_adults",
-			"allow_kids",
-			"allow_groups",
+
+		if($request->worktime_hour_start != $service->worktime_hour_start || $request->worktime_hour_end != $service->worktime_hour_end
+			|| $request->worktime_alt_hour_start != $service->worktime_alt_hour_start || $request->worktime_alt_hour_end != $service->worktime_alt_hour_end)
+		{
+			$workingHoursChanged = true;
+		} else {
+			$workingHoursChanged = false;
+		}
+
+
+		$service->fill($request->only([
+			"description",
+			"features",
+			"worktime_hour_start",
+			"worktime_hour_end",
+			"max_group_size",
+			"person2_discount",
+			"person3_discount",
+			"person4_discount" ,
+			"person5_discount",
+			"person6_discount"
 		]));
-		
+
 		$service->fill([
+			"worktime_alt_hour_start" => $request->worktime_alt_hour_start,
+			"worktime_alt_hour_end" => $request->worktime_alt_hour_end,
 			"snowboard_discipline" => $request->has("snowboard_discipline"),
 			"ski_discipline" => $request->has("ski_discipline"),
 			"offered_to_adults" => $request->has("allow_adults"),
@@ -251,9 +272,10 @@ class ServiceDetailsController extends Controller
 		$service->save();
 
 
-		// Poner esto ultimo en un task asi se hace mas rapido dsps
-		$service->rebuildJsonBookingCalendar();
-		$service->rebuildAvailableDatesIndex();
+		if($workingHoursChanged) {
+			$service->rebuildAvailabilityIndexes();
+		}
+
 
 		return redirect()->back();
 	}

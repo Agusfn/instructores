@@ -83,6 +83,10 @@ class SocialLoginController extends Controller
             $user = SocialLogin::createUser($socialUser, $provider);
     	}
 
+        if($user->suspended) {
+            return redirect()->back()->withErrors("La cuenta de usuario está suspendida.");
+        }
+
     	Auth::guard("user")->login($user);
 
 
