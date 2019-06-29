@@ -11,7 +11,7 @@ class RequestCollection extends Validator
 {
     
     public static $rules = array(
-        "amount" => "required|numeric|gt:0"
+        "amount" => "required|numeric|gte:1000"
     );
 
 

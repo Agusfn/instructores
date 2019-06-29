@@ -65,7 +65,7 @@
 								<a href="{{ $lastPayment->mercadopagoPayment->ext_resource_url }}" target="_blank" class="btn btn-secondary" style="margin: 10px 0">Instrucciones de pago</a>
 								@endif
 								<p>
-									Abona el pago dentro de los próximos 3 días, te mantendremos la reserva durante este tiempo.<br/>
+									Abona el pago dentro de las próximas {{ \App\Reservation::RETRY_PAYMENT_TIME_HS }} horas, te mantendremos la reserva durante este tiempo.<br/>
 									Podés ver el estado de la reserva haciendo <a href="{{ route('user.reservation', $reservation->code) }}">click acá</a>.
 								</p>							
 							@elseif($lastPayment->isFailed())
@@ -103,7 +103,7 @@
 
 									@endif
 									<a href="{{ route('reservation.retry-payment', $reservation->code) }}">Intentalo nuevamente</a>.<br/>
-									La reserva se mantendrá por 24 horas.
+									La reserva se mantendrá por {{ \App\Reservation::RETRY_PAYMENT_TIME_HS }} horas.
 								</p>
 							@endif
 

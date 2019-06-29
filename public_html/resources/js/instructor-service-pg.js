@@ -36,12 +36,12 @@ $(document).ready(function() {
 		minDate: start_date,
 		maxDate: end_date,
 		locale: {
-            format: 'DD/MM/YYYY',
+            format: 'DD/MM/YY',
             cancelLabel: 'Cancelar'
 		},
 	}, function(start, end, label) {
-		$("#date_start").val(start.format("DD/MM/YYYY"));
-		$("#date_end").val(end.format("DD/MM/YYYY"));
+		$("#date_start").val(start.format("DD/MM/YY"));
+		$("#date_end").val(end.format("DD/MM/YY"));
 	});
 
 
@@ -283,7 +283,7 @@ $(document).ready(function() {
 function validate_range_form()
 {
 	
-	var valid_date = /^\d{2}\/\d{2}\/\d{4}$/;
+	var valid_date = /^\d{2}\/\d{2}\/\d{2}$/;
 
 	if(!valid_date.test($("#date_start").val()) || !valid_date.test($("#date_end").val())) {
 		alert("Ingresa fechas válidas.");
@@ -292,8 +292,8 @@ function validate_range_form()
 
 
 	//var date_start = new Date($("#date_start").val());
-	var date_start = moment($("#date_start").val(), "DD/MM/YYYY");
-	var date_end = moment($("#date_end").val(), "DD/MM/YYYY");
+	var date_start = moment($("#date_start").val(), "DD/MM/YY");
+	var date_end = moment($("#date_end").val(), "DD/MM/YY");
 	var today = moment().hour(0).minute(0).second(0).millisecond(0);
 	
 

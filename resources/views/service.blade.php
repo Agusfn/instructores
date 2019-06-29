@@ -98,6 +98,8 @@
                                         @if($service->snowboard_discipline)
                                         <li><i class="far fa-snowboarding" style="font-weight: 900;"></i><span>Clases de snowboard</span></li>
                                         @endif 
+
+                                        <li><i class="fas fa-graduation-cap"></i><span>Instructor nivel {{ $instructor->level }}</span></li>
                                     </ul>
                                 </div>
 

@@ -12,7 +12,7 @@
       </ol>
 		<div class="box_general">
 			<div class="header_box">
-				<h2 class="d-inline-block">Solicitudes de pago a instructores</h2>
+				<h2 class="d-inline-block">Solicitudes de extracciones de saldo de instructores</h2>
 				<!--div class="filter">
 					<select name="orderby" class="selectbox">
 						<option value="Any status">Any status</option>
@@ -124,7 +124,7 @@ $(document).ready(function() {
 	$(".btn-reject").click(function() {
 		var reason = prompt("Ingrese motivo de rechazo");
 
-		if(!confirm("¿Continuar?"))
+		if(reason == null || !confirm("¿Continuar?"))
 			return;
 
 		$(this).next().val(reason);

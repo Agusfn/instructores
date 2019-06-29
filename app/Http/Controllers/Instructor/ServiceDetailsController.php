@@ -108,8 +108,8 @@ class ServiceDetailsController extends Controller
 
 		$instructor = Auth::user();
 
-        $dateStart = Carbon::createFromFormat("d/m/Y", $request->date_start);
-        $dateEnd = Carbon::createFromFormat("d/m/Y", $request->date_end);
+        $dateStart = Carbon::createFromFormat("d/m/y", $request->date_start);
+        $dateEnd = Carbon::createFromFormat("d/m/y", $request->date_end);
 
 		$dateRange = ServiceDateRange::create([
 			"instructor_service_id" => $instructor->service->id,

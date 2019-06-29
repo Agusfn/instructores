@@ -46,3 +46,5 @@ class ReservationPaid extends Mailable
         
         return $this->view('emails.instructor.reservations.reservation-paid');
     }
+
+}

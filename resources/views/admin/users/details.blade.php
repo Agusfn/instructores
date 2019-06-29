@@ -150,17 +150,19 @@
 									<td>{{ $reservation->code }}</td>
 									<td>
 										@if($reservation->isPaymentPending())
-										Pago pend.
+										<span class="badge badge-secondary">Pago pend.</span>
 										@elseif($reservation->isPendingConfirmation())
-										Pend. confirmación
+										<span class="badge badge-primary">Pend. confirmación</span>
 										@elseif($reservation->isFailed())
-										Pago fallido
+										<span class="badge badge-danger">Pago fallido</span>
 										@elseif($reservation->isRejected())
-										Rechazada
+										<span class="badge badge-danger">Rechazada</span>
 										@elseif($reservation->isConfirmed())
-										Confirmada
+										<span class="badge badge-success">Confirmada</span>
+										@elseif($reservation->isConcluded())
+										<span class="badge badge-success">Concluída</span>
 										@elseif($reservation->isCanceled())
-										Cancelada
+										<span class="badge badge-danger">Cancelada</span>
 										@endif
 									</td>
 									<td>

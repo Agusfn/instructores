@@ -23,7 +23,7 @@ class Reservation extends Model
     /**
      * Time in hours after a reservation being created in which it gets cancelled if it's not paid.
      */
-    const RETRY_PAYMENT_TIME_HS = 72;
+    const RETRY_PAYMENT_TIME_HS = 48;
 
     /**
      * Time in hours given to an instructor to confirm a paid reservation. After this time, the reservation gets rejected automatically.
@@ -183,7 +183,7 @@ class Reservation extends Model
             ->where(function ($query) { 
 
                 $query->where('created_at', '<=', date("Y-m-d H:i:s", strtotime("-".self::RETRY_PAYMENT_TIME_HS." hour")))
-                    ->orWhereRaw("STR_TO_DATE(concat(reserved_class_date,' ',reserved_time_start,':00:00'),'%Y-%m-%d %H:%i:%s') >= NOW()");
+                    ->orWhereRaw("STR_TO_DATE(concat(reserved_class_date,' ',reserved_time_start,':00:00'),'%Y-%m-%d %H:%i:%s') <= NOW()");
 
             });
     }
@@ -199,7 +199,7 @@ class Reservation extends Model
             ->where(function($query) {
 
                 $query->where('updated_at', '<=', date("Y-m-d H:i:s", strtotime("-".self::AUTO_REJECT_TIME_HS." hour")))
-                    ->orWhereRaw("STR_TO_DATE(concat(reserved_class_date,' ',reserved_time_start,':00:00'),'%Y-%m-%d %H:%i:%s') >= NOW()");
+                    ->orWhereRaw("STR_TO_DATE(concat(reserved_class_date,' ',reserved_time_start,':00:00'),'%Y-%m-%d %H:%i:%s') <= NOW()");
 
             });
     }
@@ -314,7 +314,7 @@ class Reservation extends Model
      */
     public function updateStatusIfPaid()
     {
-
+        $this->load("lastPayment"); // refresh in case a new payment was created
         if($this->isPaymentPending() && $this->lastPayment->isSuccessful()) {
 
             $this->adjustPayProcessorFee($this->lastPayment->payment_provider_fee);
@@ -328,8 +328,8 @@ class Reservation extends Model
 
             $this->save();
 
-            Mail::to($this->instructor)->send(new App\Mail\Instructor\Reservations\ReservationPaid($this->instructor, $this));
-            Mail::to($this->user)->send(new App\Mail\User\Reservations\ReservationPaid($this->user, $this));
+            Mail::to($this->instructor)->send(new \App\Mail\Instructor\Reservations\ReservationPaid($this->instructor, $this));
+            Mail::to($this->user)->send(new \App\Mail\User\Reservations\ReservationPaid($this->user, $this));
         }
     }
 

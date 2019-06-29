@@ -256,7 +256,7 @@ class ReservationsController extends Controller
 
 		$validator = new ProcessReservation($request);
 		if($validator->fails()) {
-			return redirect()->route("service-page", $service_number)->withErrors($validator->messages());
+			return redirect()->back()->withErrors($validator->messages());
 		}
 
 		$user = Auth::user();
@@ -278,13 +278,14 @@ class ReservationsController extends Controller
 		]);
 		$reservation->save();
 
-		$reservPayment = ReservationPayments::processMpApiPayment(
+		$reservPayment = ReservationPayments::makeMpApiPayment(
+			$user,
+			$reservation,
+			$request->payment_type,
+			$request->paymentMethodId,
 			$request->card_token,
 			$request->issuer,
-			$request->paymentMethodId,
-			$request->installments,
-			$user,
-			$reservation
+			$request->installments
 		);
 
 		$reservation->updateStatusIfPaid();

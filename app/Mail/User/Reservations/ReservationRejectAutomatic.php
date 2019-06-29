@@ -43,7 +43,7 @@ class ReservationRejectAutomatic extends Mailable
      */
     public function build()
     {
-        $this->subject("Tu reserva ".$this->reservation->code." de clases de ".ucfirst($this->reservation->sport_discipline))." ha sido rechazada por falta de confirmación del instructor");
+        $this->subject("Tu reserva ".$this->reservation->code." de clases de ".ucfirst($this->reservation->sport_discipline)." ha sido rechazada por falta de confirmación del instructor");
         return $this->view('emails.user.reservations.reservation-rejected-automatic');
     }
 }

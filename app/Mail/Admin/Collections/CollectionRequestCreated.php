@@ -42,6 +42,6 @@ class CollectionRequestCreated extends Mailable
     public function build()
     {
         $this->subject("Se ha solicitado una extracción a cta. bancaria de ".round($this->collection->amount, 2)." ARS del instructor ".$this->instructor->name." ".$this->instructor->surname);
-        return $this->view('emails.admin.collection-request-created');
+        return $this->view('emails.admin.collections.collection-request-created');
     }
 }

@@ -75,7 +75,8 @@
 										<i class="far fa-check-circle status-icon"></i><br/>
 										Pago realizado
 									</div>
-									Pendiente de confirmación<br/>
+									Pendiente de confirmación.<br/>
+									Confirmala dentro de {{ \App\Reservation::AUTO_REJECT_TIME_HS }} hs.<br/>
 									<div class="btn-group" role="group">
 										<button type="button" class="btn btn-default" style="color: #36b11d;" data-tooltip="tooltip" data-placement="top" title="Confirmar reserva" data-toggle="modal" data-target="#confirm-reservation-modal">
 											<i class="fas fa-check"></i>
@@ -232,7 +233,7 @@
 									<strong>Cliente</strong>
 									<div style="text-align: center;">
 										<img class="profile-pic" src="{{ $reservation->user->getProfilePicUrl() }}"><br/>
-										@if($reservation->isConfirmed())
+										@if($reservation->isConfirmed() || $reservation->isConcluded())
 											{{ $reservation->user->name.' '.$reservation->user->surname }}<br/>
 											{{ $reservation->user->email }}
 											@if($reservation->user->phone_number)

@@ -95,80 +95,99 @@
 								
 								</div>
 								<div class="step">
-									
+
 									<div class="row">
 										<div class="col-md-5">
 											<div class="form-group">
-												<label>Nombre completo titular</label>
-												<input type="text" class="form-control" data-checkout="cardholderName">
-											</div>
-										</div>
-										<div class="col-md-3">
-											<div class="form-group">
-												<label>Tipo documento</label>
-												<select class="form-control" id="document-type" data-checkout="docType"></select>
-											</div>
-										</div>
-										<div class="col-md-4">
-											<div class="form-group">
-												<label>Numero de documento</label>
-												<input type="text" class="form-control" data-checkout="docNumber">
+												<label>Forma de pago</label>
+												<select class="form-control" id="payment-method-select" autocomplete="off">
+													<option value="card">Tarjeta de crédito/débito</option>
+													<option value="pagofacil">Pago fácil</option>
+													<option value="rapipago">Rapipago</option>
+													<option value="bapropagos">Provincia NET</option>
+													<option value="redlink">Red link</option>
+													<option value="cargavirtual">Kioscos y comercios cercanos</option>
+													<option value="cobroexpress">Cobroexpress</option>
+												</select>
 											</div>
 										</div>
 									</div>
 
-									<div class="row">
-										<div class="col-md-6 col-sm-12">
-											<div class="form-group">
-												<label>Número de tarjeta</label>
-												<input type="text" class="form-control" id="card_number" data-checkout="cardNumber" maxlength="16">
-											</div>
-										</div>
-										<div class="col-md-6 col-sm-12">
-											<img src="{{ asset('resources/img/cards_all.svg') }}" alt="Cards" class="cards-payment">
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<label>Fecha de vencimiento</label>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<input type="text" class="form-control" placeholder="MM" data-checkout="cardExpirationMonth" maxlength="2" >
-													</div>
+									<div id="credit_card_fields">
+										<div class="row">
+											<div class="col-md-5">
+												<div class="form-group">
+													<label>Nombre completo titular</label>
+													<input type="text" class="form-control" data-checkout="cardholderName" autocomplete="off">
 												</div>
-												<div class="col-md-6">
-													<div class="form-group">
-														<input type="text" class="form-control" placeholder="Year" data-checkout="cardExpirationYear" maxlength="4">
-													</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label>Tipo documento</label>
+													<select class="form-control" id="document-type" data-checkout="docType" autocomplete="off"></select>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="form-group">
+													<label>Numero de documento</label>
+													<input type="text" class="form-control" data-checkout="docNumber" autocomplete="off">
 												</div>
 											</div>
 										</div>
-										<div class="col-md-6">
-											<div class="form-group">
-												<label>Código de seguridad</label>
+
+										<div class="row">
+											<div class="col-md-6 col-sm-12">
+												<div class="form-group">
+													<label>Número de tarjeta</label>
+													<input type="text" class="form-control" id="card_number" data-checkout="cardNumber" maxlength="16" autocomplete="off">
+												</div>
+											</div>
+											<div class="col-md-6 col-sm-12">
+												<img src="{{ asset('resources/img/cards_all.svg') }}" alt="Cards" class="cards-payment">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-6">
+												<label>Fecha de vencimiento</label>
 												<div class="row">
-													<div class="col-4">
+													<div class="col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control" placeholder="CCV" data-checkout="securityCode" maxlength="4">
+															<input type="text" class="form-control" placeholder="MM" data-checkout="cardExpirationMonth" maxlength="2" autocomplete="off">
 														</div>
 													</div>
-													<div class="col-8">
-														<img src="{{ asset('resources/img/icon_ccv.gif') }}" width="50" height="29" alt="ccv"><small>últimos 3 dígitos</small>
+													<div class="col-md-6">
+														<div class="form-group">
+															<input type="text" class="form-control" placeholder="Year" data-checkout="cardExpirationYear" maxlength="4" autocomplete="off">
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>Código de seguridad</label>
+													<div class="row">
+														<div class="col-4">
+															<div class="form-group">
+																<input type="text" class="form-control" placeholder="CCV" data-checkout="securityCode" maxlength="4" autocomplete="off">
+															</div>
+														</div>
+														<div class="col-8">
+															<img src="{{ asset('resources/img/icon_ccv.gif') }}" width="50" height="29" alt="ccv"><small>últimos 3 dígitos</small>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6" style="display: none">
-											<label>Entidad emisora</label>
-											<select class="form-control" id="issuer" name="issuer"></select>
-										</div>
-										<div class="col-md-6">
-											<div class="form-group">
-												<label>Cuotas</label>
-												<select class="form-control" id="installments" name="installments"></select>
+										<div class="row">
+											<div class="col-md-6" style="display: none">
+												<label>Entidad emisora</label>
+												<select class="form-control" id="issuer" name="issuer" autocomplete="off"></select>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label>Cuotas (financiación MercadoPago)</label>
+													<select class="form-control" id="installments" name="installments" autocomplete="off"></select>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -225,8 +244,10 @@
 									<!--End row -->
 								</div>
 
-								<!-- Payment data for MP processor -->
+								<!-- Payment data -->
+								<input type="hidden" name="payment_type" value="card">
 								<input type="hidden" name="total_amount" id="amount" value="{{ $reservation->final_price }}" autocomplete="off">
+								<!-- for MP -->
 								<input type="hidden" name="paymentMethodId" autocomplete="off">
 								<input type="hidden" name="card_token" autocomplete="off">
 							</form>

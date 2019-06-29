@@ -43,7 +43,7 @@ class ReservationConfirmedByInstructor extends Mailable
      */
     public function build()
     {
-        $this->subject("Tu reserva ".$this->reservation->code." de clases de ".ucfirst($this->reservation->sport_discipline))." ha sido confirmada por el instructor");
+        $this->subject("Tu reserva ".$this->reservation->code." de clases de ".ucfirst($this->reservation->sport_discipline)." ha sido confirmada por el instructor");
         return $this->view('emails.user.reservations.reservation-confirmed');
     }
 }

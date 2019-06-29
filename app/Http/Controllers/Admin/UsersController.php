@@ -34,7 +34,7 @@ class UsersController extends Controller
 		if(!$user)
 			return redirect()->route("admin.users.list");
 
-		$reservations = $user->reservations()->with("instructor:id,name,surname")->get();
+		$reservations = $user->reservations()->with("instructor:id,name,surname")->orderBy("id", "DESC")->get();
 
 		return view("admin.users.details")->with([
 			"user" => $user,

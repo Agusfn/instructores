@@ -75,7 +75,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach($wallet->collections()->pending()->get() as $collection)
+								@foreach($wallet->collections()->pending()->latest()->get() as $collection)
 								<tr>
 									<td>
 										{{ $collection->created_at->format('d/m/Y') }}
@@ -212,7 +212,7 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
 				@if($bankAccount->lockTimePassed())
-				<button type="button" class="btn btn-primary" onclick="$('#collection-form').submit();">Confirmar</button>
+				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Confirmar?')) $('#collection-form').submit();">Confirmar</button>
 				@endif
 			</div>
 		</div>

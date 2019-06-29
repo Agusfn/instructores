@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use App\InstructorCollection;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
-use Mail\Instructor\Collections\CollectionConfirmed;
-use Mail\Instructor\Collections\CollectionRejected;
+use \App\Mail\Instructor\Collections\CollectionConfirmed;
+use \App\Mail\Instructor\Collections\CollectionRejected;
 
 
 class InstructorCollectionsController extends Controller
@@ -56,7 +56,7 @@ class InstructorCollectionsController extends Controller
 		$collection->wallet_movement_id = $movement->id;
 		$collection->save();
 
-		Mail::to($instructor)->send(new CollectionConfirmed($instructor, $collection));
+		Mail::to($collection->instructorWallet->instructor)->send(new CollectionConfirmed($collection->instructorWallet->instructor, $collection));
 
 		return redirect()->back();
 	}
@@ -84,7 +84,7 @@ class InstructorCollectionsController extends Controller
 		$collection->reject_reason = $request->reason;
 		$collection->save();
 
-		Mail::to($instructor)->send(new CollectionRejected($instructor, $collection));
+		Mail::to($collection->instructorWallet->instructor)->send(new CollectionRejected($collection->instructorWallet->instructor, $collection));
 
 		return redirect()->back();
 	}

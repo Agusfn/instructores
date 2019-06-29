@@ -174,7 +174,7 @@
 								<tbody>
 									@foreach($service->dateRanges()->orderBy('date_start', 'ASC')->get() as $dateRange)
 									<tr>
-										<td>{{ $dateRange->date_start->format('d/m/Y')." - ".$dateRange->date_end->format('d/m/Y') }}</td>
+										<td>{{ $dateRange->date_start->format('d/m/y')." - ".$dateRange->date_end->format('d/m/y') }}</td>
 										<td>${{ round($dateRange->price_per_block, 2) }}</td>
 										<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="{{ $dateRange->range_id }}"><i class="fa fa-times" aria-hidden="true"></i></button></td>
 									</tr>
@@ -306,8 +306,8 @@
 		@else
 		var uploaded_imgs = [];
 		@endif
-		var start_date = "{{ $activityStartDate->isPast() ? (new Carbon\Carbon())->format('d/m/Y') : $activityStartDate->format('d/m/Y') }}";
-		var end_date = "{{ $activityEndDate->format('d/m/Y') }}";
+		var start_date = "{{ $activityStartDate->isPast() ? (new Carbon\Carbon())->format('d/m/y') : $activityStartDate->format('d/m/y') }}";
+		var end_date = "{{ $activityEndDate->format('d/m/y') }}";
 	</script>
 	@endif
 @endsection

@@ -58,7 +58,7 @@
 									@elseif($reservation->isConfirmed())
 									<span class="badge badge-success">Confirmada</span>
 									@elseif($reservation->isConcluded())
-									<span class="badge badge-danger">Concluída</span>
+									<span class="badge badge-success">Concluída</span>
 									@elseif($reservation->isCanceled())
 									<span class="badge badge-danger">Cancelada</span>
 									@endif

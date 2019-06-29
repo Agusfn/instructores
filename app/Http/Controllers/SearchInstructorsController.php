@@ -55,7 +55,7 @@ class SearchInstructorsController extends Controller
 		$group = $totalPpl > 1 ? true : false;
 
 		
-		$instructorServices = InstructorService::leftJoin(
+		$instructorServices = InstructorService::active()->leftJoin(
 			"service_available_dates", 
 			"instructor_services.id", 
 			"=", 

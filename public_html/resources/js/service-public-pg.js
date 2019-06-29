@@ -109,7 +109,7 @@ $(document).ready(function() {
 		}
 
 		selected_blocks = getSelectedTimeBlocks();
-		console.log(selected_blocks);
+		//console.log(selected_blocks);
 
 		if(selected_blocks.length >= 1) {
 			$("input[name=t_start]").val(selected_blocks[0]);
@@ -145,7 +145,7 @@ $(document).ready(function() {
 			return;
 		}
 		if(selectedPeopleAmount() > max_group_size) {
-			alert("La cantidad máxima de personas que pueden asistir a la clase es de " + max_group_size + ".");
+			alert("Este instructor da clases a como máximo " + max_group_size + " personas simultáneamente.");
 			return;
 		}
 		$("#book-form").submit();
@@ -267,7 +267,7 @@ function fetchCalendarData(callback)
 	    },
 
 		success: function(response) {
-			console.log(response); // debug
+			//console.log(response); // debug
 			callback(response);
 		},
 

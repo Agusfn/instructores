@@ -104,6 +104,16 @@ class InstructorService extends Model
 	}
 
 
+	/**
+	 * Scope a query to only include active instructor services.
+	 * @param  [type] $query [description]
+	 * @return [type]        [description]
+	 */
+	public function scopeActive($query) {
+		return $query->where("published", true);
+	}
+
+
 
 	/**
 	 * Get instructor service images as array of assoc array with "img" and "thumbnail"

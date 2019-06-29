@@ -43,6 +43,7 @@ class ReservationUnpaidExpired extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.user.resevations.reservation-unpaid-expired');
+        $this->subject("Tu reserva ".$this->reservation->code." de clases de ".ucfirst($this->reservation->sport_discipline)." ha expirado por no acreditarse su pago");
+        return $this->view('emails.user.reservations.reservation-unpaid-expired');
     }
 }

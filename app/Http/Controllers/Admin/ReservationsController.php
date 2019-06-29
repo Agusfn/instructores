@@ -84,8 +84,8 @@ class ReservationsController extends Controller
 
 		$reservation->cancel();
 
-		Mail::to($reservation->instructor)->send(new App\Mail\Instructor\Reservations\ReservationCanceledByAdmin($reservation->instructor, $reservation, $request->cancel_reason));
-		Mail::to($reservation->user)->send(new App\Mail\User\Reservations\ReservationCanceledByAdmin($reservation->user, $reservation, $request->cancel_reason));
+		Mail::to($reservation->instructor)->send(new \App\Mail\Instructor\Reservations\ReservationCanceledByAdmin($reservation->instructor, $reservation, $request->cancel_reason));
+		Mail::to($reservation->user)->send(new \App\Mail\User\Reservations\ReservationCanceledByAdmin($reservation->user, $reservation, $request->cancel_reason));
 
 		return redirect()->back();
 	}

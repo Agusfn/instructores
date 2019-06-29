@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Lib\AdminEmailNotifications;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Admin\Payments\PaymentChargebacked;
-use App\Mail\User\Payments\ProcessingPaymentFailed;
+use App\Mail\User\Payments\ProcessingMpPaymentFailed;
 use App\Mail\Instructor\Reservations\ReservationCanceledByChargeback as MailReservChargebackedInstructor;
 use App\Mail\User\Reservations\ReservationCanceledByChargeback as MailReservChargebackedUser;
 
@@ -46,7 +46,7 @@ class MercadoPagoWebhookController extends Controller
 		$reservPayment = $mpPayment->reservationPayment;
 
 
-		if($reservPayment->isPending() || $reservPayment->isProcessing() || $reservPayment->isExpired()) { // ticket or atm will be pending or expired, credit card will be processing.
+		if($reservPayment->isPending() || $reservPayment->isProcessing() || $reservPayment->isCanceled()) { // ticket or atm will be pending or canceled, credit card will be processing.
 
 			if($mpApiPayment->status == "approved" || $mpApiPayment->status == "rejected") {
 
@@ -61,7 +61,7 @@ class MercadoPagoWebhookController extends Controller
 				}
 
 				if($mpApiPayment->status == "rejected") { // only credit card
-					Mail::to($reservPayment->reservation->user)->send(new ProcessingPaymentFailed($reservPayment->reservation->user, $reservPayment, $reservPayment->reservation));
+					Mail::to($reservPayment->reservation->user)->send(new ProcessingMpPaymentFailed($reservPayment->reservation->user, $reservPayment, $reservPayment->reservation));
 				}
 
 			}
@@ -69,7 +69,7 @@ class MercadoPagoWebhookController extends Controller
 		}
 		else if($reservPayment->isSuccessful()) {
 
-			if($mpApiPayment->status == "charged_back") { // credit card (and ticket?)
+			//if($mpApiPayment->status == "charged_back") { // credit card (and ticket?)
 
 				ReservationPayments::updateMpPaymentStatusFromApiPayment($mpPayment, $mpApiPayment);
 				$mpPayment->save();
@@ -87,7 +87,7 @@ class MercadoPagoWebhookController extends Controller
 
 
 				Mail::to(AdminEmailNotifications::recipients())->send(new PaymentChargebacked($reservPayment, $reservPayment->reservation));
-			}
+			//}
 
 		}
 

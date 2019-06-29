@@ -50,7 +50,7 @@ class ReservationRejectedByInstructor extends Mailable
      */
     public function build()
     {
-        $this->subject("Tu reserva ".$this->reservation->code." de clases de ".ucfirst($this->reservation->sport_discipline))." ha sido rechazada por el instructor");
+        $this->subject("Tu reserva ".$this->reservation->code." de clases de ".ucfirst($this->reservation->sport_discipline)." ha sido rechazada por el instructor");
         return $this->view('emails.user.reservations.reservation-rejected');
     }
 }

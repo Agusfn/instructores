@@ -41,7 +41,7 @@
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
           <a class="nav-link" href="{{ route('admin.instructor-collections.list') }}">
             <i class="fa fa-fw fa-usd"></i>
-            <span class="nav-link-text">Pagos a instructores</span>
+            <span class="nav-link-text">Retiros a instructores</span>
           </a>
         </li>
 

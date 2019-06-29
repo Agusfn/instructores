@@ -44,7 +44,7 @@ class PaymentChargebacked extends Mailable
      */
     public function build()
     {
-        $this->subject("Se ha recibido un contracargo del pago de MercadoPago de la reserva ".$this->reservation->code." por ".round($this->payment->total_amount, 2)." ARS";
+        $this->subject("Se ha recibido un contracargo del pago de MercadoPago de la reserva ".$this->reservation->code." por ".round($this->payment->total_amount, 2)." ARS");
         return $this->view('emails.admin.payments.payment-chargebacked');
     }
 

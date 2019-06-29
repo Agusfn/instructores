@@ -66,12 +66,12 @@
 										<div>
 											<i class="far fa-clock status-icon"></i><br/>
 											Pago pendiente<br/>
-											<a href="{{ $payment->mercadopagoPayment->ext_resource_url }}" target="_blank">Realiza el pago</a> dentro de los sgtes. 3 días.
+											<a href="{{ $payment->mercadopagoPayment->ext_resource_url }}" target="_blank">Realiza el pago</a> del dentro de las siguientes {{ \App\Reservation::RETRY_PAYMENT_TIME_HS }} horas.
 										</div>
 										@elseif($payment->isFailed())
 										<div>
 											No se pudo realizar el pago.<br>
-											<a href="{{ route('reservation.retry-payment', $reservation->code) }}">Reintentalo</a> dentro de las sgtes 24hs.
+											<a href="{{ route('reservation.retry-payment', $reservation->code) }}">Reintentalo</a> dentro de las sgtes {{ \App\Reservation::RETRY_PAYMENT_TIME_HS }} hs.
 										</div>
 										@endif
 									@elseif($reservation->isPendingConfirmation())
@@ -188,7 +188,7 @@
 									<strong>Instructor</strong>
 									<div style="text-align: center;">
 										<img class="profile-pic" src="{{ $reservation->instructor->getProfilePicUrl() }}"><br/>
-										@if($reservation->isConfirmed())
+										@if($reservation->isConfirmed() || $reservation->isConcluded())
 											{{ $reservation->instructor->name.' '.$reservation->instructor->surname }}<br/>
 											{{ $reservation->instructor->email }}
 											@if($reservation->instructor->phone_number)
