@@ -2,7 +2,25 @@
 /* Your custom styles below */
 /*============================================================================================*/
 
+/*header*/
 
+
+
+header.header.sticky #logo p{
+     color: black;
+}
+/*LOGO*/
+
+#logo h6{
+	font-weight: bolder;
+	font-size: 1.3em;
+	color: orange;
+}
+#logo p{
+	margin-top: -10px;
+	font-size: medium;
+	color: white;
+}
 
 
 
@@ -60,7 +78,7 @@
 }
 #bannerbox1{
 
-	padding: 25px 30px 41px 30px;
+	padding: 25px 30px 7px 30px;
 
      	
 } 
@@ -296,3 +314,23 @@ a.btn_1.full-width.purchase, .btn_1.full-width.purchase {
 .form_title h3 strong{
 	background-color: darkgrey;
 }
+
+
+/*login*/
+
+#login p{
+  color: black;
+}
+
+
+
+
+/*seccion sos instructor*/
+
+#contsosinsts {
+	background-color: whitesmoke;
+	margin-top: 8% !important;
+	margin-bottom: 5%!important;
+	
+}
+

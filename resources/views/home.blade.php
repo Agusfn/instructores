@@ -31,7 +31,7 @@
             <div class="wrapper">
                 <div class="container">
                     <h3>Clases de Ski & Snowboard en Cerro Catedral</h3>
-                    <p>Reservas online</p>
+                    <p><strong>Viví la emoción de la montaña. Reserva tus clases ahora.</strong></p>
                     <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
                             <div class="col-lg-4">
@@ -74,6 +74,15 @@
                         <input type="hidden" name="sort" value="default">
                         <!-- /row -->
                     </form>
+                     <div class="container"></br></br></br>
+                      <div class="col-lg-12">
+
+                        <span class="pull-left">
+                            <strong >#Ski&Snowboard</strong></n>
+                            <strong >#Bariloche2019</strong>
+                            <strong >#CerroCatedral</strong>
+                        </span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -165,8 +174,8 @@
                     <div class="col-lg-4 col-md-6" id="box4">
                     <a class="box_feat" id="contben">
                         <i class="pe-7s-headphones"></i>
-                        <h3>Soporte por chat</h3>
-                        <p>Te brindamos servicio de soporte via chat 24/7 todo el año.</p>
+                        <h3>Soporte online</h3>
+                        <p>Te brindamos servicio de soporte via chat 24/7.</p>
                     </a>
                 </div>
 
@@ -203,7 +212,7 @@
                          
                        <div class="row" id="bannerbox1">
 
-                        <div class="col-lg-5"> 
+                        <div class="col-lg-5" class="whatsapp"> 
                         <h5>Whatsapp </h5>
                         <h3>+54 9294 4305811</h3>
                        </div>
@@ -211,9 +220,9 @@
                        
                     
                      </div>
-
+                                <!--
                                 <div class="col-lg-6 col-md-12 offset-0 float-left">
-            <div class="rev-content">
+                                      <div class="rev-content">
                                         <div class="rating">
                                             <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i>
                                         </div>
@@ -227,7 +236,8 @@
                                         </div>
                                     </div>
             
-            </div>  
+                                   </div> 
+                                   --> 
 
 
 

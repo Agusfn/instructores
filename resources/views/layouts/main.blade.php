@@ -127,7 +127,9 @@
     <script src="{{ asset('resources/js/Scrollreveal.js') }}"></script>
 
 
- 
+    <!--GOOGLE ANALYTICS -->
+    <script src="{{ asset('resources/js/analytics.js') }}"></script>
+
       
 	@yield('custom-js')
 

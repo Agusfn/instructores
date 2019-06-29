@@ -8,7 +8,7 @@
 						<li>
 							<i class="pe-7s-map-marker"></i>
 							<h4>Dirección</h4>
-							<span><br>Mitre 86 - San Carlos de Bariloche - Río negro, Argentina.</span>
+							<span><br>San Carlos de Bariloche - Río negro, Argentina.</span>
 						</li>
 						<li>
 							<i class="pe-7s-mail-open-file"></i>
