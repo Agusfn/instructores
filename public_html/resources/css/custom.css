@@ -327,8 +327,10 @@ a.btn_1.full-width.purchase, .btn_1.full-width.purchase {
 
 /*seccion sos instructor*/
 
-#contsosinsts h4{
-	margin-top: 12% !important;
+#contsosinsts {
+	background-color: whitesmoke;
+	margin-top: 8% !important;
+	margin-bottom: 5%!important;
 	
 }
 

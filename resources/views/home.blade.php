@@ -31,7 +31,7 @@
             <div class="wrapper">
                 <div class="container">
                     <h3>Clases de Ski & Snowboard en Cerro Catedral</h3>
-                    <p>Reservas online</p>
+                    <p><strong>Viví la emoción de la montaña. Reserva tus clases ahora.</strong></p>
                     <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
                             <div class="col-lg-4">
@@ -74,6 +74,15 @@
                         <input type="hidden" name="sort" value="default">
                         <!-- /row -->
                     </form>
+                     <div class="container"></br></br></br>
+                      <div class="col-lg-12">
+
+                        <span class="pull-left">
+                            <strong >#Ski&Snowboard</strong></n>
+                            <strong >#Bariloche2019</strong>
+                            <strong >#CerroCatedral</strong>
+                        </span>
+                    </div>
                 </div>
             </div>
         </section>

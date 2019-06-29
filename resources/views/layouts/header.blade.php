@@ -1,4 +1,14 @@
 	<header class="header menu_fixed">
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129656474-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-129656474-1');
+</script>
+
 		<div id="preloader"><div data-loader="circle-side"></div></div><!-- /Page Preload -->
 		
 
@@ -74,6 +84,6 @@
 			</ul>
 		</nav>
 
-       
+       <script src="//code.jivosite.com/widget.js" jv-id="HDITS1kFVy" async></script>
 
 	</header>

@@ -1,22 +1,33 @@
 @section('custom-css')
 <style type="text/css">
-    .
+    .sr {background-color: whitesmoke;}.
+    #page {background-color: whitesmoke;}
     .mm-slideout {
-        background-color: disabled !important;
+        background-color: whitesmoke!important;
+        color: black !important;
     }
     .margin_80_55 {
         background-color: whitesmoke !important;
 
     }
+    
     #registbotton{
-        margin-top: 16%;
-        margin-bottom: 5%;
+        margin-top: 0%;
+        margin-bottom: 0%;
+        
        
     }
 
     #ofertas {
         display: none;
     }
+
+    .main_title_3 span em {
+    width: 60px;
+    height: 2px;
+    background-color: #0054a6!important;
+    display: block;
+}
 </style>
 @extends('layouts.main')
 
@@ -26,31 +37,42 @@
 @section('content')
         
 
+          
           <div class="container" id="contsosinsts" >
-            
+              
 
-                <div class="container margin_80_55  ">
+
+                <div class="container" >
                     
                      
-                        <h4>Sos instructor de ski o snowboard?</h4>
-                        <p>Llevá tus clases a otro nivel, no pierdas más tiempo.</p>
+                       
+                         <div class="main_title_3">
+                         
+                         <h2 >Sos instructor de ski o snowboard?</h2>
+                         <span><em></em></span><span><em></em></span><span><em></em></span><span><em></em></span>
                         <strong>Entérate de los beneficios de trabajar mediante nuestra plataforma:</p>
-                        <h6>• Comisiones accesibles.</h6>
-                        <h6>• Clientes desde la comodidad de tu hogar.</h6>
-                        <h6>• Organizá tu agenda de instructor con anticipación.</h6>
-                        <h6>• Creá y negociá tus propias promociones.</h6>
-                        
-                  
+                        <p>• Comisiones accesibles.</p>
+                        <p>• Clientes desde la comodidad de tu hogar.</p>
+                        <p>• Organizá tu agenda de instructor con anticipación.</p>
+                        <p>• Creá y negociá tus propias promociones.</p>
+
+                        <div class="col-lg-6 pull-right"><p class="">Llevá tus clases a otro nivel, no pierdas más tiempo.</p></div>
+
+                        </div>
+
+
+
+
+                </div>      
+                     
+                        <div class="row"><div class="col-lg-6 " id="registbotton"><a href="{{ route('instructor.login') }}" class="btn_1 rounded pull-right" >REGISTRARME</a></div></div>
 
                
 
 
                     
 
-                <div class="row" id="registbotton">
-                    <div class="col-lg-10"><a href="{{ route('instructor.login') }}" class="btn_1 rounded pull-right" >REGISTRARME</a></div>
-
-                </div>
+           
                 
           </div>
 
