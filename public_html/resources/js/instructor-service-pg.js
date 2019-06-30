@@ -31,6 +31,22 @@ $(document).ready(function() {
 		}
 	});
 
+
+	$("#date-range-selector").daterangepicker({
+		minDate: start_date,
+		maxDate: end_date,
+		locale: {
+            format: 'DD/MM/YY',
+            cancelLabel: 'Cancelar'
+		},
+	}, function(start, end, label) {
+		$("#date_start").val(start.format("DD/MM/YY"));
+		$("#date_end").val(end.format("DD/MM/YY"));
+	});
+
+
+
+
 	imgDropzone.on("success", function(file, response) {
    		file.name_in_server = response.img.name;
    		console.log(file);
@@ -173,8 +189,8 @@ $(document).ready(function() {
 	
 	$("#btn_submit_range").click(function() {
 
-		/*if(!validate_range_form())
-			return;*/
+		if(!validate_range_form())
+			return;
 
 		var date_start = $("#date_start").val();
 		var date_end = $("#date_end").val();
@@ -242,6 +258,9 @@ $(document).ready(function() {
 			beforeSend: function() {
 				disable_range_form_btn(button);
 			},
+			complete: function() {
+				enable_range_form_btn(button);
+			},
 			success: function(response) {
 				console.log(response); // debug
 				button.closest("tr").remove();
@@ -264,7 +283,7 @@ $(document).ready(function() {
 function validate_range_form()
 {
 	
-	var valid_date = /^\d{2}\/\d{2}\/\d{4}$/;
+	var valid_date = /^\d{2}\/\d{2}\/\d{2}$/;
 
 	if(!valid_date.test($("#date_start").val()) || !valid_date.test($("#date_end").val())) {
 		alert("Ingresa fechas válidas.");
@@ -273,8 +292,8 @@ function validate_range_form()
 
 
 	//var date_start = new Date($("#date_start").val());
-	var date_start = moment($("#date_start").val(), "DD/MM/YYYY");
-	var date_end = moment($("#date_end").val(), "DD/MM/YYYY");
+	var date_start = moment($("#date_start").val(), "DD/MM/YY");
+	var date_end = moment($("#date_end").val(), "DD/MM/YY");
 	var today = moment().hour(0).minute(0).second(0).millisecond(0);
 	
 
@@ -329,8 +348,7 @@ function insert_date_range_row(date_start, date_end, block_price, range_id)
 {
 	var html = `
 	<tr>
-		<td>`+ date_start +`</td>
-		<td>` + date_end + `</td>
+		<td>`+ date_start +` - ` + date_end + `</td>
 		<td>$` + block_price + `</td>
 		<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="` + range_id + `"><i class="fa fa-times" aria-hidden="true"></i></button></td>
 	</tr>`;
@@ -381,16 +399,15 @@ function create_hour_slider(start1, end1, start2 = null, end2 = null)
 	hourSlider.noUiSlider.on('update', function (values, handle) {
 
 		if(values.length == 2) {
-			$("input[name=worktime_hour_start").val(values[0]);
-			$("input[name=worktime_hour_end").val(values[1]);
-			$("input[name=worktime_alt_hour_start").val("");
-			$("input[name=worktime_alt_hour_end").val("");
+			$("input[name=worktime_hour_start]").val(values[0]);
+			$("input[name=worktime_hour_end]").val(values[1]);
+			$("input[name=worktime_alt_hour_start], input[name=worktime_alt_hour_end]").prop('disabled', true);
 		}
 		else if(values.length == 4) {
-			$("input[name=worktime_hour_start").val(values[0]);
-			$("input[name=worktime_hour_end").val(values[1]);
-			$("input[name=worktime_alt_hour_start").val(values[2]);
-			$("input[name=worktime_alt_hour_end").val(values[3]);
+			$("input[name=worktime_hour_start]").val(values[0]);
+			$("input[name=worktime_hour_end]").val(values[1]);
+			$("input[name=worktime_alt_hour_start]").prop('disabled', false).val(values[2]);
+			$("input[name=worktime_alt_hour_end]").prop('disabled', false).val(values[3]);
 		}
 
 	});

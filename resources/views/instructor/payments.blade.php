@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-
+@section('title', 'Mis pagos')
 
 
 
@@ -16,21 +16,14 @@
 
 			@include('instructor.panel-nav-layout')
 
-			<div class="col-9">
+			<div class="col-md-9">
 
 				<h4 class="add_bottom_30">
 					Mis cobros
 					<!--<div style="float:right; color: #2e79b9">$14610.50</div>-->
 				</h4>
 
-                @if($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ $errors->first() }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                @endif
+				@include('layouts.errors')
 
 				@if(\Session::has("mp_assoc_success"))
 				<div class="alert alert-success alert-dismissible fade show" role="alert">

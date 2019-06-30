@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'Inicio')
+
 @section('custom-css')
 <style type="text/css">
     .discipline-select {
@@ -29,7 +31,7 @@
             <div class="wrapper">
                 <div class="container">
                     <h3>Clases de Ski & Snowboard en Cerro Catedral</h3>
-                    <p>Reservas online</p>
+                    <p><strong>Viví la emoción de la montaña. Reserva tus clases ahora.</strong></p>
                     <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
                             <div class="col-lg-4">
@@ -69,130 +71,189 @@
                                 <button type="button" class="btn_search" id="search-btn">Buscar</button>
                             </div>
                         </div>
+                        <input type="hidden" name="sort" value="default">
                         <!-- /row -->
                     </form>
+                     <div class="container"></br></br></br>
+                      <div class="col-lg-12">
+
+                        <span class="pull-left">
+                            <strong >#Ski&Snowboard</strong></n>
+                            <strong >#Bariloche2019</strong>
+                            <strong >#CerroCatedral</strong>
+                        </span>
+                    </div>
                 </div>
             </div>
         </section>
         <!-- /hero_single -->
 
-        
-        <div class="container margin_80_55">
-            <div class="main_title_2">
+
+
+                <div class="container" id="bannerpagos">
+
+                    <div class="row" id="banner" >
+
+                    <div class="row">
+                    <a  id="bannerbox1">
+                     <img src="https://imgmp.mlstatic.com/org-img/banners/ar/medios/785X40.jpg" title="MercadoPago - Medios de pago" alt="MercadoPago - Medios de pago" width="100%" height="40"/>
+                    </a>
+                    </div>
+
+                    </div> 
+
+ 
+                    <div class="row">
+
+                    
+                    <div class="col-lg-4">
+                    <div class="box_feat" id="tittlebanbox">
+                        <h6>Todos los metodos de pago.</h6> <p>Efectivo, transferencias, tarjetas de débito y crédito.</p>
+                    </div>
+                    
+                    </div>
+
+
+                    <div class="col-lg-5">
+                    <div class="box_feat" id="tittlebanbox">
+                        <h6>Cuotas sin intéres.</h6>
+                        <p>Con tarjetas de crédito Mastercard emitidas por Banco Patagonia y Mercado Pago.<a href="https://www.mercadopago.com.ar/cuotas" target="_blank"> Ver condiciones.</a></p>
+
+                    </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                    <div class="box_feat" id="tittlebanbox">
+                        
+                        <a href="https://www.mercadopago.com.ar/ayuda/terminos-y-politicas_194" target="_blank">Ver términos y políticas generales de Mercadopago.</a>
+                    </div>
+                    </div>
+
+
+                    </div>
+                </div>
+
+     
+
+                
+             
+
+        <div class="container-fluid margin_80_55">
+
+            <div class="main_title_2" id="titulo2">
                 <span><em></em></span>
                 <h2>Por qué elegirnos</h2>
                 <p>Brindamos confianza</p>
             </div>
+
+            <div class="container">
             <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <a class="box_feat" href="#0">
-                        <i class="pe-7s-medal"></i>
+                <div class="col-lg-4 col-md-6" id="box1" >
+                    <a class="box_feat">
+                        <i class="pe-7s-global"></i>
                         <h3>Instructores internacionales</h3>
-                        <p></p>
+                        <p>Todos nuestros instructores tienen experiencia en diferentes centros invernales de todo el globo.</p>
                     </a>
                 </div>
-                <div class="col-lg-4 col-md-6">
-                    <a class="box_feat" href="#0">
-                        <i class="pe-7s-help2"></i>
+                <div class="col-lg-4 col-md-6" id="box2">
+                    <a class="box_feat">
+                        <i class="pe-7s-medal"></i>
                         <h3>Certificación profesional</h3>
-                        <p> </p>
+                        <p>Nuestros instructores de Ski y Snowboard cuentan con certificación emitida por instituciones oficiales.</p>
                     </a>
                 </div>
-                    <div class="col-lg-4 col-md-6">
-                    <a class="box_feat" href="#0">
+
+                    <div class="col-lg-4 col-md-6" id="box3">
+                    <a class="box_feat" id="contben">
+                        <i class="pe-7s-piggy"></i>
+                        <h3>Ahorrá</h3>
+                        <p>Accede a a los mejores precios por clase, al nivel que necesitas.</p>
+                    </a>
+                </div>
+
+                    <div class="col-lg-4 col-md-6" id="box4">
+                    <a class="box_feat" id="contben">
+                        <i class="pe-7s-headphones"></i>
+                        <h3>Soporte online</h3>
+                        <p>Te brindamos servicio de soporte via chat 24/7.</p>
+                    </a>
+                </div>
+
+                    <div class="col-lg-8 col-md-12" id="box5">
+                    <a class="box_feat">
                         <i class="pe-7s-chat"></i>
                         <h3>Sistema de reputación</h3>
-                        <p> </p>
+                        <p>Nos manejamos por un sistema de reputación para cada instructor, basado en  el nivel académico del mismo, en la responsabilidad al momento de ejercer su profesión y en los comentarios y sugerencias de nuestros clientes.</p>
                     </a>
+                </div>
+
                 </div>
             
-                <div class="col-lg-4 col-md-6">
-                    <a class="box_feat" href="#0">
-                        <i class="pe-7s-headphones"></i>
-                        <h3>Soporte por chat</h3>
-                        <p> </p>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <a class="box_feat" href="#0">
-                        <i class="pe-7s-credit"></i>
-                        <h3>Pagos seguros</h3>
-                        <p></p>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <a class="box_feat" href="#0">
-                        <i class="pe-7s-culture"></i>
-                        <h3>Ahorrá</h3>
-                        <p></p>
-                    </a>
-                </div>
+              
             </div>
+            
             <!--/row-->
-        </div>      
-                
+        </div>  
 
         
-                
-            <hr class="large">
+        <div class="container-fluid" id="barratel">
+
+               
+
+                    <div class="row">
+
+
+                        <div class="col-lg-3"></div><div class="whatsapp"></div> 
+
+                     
+
+
+                      <div class="box_feat" id="tittlebanbox">
+                         
+                       <div class="row" id="bannerbox1">
+
+                        <div class="col-lg-5" class="whatsapp"> 
+                        <h5>Whatsapp </h5>
+                        <h3>+54 9294 4305811</h3>
+                       </div>
+                       <div class="col-lg-6"><strong><p>Ante cualquier duda comunicate con nosotros, estamos para asistirte.</p></strong></div>
+                       
+                    
+                     </div>
+                                <!--
+                                <div class="col-lg-6 col-md-12 offset-0 float-left">
+                                      <div class="rev-content">
+                                        <div class="rating">
+                                            <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i>
+                                        </div>
+                                        <div class="rev-info">
+                                            Juan Lucas – Julio 21, 2018:
+                                        </div>
+                                        <div class="rev-text">
+                                            <p>
+                                                Excelente atención, muy conformes con todo. Sin dudas volvería a contratar por aquí.
+                                            </p>
+                                        </div>
+                                    </div>
+            
+                                   </div> 
+                                   --> 
+
+
+
+                     </div> 
+
+                    
+        </div>
+         <div class="container" id="testify">
+            
+ 
+
+        
         </div>
         <!-- /container -->
         
-        <div class="container-fluid margin_30_95 pl-lg-5 pr-lg-5">
-            <section class="add_bottom_45">
-                <div class="main_title_3">
-                
-                    <h2>Testimonios</h2>
-                    <p></p>
-                </div>
-                <div class="row">
-                    <div class="col-xl-3 col-lg-6 col-md-6">
-                        <a href="#" class="grid_item">
-                            <figure>
-                                <div class="score"><strong>8.9</strong></div>
-                                <img src="{{ asset('resources/img/hotel_1.jpg') }}" class="img-fluid" alt="">
-                                <div class="info">
-                                    <div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div>
-                                    <h3></h3>
-                                </div>
-                            </figure>
-                        </a>
-                    </div>
-                
-                
-                    <!-- /grid_item -->
-                    <div class="col-xl-3 col-lg-6 col-md-6">
-                        <a href="#" class="grid_item">
-                            <figure>
-                                <div class="score"><strong>7.0</strong></div>
-                                <img src="{{ asset('resources/img/hotel_3.jpg') }}" class="img-fluid" alt="">
-                                <div class="info">
-                                    <div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div>
-                                    <h3></h3>
-                                </div>
-                            </figure>
-                        </a>
-                    </div>
-                    <!-- /grid_item -->
-                    <div class="col-xl-3 col-lg-6 col-md-6">
-                        <a href="#" class="grid_item">
-                            <figure>
-                                <div class="score"><strong>8.9</strong></div>
-                                <img src="{{ asset('resources/img/hotel_4.jpg') }}" class="img-fluid" alt="">
-                                <div class="info">
-                                    <div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div>
-                                    <h3></h3>
-                                </div>
-                            </figure>
-                        </a>
-                    </div>
-                    <!-- /grid_item -->
-                </div>
-                <!-- /row -->
-                <a href="#"><strong> <i class="arrow_carrot-right"></i></strong></a>
-            </section>
-            
-                    
+             
                 
             
         </div>
@@ -200,14 +261,14 @@
 
         <!-- /bg_color_1 -->
 
-        <div class="call_section">
+        <div class="call_section" >
             <div class="container clearfix">
                 <div class="col-lg-5 col-md-6 float-right wow" data-wow-offset="250">
-                    <div class="block-reveal">
-                        <div class="block-vertical"></div>
-                        <div class="box_1">
-                            <h3>Sos instructor?</h3>
-                            <p></p>
+                    <div class="block-reveal" id="sosints">
+                        
+                        <div class="box_1" >
+                            <h3>¿Sos instructor?</h3>
+                            <p>Deberías trabajar con nosotros!</p>
                             <a href="{{ route('become-instructor') }}" class="btn_1 rounded">Saber más</a>
                         </div>
                     </div>
@@ -228,11 +289,11 @@
         $('input[name="date"]').daterangepicker({
             singleDatePicker: true,
             autoUpdateInput: false,
-            minDate: "{{ $activityStartDate->format('d/m/Y') }}",
+            minDate: "{{ $activityStartDate->isPast() ? (new Carbon\Carbon())->format('d/m/Y') : $activityStartDate->format('d/m/Y') }}",
             maxDate: "{{ $activityEndDate->format('d/m/Y') }}",
             locale: {
                 format: 'DD/MM/YYYY',
-                cancelLabel: 'Clear'
+                cancelLabel: 'Cancelar'
             }
         });
 
@@ -273,5 +334,7 @@
 
     <!-- INPUT QUANTITY  -->
     <script src="{{ asset('resources/js/input_qty.js') }}"></script>
-
+    
+    
+    
 @endsection

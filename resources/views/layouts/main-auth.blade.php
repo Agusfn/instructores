@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Instructores - Sitio de reservas para clases a medida de ski o snowboard.">
     <meta name="author" content="Ansonika">
-    <title>Instructores | Ski & Snowboard</title>
+    <title>@yield('title') - Instructores | Ski & Snowboard</title>
 
     <!-- Favicons-->
     <link rel="shortcut icon" href="{{ asset('resources/img/favicon.png') }}" type="image/x-icon">
@@ -43,7 +43,17 @@
 	<div id="login">
 		<aside>
 			<figure>
-				<a href="{{ route('home') }}"><img src="" width="155" height="36" data-retina="true" alt="" class="logo_sticky"></a>
+				<div class="row"><div id="logo">
+            <div class="container">
+            <a href="{{ route('home') }}"><span><h6>INSTRUCTORES</h6><p>SKI&SNOWBOARD</p></span>
+                <!--
+                <img src="resources/img/logo.png" width="150" height="36" data-retina="true" alt="" class="logo_normal">
+                <img src="resources/img/logosticky.png" width="150" height="36" data-retina="true" alt="" class="logo_sticky">
+                -->
+            </a>
+            </div>
+        </div> 
+        </div>
 			</figure>
 			@yield('form')
 			<div class="copy">© 2018 Instructores</div>

@@ -4,17 +4,13 @@ namespace App\Http\Controllers\Instructor;
 
 use Validator;
 
-use App\ServiceDateRange;
 
 use Carbon\Carbon;
-use App\Lib\Helpers\Images;
+use App\Lib\Reservations;
+use App\ServiceDateRange;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-//use App\Rules\InstructorWorkHours;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
 use App\Http\Validators\Instructor\CreateDateRange;
 use App\Http\Validators\Instructor\UpdateServiceData;
 
@@ -35,7 +31,7 @@ class ServiceDetailsController extends Controller
 
 
 	/**
-	 * [index description]
+	 * Show instructor service details form.
 	 * @return [type] [description]
 	 */
 	public function index()
@@ -44,17 +40,22 @@ class ServiceDetailsController extends Controller
 
 		return view("instructor.service")->with([
 			"instructor" => $instructor,
-			"service" => $instructor->service
+			"service" => $instructor->service, // null if instructor not approved
+            "activityStartDate" => Reservations::getCurrentYearActivityStart(),
+            "activityEndDate" => Reservations::getCurrentYearActivityEnd()
 		]);			
 	}
 
 
-
+	/**
+	 * Pause an instructor service listing from being published.
+	 * @return [type] [description]
+	 */
 	public function pause()
 	{
 		$instructor = Auth::user();
 
-		if($instructor->isApproved() && $instructor->service->published) {
+		if($instructor->service->published) {
 
 			$instructor->service->published = false;
 			$instructor->service->save();
@@ -65,17 +66,15 @@ class ServiceDetailsController extends Controller
 
 
 
+	/**
+	 * Activate and publish the instructor service listing
+	 * @return [type] [description]
+	 */
 	public function activate()
 	{
 		$instructor = Auth::user();
 
-		if($instructor->isApproved() && !$instructor->service->published) {
-
-
-			if(!$instructor->hasMpAccountAssociated())
-				return redirect()->back()->withErrors([
-					"cant_activate" => 'Para publicar tu servicio debés asociar tu cuenta de MercadoPago primero (en la pestaña "mis cobros").'
-				]);
+		if(!$instructor->service->published) {
 
 			if(!$instructor->service->canBePublished())
 				return redirect()->back()->withErrors([
@@ -84,17 +83,18 @@ class ServiceDetailsController extends Controller
 
 			$instructor->service->published = true;
 			$instructor->service->save();
+			request()->session()->flash('activate-success');
 
 		}
 
-		request()->session()->flash('activate-success');
+		
 		return redirect()->back();
 	}
 
 
 
 	/**
-	 * [addDateRange description]
+	 * Create an instructor service date range with it's price per time block.
 	 * @param Request $request [description]
 	 */
 	public function addDateRange(Request $request)
@@ -108,8 +108,8 @@ class ServiceDetailsController extends Controller
 
 		$instructor = Auth::user();
 
-        $dateStart = Carbon::createFromFormat("d/m/Y", $request->date_start);
-        $dateEnd = Carbon::createFromFormat("d/m/Y", $request->date_end);
+        $dateStart = Carbon::createFromFormat("d/m/y", $request->date_start);
+        $dateEnd = Carbon::createFromFormat("d/m/y", $request->date_end);
 
 		$dateRange = ServiceDateRange::create([
 			"instructor_service_id" => $instructor->service->id,
@@ -117,36 +117,44 @@ class ServiceDetailsController extends Controller
 			"date_end" => $dateEnd->format("Y-m-d"),
 			"price_per_block" => $request->block_price
 		]);
+		$instructor->service->rebuildAvailabilityIndexes();
 
+		
 		return response()->json(["range_id" => $dateRange->id]);
 	}
 
 
 
 	/**
-	 * [removeDateRange description]
+	 * Delete an instructor service date range.
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	public function removeDateRange(Request $request)
+	public function deleteDateRange(Request $request)
 	{
-		$instructor = Auth::user();
-
 		$validator = Validator::make($request->all(), [
 			"range_id" => "required|integer",
 		]);
 
-		if ($validator->fails()) {
+		if ($validator->fails())
 			return response($validator->messages()->first(), 422);
-        }
-	
-		$dateRange = ServiceDateRange::find($request->range_id);
 
-		if(!$dateRange || $dateRange->service->instructor->id != $instructor->id) {
+		$instructor = Auth::user();
+
+		if($instructor->service->published && $instructor->service->dateRanges()->count() == 1) {
+			return response("Pausa tu publicación antes de eliminar todas las fechas de trabajo.", 422);
+		}
+		
+
+		$dateRange = $instructor->service->dateRanges()->where("range_id", $request->range_id)->first();
+
+		if(!$dateRange) {
 			return response("Rango de fechas a eliminar inexistente.", 422);
 		}
 
 		$dateRange->delete();
+		$instructor->service->rebuildAvailabilityIndexes();
+
 		return response(200);
 	}
 
@@ -220,21 +228,38 @@ class ServiceDetailsController extends Controller
 		$validator = new UpdateServiceData($request);
 
 		if($validator->fails()){ 
-			return redirect()->back()->withErrors($validator->messages());
+			return redirect()->back()->withErrors($validator)->withInput();
 		}
 
 		$service = Auth::user()->service;
 
 
-		$service->fill($request->except([
-			"snowboard_discipline",
-			"ski_discipline",
-			"allow_adults",
-			"allow_kids",
-			"allow_groups",
+
+		if($request->worktime_hour_start != $service->worktime_hour_start || $request->worktime_hour_end != $service->worktime_hour_end
+			|| $request->worktime_alt_hour_start != $service->worktime_alt_hour_start || $request->worktime_alt_hour_end != $service->worktime_alt_hour_end)
+		{
+			$workingHoursChanged = true;
+		} else {
+			$workingHoursChanged = false;
+		}
+
+
+		$service->fill($request->only([
+			"description",
+			"features",
+			"worktime_hour_start",
+			"worktime_hour_end",
+			"max_group_size",
+			"person2_discount",
+			"person3_discount",
+			"person4_discount" ,
+			"person5_discount",
+			"person6_discount"
 		]));
-		
+
 		$service->fill([
+			"worktime_alt_hour_start" => $request->worktime_alt_hour_start,
+			"worktime_alt_hour_end" => $request->worktime_alt_hour_end,
 			"snowboard_discipline" => $request->has("snowboard_discipline"),
 			"ski_discipline" => $request->has("ski_discipline"),
 			"offered_to_adults" => $request->has("allow_adults"),
@@ -245,9 +270,10 @@ class ServiceDetailsController extends Controller
 		$service->save();
 
 
-		// Poner esto ultimo en un task asi se hace mas rapido dsps
-		$service->rebuildJsonBookingCalendar();
-		$service->rebuildAvailableDatesIndex();
+		if($workingHoursChanged) {
+			$service->rebuildAvailabilityIndexes();
+		}
+
 
 		return redirect()->back();
 	}

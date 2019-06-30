@@ -31,74 +31,57 @@ class AccountDetailsController extends Controller
 	 */
 	public function index()
 	{
-		return view("instructor.account")->with("instructor", Auth::user());
+		return view("instructor.account.details")->with("instructor", Auth::user());
 	}
 
 
 
 	/**
-	 * [showChangePasswordForm description]
+	 * Show account details modification form.
 	 * @return [type] [description]
 	 */
-	public function showChangePasswordForm()
+	public function showEditAccountForm()
 	{
-		return view("instructor.change-password");
-	}
-
-
-
-	/**
-	 * [changePassword description]
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 */
-	public function changePassword(Request $request)
-	{
-		
-		$validator = Validator::make($request->all(), [
-			"password" => "required|string|min:8|confirmed"
-		]);
-
-		$validator->after(function ($validator) {
-		    if(!Hash::check(request()->input("current_password"), Auth::user()->password)) {
-		        $validator->errors()->add('current_password', 'La contraseña ingresada es inválida.');
-		    }
-		});
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        Auth::user()->password = Hash::make($request->input("password"));
-        Auth::user()->save();
-
-        $request->session()->flash('success');
-        return redirect()->back();
-
+		$instructor = Auth::user();
+		return view("instructor.account.edit")->with("instructor", $instructor);
 	}
 
 
 	/**
-	 * [changePhone description]
+	 * Update instructor account changes.
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
-	public function changePhone(Request $request)
+	public function editAccount(Request $request)
 	{
-
 		$request->validate([
-			"phone_number" => "required|between:5,20|regex:/^[0-9+ -]*$/"
+			"name" => "required|string|between:3,50",
+			"surname" => "required|string|between:3,50",
+			"phone_number" => "nullable|string|between:5,30|regex:/^[0-9+ -]*$/",
+			"instagram_username" => "nullable|string|max:30|regex:/^[\w\d._]{1,30}$/",
 		]);
 
-		Auth::user()->phone_number = $request->input("phone_number");
-		Auth::user()->save();
+		$instructor = Auth::user();
 
-		return redirect()->back();
+		$instructor->fill([
+			"name" => $request->name,
+			"surname" => $request->surname,
+			"instagram_username" => $request->instagram_username
+		]);
+
+		if($request->filled("phone_number"))
+			$instructor->phone_number = $request->phone_number;
+
+
+		$instructor->save();
+
+		return redirect()->route("instructor.account");
 	}
 
 
+
 	/**
-	 * [changeProfilePic description]
+	 * Change instructor profile picture through ajax POST request with file.
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
 	 */
@@ -114,38 +97,12 @@ class AccountDetailsController extends Controller
 
 		$instructor = Auth::user();
 
-		if($instructor->profile_picture) {
-			Storage::delete("img/instructors/".$instructor->profile_picture);
-		}
-
-		$fileName = basename(Storage::putFile("img/instructors", $request->file("profile_pic")));
-
-		$instructor->profile_picture = $fileName;
-		$instructor->save();
+		$image = Image::make($request->file("profile_pic"));
+		$instructor->setProfilePic($image);
 
 		return response("OK", 200);
 	}
 
-
-
-	/**
-	 * [changeInstagram description]
-	 * @param  Request $request [description]
-	 * @return [type]           [description]
-	 */
-	public function changeInstagram(Request $request)
-	{
-		$request->validate([
-			"instagram_username" => "required|string|max:30|regex:/^[\w\d._]{1,30}$/"
-		]);
-
-		$instructor = Auth::user();
-
-		$instructor->instagram_username = $request->instagram_username;
-		$instructor->save();
-
-		return back();
-	}
 
 
 
@@ -159,20 +116,27 @@ class AccountDetailsController extends Controller
 
 		$messages = [
 			"identification_imgs.max" => "No se pueden subir más de :max imágenes.",
-			"certificate_imgs.size" => "Debés subir :size imágenes, una de cada cara."
+			"certificate_imgs.size" => "Debés subir :size imágenes, una de cada cara del certificado."
 		];
 
-		Validator::make($request->all(), [
+		$validator = Validator::make($request->all(), [
             'identification_imgs' => 'required|max:2',
             'identification_imgs.*' => 'required|mimes:png,jpeg|max:5120',
             'certificate_imgs' => 'required|size:2',
             'certificate_imgs.*' => 'required|mimes:png,jpeg|max:5120',
-        ], $messages)->validate();
+        ], $messages);
+
+		if($validator->fails()) {
+			return redirect()->to(url()->previous()."#verificar-cuenta")->withErrors($validator);
+		}
 
 		$instructor = Auth::user();
 
 		if(!$instructor->phone_number || !$instructor->profile_picture)
-			return redirect()->back()->withErrors(["msg", "Instructor does not have number and profile picture."]);
+			return redirect()->back()->withErrors("Instructor does not have number and profile picture.");
+
+		if($instructor->isApproved() || $instructor->approvalDocsSent())
+			return redirect()->back()->withErrors("El instructor ya está aprobado o ya envió la documentación.");
 
 		
         $certImgNames = [];

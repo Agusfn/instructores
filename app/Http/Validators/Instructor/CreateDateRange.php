@@ -11,8 +11,8 @@ class CreateDateRange extends Validator
 {
     
     public static $rules = array(
-        "date_start" => "required|date_format:d/m/Y",
-        "date_end" => "required|date_format:d/m/Y|after_or_equal:date_start",
+        "date_start" => "required|date_format:d/m/y",
+        "date_end" => "required|date_format:d/m/y|after_or_equal:date_start",
         "block_price" => "required|numeric"
     );
 
@@ -22,8 +22,8 @@ class CreateDateRange extends Validator
     	if(parent::fails())
     		return true;
 
-        $dateStart = Carbon::createFromFormat("d/m/Y", $this->request->date_start);
-        $dateEnd = Carbon::createFromFormat("d/m/Y", $this->request->date_end);
+        $dateStart = Carbon::createFromFormat("d/m/y", $this->request->date_start);
+        $dateEnd = Carbon::createFromFormat("d/m/y", $this->request->date_end);
 
         if($dateStart->isBefore(Carbon::now())) {
             $this->messages->add("date_start", "La fecha 'desde' no puede ser anterior o igual a hoy.");

@@ -9,14 +9,14 @@ class UpdateServiceData extends Validator
 {
     
     public static $rules = array(
-		"description" => "required|string",
+		"description" => "required|string|between:0,1500",
         "snowboard_discipline" => "required_without:ski_discipline",
         "ski_discipline" => "required_without:snowboard_discipline",
-		"features" => "required|string",
+		"features" => "required|string|between:0,300",
 		"worktime_hour_start" => "required|integer",
 		"worktime_hour_end" => "required|integer",
-		"worktime_alt_hour_start" => "nullable|integer|gt:worktime_hour_end",
-		"worktime_alt_hour_end" => "nullable|required_with:worktime_alt_hour_start|integer",
+		"worktime_alt_hour_start" => "integer|gt:worktime_hour_end",
+		"worktime_alt_hour_end" => "required_with:worktime_alt_hour_start|integer",
         "allow_adults" => "required_without:allow_kids",
         "allow_kids" => "required_without:allow_adults",
 		"max_group_size" => "required|integer|between:2,6",
@@ -44,7 +44,7 @@ class UpdateServiceData extends Validator
 			(int)$this->request->worktime_alt_hour_end
 		);
 
-    	if(!$validHours || ($this->request->filled("worktime_alt_hour_start") && !$validHoursAlt)) {
+    	if(!$validHours || ($this->request->has("worktime_alt_hour_start") && !$validHoursAlt)) {
     		$this->messages = "Invalid working hours";
     		return true;
     	}

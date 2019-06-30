@@ -8,7 +8,7 @@
 						<li>
 							<i class="pe-7s-map-marker"></i>
 							<h4>Dirección</h4>
-							<span><br>Mitre 86 - San Carlos de Bariloche - Río negro, Argentina.</span>
+							<span><br>San Carlos de Bariloche - Río negro, Argentina.</span>
 						</li>
 						<li>
 							<i class="pe-7s-mail-open-file"></i>
@@ -27,36 +27,11 @@
 			</div>
 				<!--/row-->
 				<hr>
-				<div class="row">
-					<div class="col-lg-6">
-						<ul id="footer-selector">
-							<li>
-								<div class="styled-select" id="lang-selector">
-									<select>
-										<option value="English" selected>Español</option>
-										<option value="French">French</option>
-										<option value="Spanish">English</option>
-										<option value="Russian">Russian</option>
-									</select>
-								</div>
-							</li>
-							<li>
-								<div class="styled-select" id="currency-selector">
-									<select>
-										<option value="US Dollars" selected>Pesos Argentinos</option>
-										<option value="Euro">Dolares Americanos</option>
-										<option value="Euro">Euro</option>
-										<option value="Euro">Real</option>
-									</select>
-								</div>
-							</li>
-							<li><img src="{{ asset('resources/img/cards_all.svg') }}" alt=""></li>
-						</ul>
-					</div>
-					<div class="col-lg-6">
+			       
+					<div class="col-lg-8 offset-0">
 						<ul id="additional_links">
-							<li><a href="#0">Terminos y condiciones</a></li>
-							<li><a href="#0">Privacidad</a></li>
+							<li><a href="{{ route('faq') }}">Terminos y condiciones</a></li>
+							<li><a href="{{ route('faq') }}">Privacidad</a></li>
 							<li><span>© 2018 Instructores</span></li>
 						</ul>
 					</div>

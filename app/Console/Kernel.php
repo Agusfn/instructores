@@ -24,8 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command("reservations:cancel-unpaid")->hourly();
+        $schedule->command("reservations:reject-unconfirmed")->hourly();
+        $schedule->command("reservations:conclude-completed")->hourly();
+        
     }
 
     /**

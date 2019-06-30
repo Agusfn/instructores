@@ -12,32 +12,29 @@ class UserTablesSeeder extends Seeder
     public function run()
     {
 
-        // Agregamos admin user
-        DB::table('admins')->insert([
-            'name' => 'Agustin',
-            'email' => 'admin@mail.com',
-            'password' => bcrypt('03488639268'),
-        ]);
 
 
         // Agregamos un usuario
         DB::table('users')->insert([
-            'name' => 'José',
-            'surname' => "López",
-            'email' => 'usuario@mail.com',
-            'password' => bcrypt('03488639268'),
-            'email_verified_at' => '2019-04-25 00:00:00'
+            'name' => 'Agustin',
+            'surname' => "Fernandez N",
+            'email' => 'agustin-fn@hotmail.com',
+            'provider' => 'facebook',
+            'provider_id' => '10219365044104858',
+            'profile_picture' => 'bemjp15cfb2315cbfcc.jpg',
+            'phone_number' => '11 67261446'
         ]);
 
 
         // Agregamos un instructor
         DB::table('instructors')->insert([
-        	"name" => "Juan",
-        	"surname" => "Gimenez",
-        	"email" => "instructor@mail.com",
-        	"password" => bcrypt('03488639268'),
+        	"name" => "Mateo",
+        	"surname" => "Fernandez N",
+            'provider' => 'google',
+            'provider_id' => '110902613989032958778',
+        	"email" => "agusfn20@gmail.com",
             'phone_number' => '+54 9 11 14725836',
-            'profile_picture' => '1GU0SmY3kSL2MaUpjKCuwRrid8dUqSNfrwK2uNdC.jpeg',
+            'profile_picture' => 'imym215cfb23359c212.jpg',
             'instagram_username' => 'snowboarding',
             'identification_imgs' => '992487293.jpg',
             'professional_cert_imgs' => '1272570171.jpg,383333699.jpg',
@@ -46,10 +43,17 @@ class UserTablesSeeder extends Seeder
             'approved_at' => '2019-05-13 12:05:21',
             'identification_type' => 'dni',
             'identification_number' => '12345678',
-            'level' => 5,
-        	"balance" => 0,
-            'email_verified_at' => '2019-04-25 00:00:00'
+            'level' => 5        
         ]);
+
+
+        // Agregamos billetera del instructor
+        DB::table('instructor_wallets')->insert([
+            "instructor_id" => 1,
+            "balance" => 0,
+            "currency_code" => "ARS"
+        ]);
+
 
 
         DB::table('instructor_services')->insert([
@@ -119,7 +123,7 @@ Clases para discapacitados",
         ]);
 
 
-        DB::table('reservations')->insert([
+        /*DB::table('reservations')->insert([
             "code" => "3A3ZY2BV2N5",
             "user_id" => 1,
             "instructor_service_id" => 1,
@@ -207,7 +211,7 @@ Clases para discapacitados",
             "net_amount" => -542.20,
             "created_at" => "2019-05-21 13:00:00",
             "updated_at" => "2019-05-21 13:00:00"
-        ]);
+        ]);*/
 
 
     }

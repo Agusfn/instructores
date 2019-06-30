@@ -295,6 +295,8 @@ Author URI: http://themeforest.net/user/Ansonika/
 }
 
 [data-loader="circle-side"] {
+
+  
   position: absolute;
   width: 50px;
   height: 50px;
@@ -306,7 +308,7 @@ Author URI: http://themeforest.net/user/Ansonika/
   -moz-animation: circle infinite .95s linear;
   -o-animation: circle infinite .95s linear;
   animation: circle infinite .95s linear;
-  border: 2px solid #fc5b62;
+  border: 2px solid #299aea;
   border-top-color: rgba(0, 0, 0, 0.2);
   border-right-color: rgba(0, 0, 0, 0.2);
   border-bottom-color: rgba(0, 0, 0, 0.2);
@@ -1314,7 +1316,7 @@ header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.s
 
 /* Main */
 main {
-  background-color: #f8f8f8;
+  background-color: whitesmoke;
   position: relative;
   z-index: 1;
 }
@@ -4443,7 +4445,7 @@ section#reviews {
   font-size: 18px;
   font-size: 1.125rem;
   position: absolute;
-  background-color: #fff;
+  /*background-color: #fff;*/
   height: 43px;
   top: 1px;
   right: 1px;
@@ -4452,7 +4454,7 @@ section#reviews {
   width: 20px;
   box-sizing: content-box;
   line-height: 43px;
-  z-index: 9;
+  z-index: 8;
   color: #999;
 }
 .booking .form-group i.icon_lock_alt {
@@ -4662,7 +4664,7 @@ ul.hotel_facilities li img {
 
 /*-------- 2.5 Login/register --------*/
 #login_bg, #register_bg {
-  background: url(../img/hero_in_bg_3.jpg) center center no-repeat fixed;
+  background: url(../img/4.jpg) center center no-repeat fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -6512,6 +6514,7 @@ ul.bullets li:before {
 }
 
 .margin_80_55 {
+  background: #ebedef;
   padding-top: 80px;
   padding-bottom: 55px;
 }

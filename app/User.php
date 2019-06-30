@@ -4,13 +4,17 @@ namespace App;
 
 use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Lib\Traits\HasProfilePicture;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable implements MustVerifyEmail
+
+class User extends Authenticatable
 {
-    use Notifiable;
+
+    use Notifiable, HasProfilePicture;
+
 
     /**
      * The attributes that are not mass assignable.
@@ -27,18 +31,29 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'provider', 'provider_id'
     ];
+
+
+    public function reservations()
+    {
+        return $this->hasMany("App\Reservation");
+    }
+
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
+     * Find user by social network login provider name and its respective id.
+     * @param  string $providerName
+     * @param  string $providerId 
+     * @return App\User|null
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
+    public static function findByProviderNameAndId($providerName, $providerId)
+    {
+        return self::where([
+            ["provider", "=", $providerName],
+            ["provider_id", "=", $providerId]
+        ])->first();
+    }
 
 
     public static function findByEmail($email) 
@@ -47,11 +62,13 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-    public function sendWelcomeAndVerificationEmail()
+    /*public function sendWelcomeAndVerificationEmail()
     {
         return Mail::to($this)->send(new UserWelcomeEmail($this));
-    }
+    }*/
 
 
-    
+
+
+
 }

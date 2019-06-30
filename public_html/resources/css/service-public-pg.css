@@ -8,8 +8,49 @@
     border-bottom-left-radius: 50% 50%;
 }
 
+
+.features ul > li {
+    margin-bottom: 10px;
+}
+
+.features ul > li > i {
+    margin-right: 10px;
+    font-size: 18px;
+    color: #787878;
+}
+
+.features ul > li > span {
+    font-weight: 300
+}
+
+
+#discipline-selection {
+    text-align: center;
+}
+
+#discipline-selection > div {
+    width: 100%
+}
+
+#discipline-selection .btn:nth-child(1):nth-last-child(1) {
+    width: 100%;
+}
+
+/* two items */
+#discipline-selection .btn:nth-child(1):nth-last-child(2),
+#discipline-selection .btn:nth-child(2):nth-last-child(1) {
+    width: 50%;
+}
+
+
+#discipline-selection .btn.discipline-selected {
+    background-color: #444;
+    border-color: #666;
+}
+
+
 #date-picker-input {
-    background-color: inherit;
+    background-color: #FFF;
 }
 
 #hour-selection {

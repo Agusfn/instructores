@@ -6,7 +6,7 @@ class Currencies
 {
 
 
-	const ARS = "ARS";
+	const CODE_ARS = "ARS";
 
 
 

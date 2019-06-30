@@ -18,8 +18,8 @@ class CreateInstructorsTable extends Migration
             $table->string('name');
             $table->string('surname');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('provider');
+            $table->string('provider_id');
             $table->string('phone_number')->nullable();
             $table->string('profile_picture')->nullable();
             $table->string('instagram_username')->nullable();
@@ -31,7 +31,7 @@ class CreateInstructorsTable extends Migration
             $table->string('identification_type')->nullable();
             $table->string('identification_number')->nullable();
             $table->integer('level')->nullable();
-            $table->decimal('balance', 8, 2);
+            $table->boolean('suspended')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

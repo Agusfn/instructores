@@ -12,54 +12,93 @@
       </ol>
 		<div class="box_general">
 			<div class="header_box">
-				<h2 class="d-inline-block">Bookings list</h2>
-				<div class="filter">
+				<h2 class="d-inline-block">Reservas</h2>
+				<!--div class="filter">
 					<select name="orderby" class="selectbox">
 						<option value="Any status">Any status</option>
 						<option value="Approved">Approved</option>
 						<option value="Pending">Pending</option>
 						<option value="Cancelled">Cancelled</option>
 					</select>
-				</div>
+				</div-->
 			</div>
 			<div class="list_general">
 				
 				<table class="table">
-
 					<thead>
 						<tr>
-							<th>asdf</th>
-							<th>asdf</th>
+							<th></th>
+							<th>Cod.</th>
+							<th>Fecha realiz.</th>
+							<th>Estado</th>
+							<th>Cliente</th>
+							<th>Instructor</th>
+							<th>Fecha y hora</th>
+							<th>Pers.</th>
+							<th>Total</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
-						<tr>
-							<td>asdf</td>
-							<td>asdf</td>
-						</tr>
+						@if($reservations->count() == 0)
+							<tr><td colspan="9" style="text-align: center;">No hay reservas</td></tr>
+						@else
+							@foreach($reservations as $reservation)
+
+							<tr>
+								<td><a href="{{ route('admin.reservations.details', $reservation->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a></td>
+								<td>{{ $reservation->code }}</td>
+								<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
+								<td>
+									@if($reservation->isPaymentPending())
+										<span class="badge badge-secondary">Pago pendiente -
+										@if($reservation->lastPayment->isPending()) 
+										Efectivo
+										@elseif($reservation->lastPayment->isProcessing())
+										Procesando
+										@elseif($reservation->lastPayment->isFailed())
+										Reintentar
+										@endif
+										</span>
+									@elseif($reservation->isPendingConfirmation())
+										<span class="badge badge-primary">Pend. confirmación instructor</span>
+									@elseif($reservation->isFailed())
+										<span class="badge badge-danger">Pago fallido</span>
+									@elseif($reservation->isRejected())
+										<span class="badge badge-danger">Rechazada por instructor</span>
+									@elseif($reservation->isConfirmed())
+										<span class="badge badge-success">Confirmada</span>
+									@elseif($reservation->isConcluded())
+										<span class="badge badge-success">Concluída</span>
+									@elseif($reservation->isCanceled())
+										<span class="badge badge-danger">Cancelada</span>
+									@endif
+								</td>
+								<td>
+									<a href="{{ route('admin.users.details', $reservation->user->id) }}">
+									{{ $reservation->user->name.' '.$reservation->user->surname }}
+									</a>
+								</td>
+								<td>
+									<a href="{{ route('admin.instructors.details', $reservation->instructor->id) }}">
+									{{ $reservation->instructor->name.' '.$reservation->instructor->surname }}
+									</a>
+								</td>
+								<td>{{ $reservation->reserved_class_date->format('d/m/Y') }}&nbsp;&nbsp;&nbsp;{{ $reservation->readableHourRange(true) }}</td>
+								<td>{{ $reservation->personAmount() }}</td>
+								<td>${{ round($reservation->final_price, 2) }}</td>
+							</tr>
+
+							@endforeach
+						@endif
+
+
 					</tbody>
 				</table>
 
 			</div>
 		</div>
 		<!-- /box_general-->
-		<nav aria-label="...">
+		<!--nav aria-label="...">
 			<ul class="pagination pagination-sm add_bottom_30">
 				<li class="page-item disabled">
 					<a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -71,7 +110,8 @@
 					<a class="page-link" href="#">Next</a>
 				</li>
 			</ul>
-		</nav>
+		</nav-->
+		{{ $reservations->links() }}
 		<!-- /pagination-->
 
 @endsection

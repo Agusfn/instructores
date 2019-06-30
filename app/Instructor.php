@@ -2,17 +2,19 @@
 
 namespace App;
 
+use App\InstructorWallet;
 use App\Lib\Reservations;
 use App\InstructorService;
 use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Lib\Traits\HasProfilePicture;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Instructor extends Authenticatable implements MustVerifyEmail
+class Instructor extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasProfilePicture;
 
 
     /**
@@ -29,17 +31,21 @@ class Instructor extends Authenticatable implements MustVerifyEmail
      *
      * @var array
      */
-    protected $hidden = [
+    /*protected $hidden = [
         'password', 'remember_token',
-    ];
+    ];*/
+
 
     /**
-     * The attributes that should be cast to native types.
+     * The attributes that should be visible in arrays. (Only used in search bar)
      *
      * @var array
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
+    protected $visible = [
+        "name",
+        "profile_picture",
+        "level"
+
     ];
 
 
@@ -65,6 +71,21 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     }
 
 
+    /**
+     * Find instructor by social network login provider name and its respective id.
+     * @param  string $providerName
+     * @param  string $providerId 
+     * @return App\User|null
+     */
+    public static function findByProviderNameAndId($providerName, $providerId)
+    {
+        return self::where([
+            ["provider", "=", $providerName],
+            ["provider_id", "=", $providerId]
+        ])->first();
+    }
+
+
 
     public static function findByEmail($email) 
     {
@@ -73,17 +94,45 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
 
-    public function mpAccount()
+    /**
+     * Get the service provided by the instructor
+     * @return App\InstructorService|null
+     */
+    public function service()
+    {
+        return $this->hasOne("App\InstructorService");
+    }
+
+
+
+    /*public function mpAccount()
     {
         return $this->hasOne("App\InstructorMpAccount");
+    }*/
+
+    public function bankAccount()
+    {
+        return $this->hasOne("App\InstructorBankAccount");
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne("App\InstructorWallet");
+    }
+
+
+    public function reservations()
+    {
+        return $this->hasMany("App\Reservation");
     }
 
 
 
-    public function sendWelcomeAndVerificationEmail()
+
+    /*public function sendWelcomeAndVerificationEmail()
     {
         return Mail::to($this)->send(new UserWelcomeEmail($this));
-    }
+    }*/
 
 
 
@@ -101,12 +150,9 @@ class Instructor extends Authenticatable implements MustVerifyEmail
      * Check whether the instructor has associated its MercadoPago account.
      * @return boolean
      */
-    public function hasMpAccountAssociated()
+    public function hasBankAccount()
     {
-        if($this->mpAccount != null && $this->mpAccount->access_token != null)
-            return true;
-
-        return false;
+        return $this->bankAccount()->exists();
     }
 
 
@@ -125,21 +171,36 @@ class Instructor extends Authenticatable implements MustVerifyEmail
 
 
     /**
-     * Approve instructor and create its service
+     * Approve an instructor, create their InstructorService and their InstructorWallet.
+     * 
+     * @param  string $idType   Identification type. Types defined in self::$identification_types
+     * @param  string $idNumber
+     * @param  int $level    level of instructor.
      * @return null
      */
-    public function approve()
+    public function approve($idType, $idNumber, $level)
     {
-        $service = new InstructorService(); 
+        
+        InstructorService::create([
+            "number" => InstructorService::generateNumber(),
+            "instructor_id" => $this->id,
+            "worktime_hour_start" => Reservations::DAILY_ACTIVITY_START_TIME,
+            "worktime_hour_end" => Reservations::DAILY_ACTIVITY_END_TIME,
+        ]);
 
-        $service->number = InstructorService::generateNumber();
-        $service->instructor_id = $this->id;
-        $service->worktime_hour_start = Reservations::DAILY_ACTIVITY_START_TIME;
-        $service->worktime_hour_end = Reservations::DAILY_ACTIVITY_END_TIME;
-        $service->save();
+        InstructorWallet::create([
+            "instructor_id" => $this->id,
+            "currency_code" => \App\Lib\Currencies::CODE_ARS
+        ]);
 
-        $this->approved = true;
-        $this->approved_at = date("Y-m-d H:i:s");
+        $this->fill([
+            "approved" => true,
+            "approved_at" => date("Y-m-d H:i:s"),
+            "identification_type" => $idType,
+            "identification_number" => $idNumber,
+            "level" => $level
+        ]);
+
         $this->save();
     }
 
@@ -157,26 +218,9 @@ class Instructor extends Authenticatable implements MustVerifyEmail
     }
 
 
-    /**
-     * Get the service provided by the instructor
-     * @return App\InstructorService|null
-     */
-    public function service()
-    {
-        return $this->hasOne("App\InstructorService");
-    }
 
 
 
-    public function balanceMovements()
-    {
-        return $this->hasMany("App\InstructorBalanceMovement");
-    }
 
-
-    public function profilePicUrl()
-    {
-        return \Storage::url("img/instructors/".$this->profile_picture);
-    }
 
 }

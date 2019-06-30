@@ -7,7 +7,7 @@ class PaymentMethods
 {
 
 
-	const MERCADOPAGO = "mercadopago-ar";
+	const CODE_MERCADOPAGO = "mercadopago-ar";
 
 
 	const MP_FEE_PERCENTAGE = 0.066429; // 5.49% + iva 21%
@@ -18,7 +18,7 @@ class PaymentMethods
 	 * @var array
 	 */
 	public static $currencies = [
-		self::MERCADOPAGO => Currencies::ARS
+		self::CODE_MERCADOPAGO => Currencies::CODE_ARS
 	];
 
 

@@ -11,7 +11,7 @@ class ApprovedInstructor
 
 
     /**
-     * Handle an incoming request.
+     * Redirect guest to instructor login. Redirect unapproved instructors to their panel (account pg).
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
@@ -19,30 +19,34 @@ class ApprovedInstructor
      */
     public function handle($request, Closure $next)
     {
-        if (Auth::guard("instructor")->check() && Auth::guard("instructor")->user()->isApproved()) {
-            Auth::shouldUse("instructor");
-            return $next($request);
+        if (Auth::guard("instructor")->check()) {
+
+            if(Auth::guard("instructor")->user()->isApproved())  {
+                Auth::shouldUse("instructor");
+                return $next($request);
+            }
+            else {
+                $this->redirectUnauthenticated($request, "instructor.account");
+            }
         }
         else {
-            throw new AuthenticationException(
-                'Unauthenticated.', ["instructor"], $this->redirectTo($request)
-            );
+            $this->redirectUnauthenticated($request, "instructor.login");
         }
         
     }
 
-
+    
     /**
-     * Get the path the user should be redirected to when they are not authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string
+     * Redirect to route with authentication exception.
+     * @param  [type] $request [description]
+     * @param int $routeName
+     * @return [type]            [description]
      */
-    protected function redirectTo($request)
+    private function redirectUnauthenticated($request, $routeName)
     {
-        if (! $request->expectsJson()) {
-            return route('home');
-        }
+        throw new AuthenticationException(
+            'Unauthenticated.', ["instructor"], !$request->expectsJson() ? route($routeName) : null
+        );
     }
 
 

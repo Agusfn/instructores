@@ -44,4 +44,27 @@ return [
         ],
     ],
 
+    'facebook' => [
+        'client_id' => env('FACEBOOK_APP_ID'),
+        'client_secret' => env('FACEBOOK_APP_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT'),
+        'redirect_instructor' => env('FACEBOOK_REDIRECT_INSTRUCTOR')
+    ],
+
+
+    'google' => [
+        'client_id' => env('GOOGLE_APP_ID'),
+        'client_secret' => env('GOOGLE_APP_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT'),
+        'redirect_instructor' => env('GOOGLE_REDIRECT_INSTRUCTOR')
+    ],
+
+
+    'mercadopago' => [
+        'public_key' => env('MP_PUBLIC_KEY'),
+        'access_token' => env('MP_ACCESS_TOKEN'),
+        'webhook_url' => env('MP_WEBHOOK_URL')
+    ],
+
+
 ];

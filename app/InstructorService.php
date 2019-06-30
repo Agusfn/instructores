@@ -3,37 +3,44 @@
 namespace App;
 
 
-use Carbon\CarbonPeriod;
 use App\Lib\Reservations;
 use App\Lib\Helpers\Dates;
-use App\Lib\BookingIndexes;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Lib\InstructorService\DescriptionImages;
+use App\Lib\InstructorService\BookingIndexes;
 
 
 class InstructorService extends Model
 {
 
-	use DescriptionImages;
+	use DescriptionImages, BookingIndexes;
 
+
+	const DISCIPLINE_SKI = "ski";
+	const DISCIPLINE_SNOWBOARD = "snowboard";
 
     /**
      * 
      *
      * @var array
      */
-	protected $guarded = [
+	protected $guarded = [];
+
+
+    /**
+     * The attributes that should be visible in arrays. (Only used in search bar)
+     *
+     * @var array
+     */
+	protected $visible = [
 		"number",
-		"published",
-		"instructor_id",
-		"instructor_level",
-		"images_json",
-		"booking_calendar_json"
+		"snowboard_discipline",
+		"ski_discipline",
+		"instructor"
 	];
 
 
-	public $disciplines = ["ski", "snowboard"];
+	//public $disciplines = ["ski", "snowboard"];
 
 
 	/**
@@ -97,6 +104,16 @@ class InstructorService extends Model
 	}
 
 
+	/**
+	 * Scope a query to only include active instructor services.
+	 * @param  [type] $query [description]
+	 * @return [type]        [description]
+	 */
+	public function scopeActive($query) {
+		return $query->where("published", true);
+	}
+
+
 
 	/**
 	 * Get instructor service images as array of assoc array with "img" and "thumbnail"
@@ -140,7 +157,7 @@ class InstructorService extends Model
 		if(!$this->offered_to_adults && !$this->offered_to_kids)
 			return false;
 
-		if($this->dateRanges->count() == 0)
+		if($this->dateRanges()->count() == 0)
 			return false;
 
 		return true;
@@ -292,7 +309,7 @@ class InstructorService extends Model
 			throw new \Exception("Invalid working hour period.");
 
 		$reservations = $this->reservations()->active()
-			->where("reserved_date", $date->format("Y-m-d"))
+			->where("reserved_class_date", $date->format("Y-m-d"))
 			->where(function ($query) use ($hour_start, $hour_end) {
 
 				$query->where("reserved_time_start", $hour_start)
@@ -346,99 +363,18 @@ class InstructorService extends Model
 
 
 
-
-
-
-	public function rebuildAvailabilityIndexes()
-	{
-
-	}
-
-
 	/**
-	 * Rebuilds the booking calendar json (stored in booking_calendar_json).
-	 * The json stores, for each day of each month of activity of the current year, the price per block and the availability of each block.
-	 * This json will serve as a pre-processed index for the datepicker on the service page.
-	 * 
-	 * @return null
+	 * Check whether this service offers any discount for group
+	 * @return boolean
 	 */
-	public function rebuildJsonBookingCalendar()
+	public function hasGroupDiscounts()
 	{
-		$calendar = BookingIndexes::buildBookingCalendar($this);
-
-		$this->booking_calendar_json = json_encode($calendar);
-		$this->save();
-	}
-
-
-
-	/**
-	 * Gets a reduced booking calendar as an array, adapted for use on the date picker. 
-	 * The calendar includes only the availability and the block price for each day.
-	 * 
-	 * @return array
-	 */
-	public function getAvailabilityAndPricePerDay()
-	{
-		$calendar = json_decode($this->booking_calendar_json, true);
-
-		foreach($calendar as $monthIndex => $monthData) {
-
-			foreach($monthData as $dayIndex => $dayData) {
-
-				unset($calendar[$monthIndex][$dayIndex]["working_day"]);
-
-				if(!$dayData["available"]) {
-					unset($calendar[$monthIndex][$dayIndex]["ppb"]);
-					unset($calendar[$monthIndex][$dayIndex]["blocks_available"]);
-				}
-
-			}
-
+		for($i=2; $i<=6; $i++) {
+			if($this->{"person".$i."_discount"} > 0)
+				return true;
 		}
-
-		return $calendar;
+		return false;
 	}
-
-
-	/**
-	 * Deletes all the available dates registries of this service and creates them all again with the data of the json calendar, WHICH MUST BE UPDATED FIRST.
-	 * Makes an index of all the days that the instructor does offer their service WITHIN the annual activity period (season).
-	 * The index will be used exclusively for the search function.
-	 * This method has to be called every time a reservation is made or cancelled, or each time the instructor makes a change to its working time tables.
-	 * 
-	 * @return null
-	 */
-	public function rebuildAvailableDatesIndex()
-	{
-		
-		DB::table("service_available_dates")->where("instructor_service_id", $this->id)->delete();
-
-		
-		$calendar = json_decode($this->booking_calendar_json, true);
-
-		foreach($calendar as $monthIndex => $monthData) {
-
-			foreach($monthData as $dayIndex => $dayData) {
-
-				if($dayData["available"] == true) {
-
-					DB::table("service_available_dates")->insert([
-						"instructor_service_id" => $this->id,
-						"date" => date("Y")."-".$monthIndex."-".$dayIndex
-					]);
-
-				}
-
-			}
-
-		}
-
-
-	}
-
-
-
 
 
 

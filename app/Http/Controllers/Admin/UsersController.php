@@ -16,15 +16,50 @@ class UsersController extends Controller
 
 	public function list()
 	{
-		$users = User::all();
+		$users = User::orderBy("created_at", "DESC")->paginate(15);
 		return view("admin.users.list")->with("users", $users);
 	}
 
 
+
+	/**
+	 * Display user details page. **** PAGINATE RESERVATIONS ******
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
 	public function details($id)
 	{
 		$user = User::find($id);
-		return view("admin.users.details")->with("user", $user);
+
+		if(!$user)
+			return redirect()->route("admin.users.list");
+
+		$reservations = $user->reservations()->with("instructor:id,name,surname")->orderBy("id", "DESC")->get();
+
+		return view("admin.users.details")->with([
+			"user" => $user,
+			"reservations" => $reservations
+		]);
+	}
+
+
+
+	/**
+	 * Suspender/habilitar usuario.
+	 * @return [type] [description]
+	 */
+	public function toggleSuspend($id)
+	{
+		$user = User::find($id);
+
+		if(!$user)
+			return redirect()->route("admin.users.list");
+
+
+		$user->suspended = $user->suspended ? false : true;
+		$user->save();
+
+		return redirect()->back();
 	}
 
 
