@@ -32,7 +32,7 @@
 	<link href="{{ asset('resources/css/vendors.css') }}" rel="stylesheet">
 
     <!-- YOUR CUSTOM CSS -->
-    <link href="{{ asset('resources/css/custom.css?3') }}" rel="stylesheet">
+    <link href="{{ asset('resources/css/custom.css?4') }}" rel="stylesheet">
 
     @yield('custom-css')
 
