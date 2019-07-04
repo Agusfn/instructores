@@ -28,6 +28,35 @@
     background-color: #0054a6!important;
     display: block;
 }
+    .mm-slideout {
+        border-bottom: 1px solid #ededed!important;
+    background-color: #fff !important;
+    
+    color: black !important;
+}
+   .mm-slideout p{
+    
+    color: black !important;
+}
+ .mm-slideout   ul > li span > a {
+    color: #444 !important;   
+}
+
+.mm-slideout   ul > li span > a:hover {
+    color: #fc5b62 !important;   
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+    width: 30px;
+    height: 4px;
+    background-color: #333 !important;
+    border-radius: 0;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: .15s;
+    transition-timing-function: ease;
+}
+
 </style>
 @extends('layouts.main')
 
@@ -37,16 +66,19 @@
 @section('content')
         
 
+       <br><br>
+        <div class="container margin_60_35"></div>
           
-          <div class="container" id="contsosinsts" >
+
+
               
 
-
+                
                 <div class="container" >
                     
                      
                        
-                         <div class="main_title_3">
+                        <div class="main_title_3">
                          
                          <h2 >Sos instructor de ski o snowboard?</h2>
                          <span><em></em></span><span><em></em></span><span><em></em></span><span><em></em></span>
@@ -56,16 +88,20 @@
                         <p>• Organizá tu agenda de instructor con anticipación.</p>
                         <p>• Creá y negociá tus propias promociones.</p>
 
-                        <div class="col-lg-6 pull-right"><p class="">Llevá tus clases a otro nivel, no pierdas más tiempo.</p></div>
-
+                        <div class="container">
+                            <p class="pull-center">Llevá tus clases a otro nivel, no pierdas más tiempo.</p></div>
+                            <a  href="{{ route('instructor.login') }}" class="btn_1 rounded" >REGISTRARME</a>
                         </div>
+                  
+                 
+
+                        
 
 
+                </div>  
 
-
-                </div>      
                      
-                        <div class="row"><div class="col-lg-6 " id="registbotton"><a href="{{ route('instructor.login') }}" class="btn_1 rounded pull-right" >REGISTRARME</a></div></div>
+                     
 
                
 
@@ -73,8 +109,7 @@
                     
 
            
-                
-          </div>
+        
 
 
         

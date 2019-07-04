@@ -8,7 +8,7 @@
 						<li>
 							<i class="pe-7s-map-marker"></i>
 							<h4>Dirección</h4>
-							<span><br>San Carlos de Bariloche - Río negro, Argentina.</span>
+							<span>San Carlos de Bariloche - Río negro, Argentina.</span>
 						</li>
 						<li>
 							<i class="pe-7s-mail-open-file"></i>
@@ -19,7 +19,7 @@
 						<li>
 							<i class="pe-7s-phone"></i>
 							<h4>Contacto</h4>
-							<span>+ 54 9294 43905813<br><small>Lunes a Domingo 24hs</small></span>
+							<span>+ 54 294 4305813<br><small>Lunes a Domingo 24hs</small></span>
 						</li>
 					</ul>
 
@@ -35,6 +35,9 @@
 							<li><span>© 2018 Instructores</span></li>
 						</ul>
 					</div>
+				<br>
+				<hr>
+				<small><span>Diseño: vdvedia@gmail.com</span></small>	
 				</div>
 			</div>
 		</footer>

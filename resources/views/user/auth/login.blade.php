@@ -4,6 +4,26 @@
 @section('title', 'Iniciar sesión')
 
 @section('form')
+<style type="text/css">
+
+#login figure, #register figure {
+    text-align: center;
+    border-bottom: 1px solid #ededed;
+    margin: 0px 0px 0px 0px !important ;
+    padding: 20px 60px 25px 60px;
+}
+
+.mm-slideout {
+    background-color: #ffdead00;
+    
+}
+
+#logo {
+    padding: 20px;
+}
+
+</style>
+
 
 			@if(session('verified'))
 			<div class="alert alert-success alert-dismissible fade show" role="alert">

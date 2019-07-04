@@ -2,6 +2,12 @@
 /* Your custom styles below */
 /*============================================================================================*/
 
+
+main {
+	overflow-x: hidden;
+}
+
+
 /*header*/
 
 
@@ -17,7 +23,8 @@ header.header.sticky #logo p{
 	color: orange;
 }
 #logo p{
-	margin-top: -10px;
+
+	margin-top: -10px ;
 	font-size: medium;
 	color: white;
 }
@@ -25,10 +32,10 @@ header.header.sticky #logo p{
 
 
 /*titulo*/
-.hero_single.version_2 .wrapper h3 {
-	 font-size: 2.3rem  ; 
-	 color: #ffc107;
-	 text-shadow: black;
+.hero_single.version_2 .wrapper h1 {
+	 font-size: 2.01rem !important  ; 
+	 color: #f8f9fa !important;
+	 text-shadow: blue!important;
 }
 
 /*barra de ofertas*/
@@ -63,6 +70,15 @@ header.header.sticky #logo p{
 
 .qtyTotal {
 	background-color: #299aeaad;
+}
+
+
+/*Menu movil*/
+
+.hamburger-inner {
+    display: block;
+    top: 80%;
+    margin-top: 0px;
 }
 
 /*separador*/
@@ -261,9 +277,10 @@ ul#cat_nav li a:hover, ul#cat_nav li a#active, ul#cat_nav li a.active {
 
 
 
-/*resultados de busqueda*/
+/*Propiedades del contenedor de la cabecera*/
 .mm-slideout {
-	background-color: #0000000d;
+	background-color: #00000040;
+    height: 83px;
 
 
 
@@ -328,9 +345,10 @@ a.btn_1.full-width.purchase, .btn_1.full-width.purchase {
 /*seccion sos instructor*/
 
 #contsosinsts {
+	
 	background-color: whitesmoke;
-	margin-top: 8% !important;
-	margin-bottom: 5%!important;
+	/*margin-top: 8% !important;*/
+	/*margin-bottom: 5%!important;*/
 	
 }
 
