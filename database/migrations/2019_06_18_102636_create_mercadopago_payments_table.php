@@ -20,7 +20,7 @@ class CreateMercadopagoPaymentsTable extends Migration
         Schema::create('mercadopago_payments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('reservation_payment_id')->nullable();
-            $table->integer('mp_payment_id')->nullable();
+            $table->unsignedBigInteger('mp_payment_id')->nullable();
             $table->string('status')->nullable(); // MP status or 'error'.
             $table->string('status_detail')->nullable();
             $table->datetime('date_created')->nullable();
