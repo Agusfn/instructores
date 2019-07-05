@@ -211,7 +211,12 @@
 												@elseif($payment->isCanceled())
 												<span class="badge badge-danger">Expirado/cancelado</span>
 												@elseif($payment->isFailed())
-												<span class="badge badge-danger">Fallido</span>
+												<span class="badge badge-danger" 
+												@if($payment->isMercadoPago())
+													style="text-decoration: underline dotted" data-toggle="tooltip" data-placement="top" title="{{ $payment->mercadopagoPayment->status_detail }}"
+												@endif>
+													Fallido
+												</span>
 												@elseif($payment->isRefunded())
 												<span class="badge badge-info">Reembolsado</span>
 												@elseif($payment->isChargebacked())

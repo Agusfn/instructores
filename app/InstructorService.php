@@ -143,7 +143,7 @@ class InstructorService extends Model
 	 * 
 	 * @return boolean
 	 */
-	public function canBePublished()
+	/*public function canBePublished()
 	{
 		if(!$this->description || !$this->features)
 			return false;
@@ -161,7 +161,7 @@ class InstructorService extends Model
 			return false;
 
 		return true;
-	}
+	}*/
 
 
 

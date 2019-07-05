@@ -38,7 +38,7 @@ function load_more_results()
 			// put loading spinner
 		},
 		success: function(response) {
-			console.log(response);
+			//console.log(response);
 			search_response(response);
 		},
 		error: function (jqXhr, textStatus, errorMessage) {
@@ -53,7 +53,6 @@ function load_more_results()
 
 function search_response(response)
 {
-	
 	if(response.data.length == 0) {
 		if(page == 1)
 			$("#no-results").show();
@@ -74,7 +73,8 @@ function search_response(response)
 
 function place_result(service)
 {
-	var service_url = app_url + "instructor/" + service.number;
+	var date_formatted = moment(date, "DD/MM/YYYY").format("DD-MM-YYYY");
+	var service_url = app_url + "instructor/" + service.number + "?discipline="+discipline+"&date="+date_formatted+"&adults="+qty_adults+"&kids="+qty_kids;
 	var profile_pic_url = app_url + "storage/img/instructors/" + service.instructor.profile_picture;
 
 	var html = '\
