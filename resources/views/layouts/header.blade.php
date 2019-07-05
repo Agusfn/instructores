@@ -8,30 +8,30 @@
 
   gtag('config', 'UA-129656474-1');
 </script>
-
+        <div class="col-lg-12">
 		<div id="preloader"><div data-loader="circle-side"></div></div><!-- /Page Preload -->
 		
-
-		<div class="col-lg-1 col-md-6"><div id="logo">
-            <div class="container">
-			<a href="{{ route('home') }}"><span><h6>INSTRUCTORES</h6><p>SKI&SNOWBOARD</p></span>
+         
+		 <div id="logo">       
+			<a  href="{{ route('home') }}"><h6>INSTRUCTORES</h6><p>SKI&SNOWBOARD</p>
 				<!--
 				<img src="resources/img/logo.png" width="150" height="36" data-retina="true" alt="" class="logo_normal">
 				<img src="resources/img/logosticky.png" width="150" height="36" data-retina="true" alt="" class="logo_sticky">
 				-->
 			</a>
-			</div>
+		
 		</div> 
-		</div>
+
+		
         
 
-        <!--BARRA DE OFERTAS-->
+        <!--BARRA DE OFERTAS
          <div class="container" >  
                 <div class="col-lg-6 col-md-6 float-left" id="barraofertas" >                       
                             <a id="ofertas" href="{{ route('become-instructor') }}" class="btn_1 rounded">¡Ofertas disponibles! Finalizan en: 05:40:03 Horas.</a>
                 </div>
                  </div>
-        <!--/BARRA DE OFERTAS-->        
+        BARRA DE OFERTAS-->        
             
 		
 		<a href="#menu" class="btn_mobile">
@@ -41,6 +41,7 @@
 				</div>
 			</div>
 		</a>
+
 		<nav id="menu" class="main-menu">
 			<ul>
 
@@ -87,7 +88,8 @@
 				
 			</ul>
 		</nav>
+		</div>
 
-       <script src="//code.jivosite.com/widget.js" jv-id="HDITS1kFVy" async></script>
+       
 
 	</header>

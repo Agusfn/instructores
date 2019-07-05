@@ -4,16 +4,36 @@
 @section('title', 'Buscar clases')
 
 
-@section('content')
-	<section class="hero_in hotels">
-		<div class="wrapper">
-			<div class="container">
-				<h6 id="titulo" class="fadeInUp"><span></span>Resultados de la búsqueda</h6>
-			</div>
-		</div>
-	</section>
-	<!--/hero_in-->
 
+@section('content')
+
+
+<style type="text/css">
+main{ 
+	overflow-y: hidden;
+	overflow-y: hidden;
+ }
+
+.mm-slideout {
+    background-color: #299aea;
+    height: 83px;
+}
+
+.filters_listing {
+    padding: 25px 0 5px 0 !important;
+    background: #fff;
+    border-bottom: 1px solid #ededed;
+    z-index: 999999 !important;
+    position: relative;
+}
+
+
+
+</style>
+
+	
+	
+    <br><br><br>
 	<div class="filters_listing sticky_horizontal">
 		<div class="container">
 			<ul class="clearfix">

@@ -20,7 +20,9 @@
     .daterangepicker td.disabled {
         cursor: default;
         /*text-decoration: none;*/
+
     }
+    
 </style>
 
 @endsection
@@ -30,8 +32,9 @@
         <section class="hero_single version_2">
             <div class="wrapper">
                 <div class="container">
-                    <h3>Clases de Ski & Snowboard en Cerro Catedral</h3>
-                    <p><strong>Viví la emoción de la montaña. Reserva tus clases ahora.</strong></p>
+
+                    <div class="col-lg-10 col-md-3" style="padding-top: 50px; margin-left: 15px"><h1>Clases de Ski & Snowboard en Cerro Catedral</h1></div>
+                    <p style="color: gold">Hay un instructor para vos. Clases para niños y adultos</p>
                     <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
                             <div class="col-lg-4">
@@ -60,7 +63,7 @@
                                             <input type="text" class="qtyInput" name="qty_adults" value="1" data-max="6" autocomplete="off">
                                         </div>
                                         <div class="qtyButtons">
-                                            <label>Chicos</label>
+                                            <label>Menores</label>
                                             <input type="text" class="qtyInput" name="qty_kids" value="0" data-max="6" autocomplete="off">
                                         </div>
                                     </div>
@@ -74,14 +77,15 @@
                         <input type="hidden" name="sort" value="default">
                         <!-- /row -->
                     </form>
-                     <div class="container"></br></br></br>
+                     <div class="container"><br/><br/>
                       <div class="col-lg-12">
 
                         <span class="pull-left">
                             <strong >#Ski&Snowboard</strong></n>
                             <strong >#Bariloche2019</strong>
                             <strong >#CerroCatedral</strong>
-                        </span>
+                        </span><br>
+                       <p  style="color: #fc5b62" class="pull-left"><strong>Viví la emoción de la montaña. Reserva ahora.</strong></p>
                     </div>
                 </div>
             </div>
@@ -214,7 +218,7 @@
 
                         <div class="col-lg-5" class="whatsapp"> 
                         <h5>Whatsapp </h5>
-                        <h3>+54 9294 4305811</h3>
+                        <h3>+54 924 4305813</h3>
                        </div>
                        <div class="col-lg-6"><strong><p>Ante cualquier duda comunicate con nosotros, estamos para asistirte.</p></strong></div>
                        
@@ -245,14 +249,7 @@
 
                     
         </div>
-         <div class="container" id="testify">
-            
- 
-
-        
-        </div>
-        <!-- /container -->
-        
+    
              
                 
             
@@ -335,6 +332,7 @@
     <!-- INPUT QUANTITY  -->
     <script src="{{ asset('resources/js/input_qty.js') }}"></script>
     
-    
+    <!-- JivoChat -->
+    <script src="//code.jivosite.com/widget.js" jv-id="HDITS1kFVy" async></script>
     
 @endsection
