@@ -9,7 +9,7 @@
     <link href="{{ asset('resources/admin/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('resources/admin/vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/style.css">
-    <title>Bootstrap 4 Login/Register Form</title>
+    <title>Login Admin - Instructores.com.ar</title>
 
     <style type="text/css">
 	/* sign in FORM */

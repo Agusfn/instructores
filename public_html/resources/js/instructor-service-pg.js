@@ -33,8 +33,10 @@ $(document).ready(function() {
 
 
 	$("#date-range-selector").daterangepicker({
-		minDate: start_date,
-		maxDate: end_date,
+		minDate: minDate,
+		maxDate: maxDate,
+		startDate: minDate,
+		endDate: minDate,
 		locale: {
             format: 'DD/MM/YY',
             cancelLabel: 'Cancelar'
@@ -173,6 +175,12 @@ $(document).ready(function() {
 			}
 		}
 
+		if($("#block_price").val() != "") {
+			if(!confirm("Hay un rango de fechas de trabajo ingresado pero que aún no guardaste, si continuas no se guardará. ¿Continuar?"))
+				return;
+		}
+
+
 
 		$("#service-details").submit();
 	});
@@ -291,10 +299,9 @@ function validate_range_form()
 	}
 
 
-	//var date_start = new Date($("#date_start").val());
-	var date_start = moment($("#date_start").val(), "DD/MM/YY");
-	var date_end = moment($("#date_end").val(), "DD/MM/YY");
-	var today = moment().hour(0).minute(0).second(0).millisecond(0);
+	var date_start = moment($("#date_start").val(), "DD/MM/YY").startOf('day');
+	var date_end = moment($("#date_end").val(), "DD/MM/YY").startOf('day');
+	var today = moment().startOf('day');
 	
 
 	if(!date_start.isValid() || !date_end.isValid()) {
@@ -302,12 +309,12 @@ function validate_range_form()
 		return false;
 	}
 
-	if(date_end < date_start) {
-		alert("La fecha 'hasta' debe ser antes o igual a la fecha 'desde'.");
+	if(!date_end.isSameOrAfter(date_start)) {
+		alert("La fecha 'hasta' debe ser igual o después que la fecha 'desde'.");
 		return false;
 	}
 
-	if(date_start < today) {
+	if(date_start.isSameOrBefore(today)) {
 		alert("La fecha 'desde' no puede ser anterior o igual a hoy.");
 		return false;
 	}

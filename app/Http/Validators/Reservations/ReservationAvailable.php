@@ -43,7 +43,8 @@ class ReservationAvailable extends Validator
             return true;
         }
 
-        if( ($this->request->has("adults_amount") && !$service->offered_to_adults) || ($this->request->has("kids_amount") && !$service->offered_to_kids) ) {
+        if( ($this->request->has("adults_amount") && $this->request->adults_amount > 0 && !$service->offered_to_adults) || 
+            ($this->request->has("kids_amount") && $this->request->kids_amount > 0 && !$service->offered_to_kids) ) {
             $this->messages = "Se ingresó una cantidad de personas incorrecta.";
             return true;
         }

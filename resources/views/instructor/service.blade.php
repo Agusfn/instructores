@@ -93,12 +93,12 @@
 
 					<form style="float:right;" action="{{ url('instructor/panel/servicio/pausar') }}" method="POST">
 						@csrf
-						<button class="btn btn-default">Pausar publicación</button>
+						<button type="button" class="btn btn-default" onclick="if(confirm('Recuerda guardar los cambios si modificaste alguno. ¿Continuar?')) $(this).parent().submit();">Pausar publicación</button>
 					</form>
 					@else
 					<form style="float:right;" action="{{ url('instructor/panel/servicio/activar') }}" method="POST">
 						@csrf
-						<button class="btn btn-info">Activar publicación</button>
+						<button type="button" class="btn btn-info" onclick="if(confirm('Recuerda guardar los cambios si modificaste alguno. ¿Continuar?')) $(this).parent().submit();">Activar publicación</button>
 					</form>
 					@endif
 					
@@ -181,9 +181,10 @@
 									@endforeach
 									<tr id="insert-form-row">
 										<td>
+											@php($minDate = $activityStartDate->isPast() ? (new Carbon\Carbon())->addDays(1)->format('d/m/y') : $activityStartDate->format('d/m/y'))
 											<input type="text" class="form-control" id="date-range-selector">
-											<input type="hidden" class="form-control" id="date_start">
-											<input type="hidden" class="form-control" id="date_end">
+											<input type="hidden" class="form-control" id="date_start" value="{{ $minDate }}">
+											<input type="hidden" class="form-control" id="date_end" value="{{ $minDate }}">
 										</td>
 										<td><input type="text" class="form-control" id="block_price"></td>
 										<td><button type="button" class="btn btn-success btn-sm" id="btn_submit_range"><i class="fa fa-plus" aria-hidden="true"></i></button></td>
@@ -306,8 +307,8 @@
 		@else
 		var uploaded_imgs = [];
 		@endif
-		var start_date = "{{ $activityStartDate->isPast() ? (new Carbon\Carbon())->format('d/m/y') : $activityStartDate->format('d/m/y') }}";
-		var end_date = "{{ $activityEndDate->format('d/m/y') }}";
+		var minDate = "{{ $minDate }}";
+		var maxDate = "{{ $activityEndDate->format('d/m/y') }}";
 	</script>
 	@endif
 @endsection

@@ -336,13 +336,13 @@
                                         @if($service->offered_to_adults)
                                         <div class="qtyButtons">
                                             <label>Adultos</label>
-                                            <input type="text" name="adults_amount" class="qtyInput" value="1" data-max="@if($service->allows_groups) {{ $service->max_group_size }} @else 1 @endif" @if($service->offered_to_kids) data-min="0" @else data-min="1" @endif autocomplete="off">
+                                            <input type="text" name="adults_amount" class="qtyInput" value="{{ $setInitialDate ? $input['adults'] : 1 }}" data-max="@if($service->allows_groups) {{ $service->max_group_size }} @else 1 @endif" @if($service->offered_to_kids) data-min="0" @else data-min="1" @endif autocomplete="off">
                                         </div>
                                         @endif
                                         @if($service->offered_to_kids)
                                         <div class="qtyButtons">
                                             <label>Niños</label>
-                                            <input type="text" name="kids_amount" class="qtyInput" value="0" data-max="@if($service->allows_groups) {{ $service->max_group_size }} @else 1 @endif" @if($service->offered_to_adults) data-min="0" @else data-min="1" @endif autocomplete="off">
+                                            <input type="text" name="kids_amount" class="qtyInput" value="{{ $setInitialDate ? $input['kids'] : 0 }}" data-max="@if($service->allows_groups) {{ $service->max_group_size }} @else 1 @endif" @if($service->offered_to_adults) data-min="0" @else data-min="1" @endif autocomplete="off">
                                         </div>
                                         @endif
                                     </div>
@@ -405,12 +405,22 @@ var serv_number = {{ $service->number }};
 var group_discounts = {!! json_encode($service->getGroupDiscounts()) !!};
 var max_group_size = {{ $service->allows_groups ? $service->max_group_size : "1" }};
 
+@if($setInitialDate)
+var initialSearchedDate = "{{ $input['date'] }}";
+@endif
 
 $(document).ready(function() {
 
-    {{-- Agregar params get --}}
     @if( (!$service->ski_discipline && $service->snowboard_discipline) || ($service->ski_discipline && !$service->snowboard_discipline) )
     $("#discipline-selection > div > .btn:first").trigger("click");
+    @else
+        @if($setInitialDate)
+            @if($input["discipline"] == "ski")
+            $("#discipline-selection > div > .btn:first").trigger("click");
+            @else
+            $("#discipline-selection > div > .btn:nth-child(2)").trigger("click");
+            @endif
+        @endif
     @endif
 
 });

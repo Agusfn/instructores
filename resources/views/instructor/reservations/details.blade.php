@@ -163,7 +163,7 @@
 										{{ $payment->paid_at->format('d/m/Y H:i') }}
 									</div>
 									@endif
-									@if($payment->isMercadoPago())
+									@if($payment->isMercadoPago() && $payment->mercadopagoPayment->isWithCreditCard())
 									<div class="col-md-6">
 										<label>Cuotas:</label><br/>
 										{{ $payment->mercadopagoPayment->installment_amount }}

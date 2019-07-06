@@ -75,7 +75,7 @@ main{
 @endsection
 
 @section('custom-js')
-<script type="text/javascript" src="{{ asset('resources/js/search-pg.js') }}"></script>
+<script type="text/javascript" src="{{ asset('resources/js/search-pg.js?2') }}"></script>
 <script>
 	var app_url = "{{ config('app.url').'/' }}";
 	var sort = "{{ $searchParams['sort'] }}";

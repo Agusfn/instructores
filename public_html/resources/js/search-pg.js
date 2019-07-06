@@ -38,7 +38,7 @@ function load_more_results()
 			// put loading spinner
 		},
 		success: function(response) {
-			console.log(response);
+			//console.log(response);
 			search_response(response);
 		},
 		error: function (jqXhr, textStatus, errorMessage) {
@@ -53,7 +53,6 @@ function load_more_results()
 
 function search_response(response)
 {
-	
 	if(response.data.length == 0) {
 		if(page == 1)
 			$("#no-results").show();
@@ -74,21 +73,22 @@ function search_response(response)
 
 function place_result(service)
 {
-	var service_url = app_url + "instructor/" + service.number;
+	var date_formatted = moment(date, "DD/MM/YYYY").format("DD-MM-YYYY");
+	var service_url = app_url + "instructor/" + service.number + "?discipline="+discipline+"&date="+date_formatted+"&adults="+qty_adults+"&kids="+qty_kids;
 	var profile_pic_url = app_url + "storage/img/instructors/" + service.instructor.profile_picture;
 
-	var html = `
-	<div class="col-xl-4 col-lg-6 col-md-6">
-		<div class="box_grid">
-			<figure>
-				
-				<a href="` + service_url + `"><img src="` + profile_pic_url + `" class="img-fluid" alt="" width="800" height="533"><div class="read_more"><span>Ver más</span></div></a>
-				<small>Nivel ` + service.instructor.level + `</small>
-			</figure>
-			<div class="wrapper">
-				<!--div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div-->
-				<h3><a href=""` + service_url + `">` + service.instructor.name + `</a></h3>
-				`;
+	var html = '\
+	<div class="col-xl-4 col-lg-6 col-md-6">\
+		<div class="box_grid">\
+			<figure>\
+				\
+				<a href="' + service_url + '"><img src="' + profile_pic_url + '" class="img-fluid" alt="" width="800" height="533"><div class="read_more"><span>Ver más</span></div></a>\
+				<small>Nivel ' + service.instructor.level + '</small>\
+			</figure>\
+			<div class="wrapper">\
+				<!--div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div-->\
+				<h3><a href="' + service_url + '">' + service.instructor.name + '</a></h3>\
+				';
 				
 				if(service.snowboard_discipline && service.ski_discipline)
 					html += "<p>Instructor de ski y snowboard</p>";
@@ -97,16 +97,16 @@ function place_result(service)
 				else
 					html += "<p>Instructor de ski</p>";
 				
-				html += `
-				<!--p>Idiomas: Ingles/español</p-->						
-				<span class="price"> <strong>$` + service.quote.classes_price + `</strong> /2 horas (` + service.quote.person_amt + ` personas)</span>
-			</div>
-			<!--ul>
-				<li><div class="score"><span>Super instructor<em>350 Reseñas</em></span><strong>9.6</strong></div></li>
-			</ul-->
-		</div>
-	</div>
-	`;
+				html += '\
+				<!--p>Idiomas: Ingles/español</p-->\
+				<span class="price"> <strong>$' + service.quote.classes_price + '</strong> /2 horas (' + service.quote.person_amt + ' personas)</span>\
+			</div>\
+			<!--ul>\
+				<li><div class="score"><span>Super instructor<em>350 Reseñas</em></span><strong>9.6</strong></div></li>\
+			</ul-->\
+		</div>\
+	</div>\
+	';
 
 	$("#search-results .row").append(html);
 

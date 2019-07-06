@@ -28,11 +28,11 @@
     <!--Sacar font awesome 4 despues-->
     <link rel="stylesheet" href="{{ asset('resources/vendor/font-awesome-4.7.0/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('resources/vendor/fontawesome-free-5.9.0-web/css/all.css') }}">
-    <link href="{{ asset('resources/css/style.css?2') }}" rel="stylesheet">
+    <link href="{{ asset('resources/css/style.css?3') }}" rel="stylesheet">
 	<link href="{{ asset('resources/css/vendors.css') }}" rel="stylesheet">
 
     <!-- YOUR CUSTOM CSS -->
-    <link href="{{ asset('resources/css/custom.css?2') }}" rel="stylesheet">
+    <link href="{{ asset('resources/css/custom.css?4') }}" rel="stylesheet">
 
     @yield('custom-css')
 

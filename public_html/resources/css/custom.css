@@ -215,7 +215,7 @@ a.btn_1:hover, .btn_1:hover {
 /*imagen portada*/
 
 .hero_single.version_2:before {
-  background: url(../img/1.jpg) center center no-repeat;
+  background: url(../img/1.jpg?4) center center no-repeat;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -227,7 +227,7 @@ a.btn_1:hover, .btn_1:hover {
 /*imagen call*/
 
 .call_section {
-  background: url(../img/2.png) center center no-repeat;
+  background: url(../img/2.png?4) center center no-repeat;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
