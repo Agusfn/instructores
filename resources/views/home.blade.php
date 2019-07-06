@@ -33,7 +33,7 @@
             <div class="wrapper">
                 <div class="container">
 
-                    <div class="col-lg-10 col-md-3" style="padding-top: 50px; margin-left: 15px"><h1>Clases de Ski & Snowboard en Cerro Catedral</h1></div>
+                    <div class="col-lg-10 col-md-10" style="padding-top: 50px; margin-left: 15px"><h1>Clases de Ski & Snowboard en Cerro Catedral</h1></div>
                     <p style="color: gold">Hay un instructor para vos. Clases para niños y adultos</p>
                     <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
