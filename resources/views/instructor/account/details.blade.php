@@ -131,8 +131,6 @@
 
 
 
-				<div class="card bg-light mb-3" style="max-width: 100%">
-
 
 					@if(!$instructor->approvalDocsSent())
 
@@ -180,6 +178,13 @@
 
 
 				@endif
+
+
+
+
+				<div class="card bg-light mb-3" style="max-width: 100%">
+
+
 
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item"><h5 class="card-title">Datos personales <span style="font-size: 14px;font-weight: normal;">- <a href="{{ url('instructor/panel/cuenta/modificar') }}">Actualizar datos</a></span>
@@ -334,8 +339,7 @@
 		</div>
 
 
-	</div>
-
+	
 
             
 @endsection
