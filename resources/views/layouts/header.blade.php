@@ -1,4 +1,5 @@
-	<header class="header menu_fixed">
+
+	<header class="header menu_fixed ">
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129656474-1"></script>
 <script>
@@ -61,9 +62,7 @@
 
 				@else
 					@user
-					<li>
-						<span><a href="{{ route('user.reservations') }}">MIS RESERVAS</a></span>
-					</li>
+					
 					<li>
 						<span><a href="{{ route('user.account') }}">MI CUENTA</a></span>
 					</li>					

@@ -5,6 +5,10 @@
 
 
 @section('content')
+
+<br><br>
+        <div class="container margin_80_55"></div>
+
 		<div class="hero_in cart_section">
 			<div class="wrapper">
 				<div class="container">
@@ -145,7 +149,7 @@
 												</div>
 											</div>
 											<div class="col-md-6 col-sm-12">
-												<img src="{{ asset('resources/img/cards_all.svg') }}" alt="Cards" class="cards-payment">
+												<!--  <img src="{{ asset('resources/img/cards_all.svg') }}" alt="Cards" class="cards-payment">  -->
 											</div>
 										</div>
 										<div class="row">
@@ -154,12 +158,12 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control" placeholder="MM" data-checkout="cardExpirationMonth" maxlength="2" autocomplete="off">
+															<input type="text" class="form-control" placeholder="MES" data-checkout="cardExpirationMonth" maxlength="2" autocomplete="off">
 														</div>
 													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control" placeholder="Year" data-checkout="cardExpirationYear" maxlength="4" autocomplete="off">
+															<input type="text" class="form-control" placeholder="AÑO" data-checkout="cardExpirationYear" maxlength="4" autocomplete="off">
 														</div>
 													</div>
 												</div>
@@ -266,7 +270,7 @@
 							<!--End step -->
 							<div id="policy">
 								<h5>Política de cancelación</h5>
-								<p class="nomargin">Por favor lea <a href="#0">Nuestras política de cancelación</a>, antes de finalizar su compra.</p>
+								<p class="nomargin">Por favor lea <a  href="{{ route('faq') }}">Nuestras política de cancelación</a>, antes de finalizar su compra.</p>
 							</div>
 							
 						</div>

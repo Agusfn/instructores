@@ -5,37 +5,137 @@
 
 @section('content')
 
-	<section class="hero_in general start_bg_zoom"></section>
-	<div class="container margin_80_55">
+<style type="text/css">
+
+   html main {
+   	overflow-y: hidden;
+
+   }
+
+	.profile-pic {
+		width: 150px;
+		height: 150px;
+		border-top-left-radius: 50% 50%;
+		border-top-right-radius: 50% 50%;
+		border-bottom-right-radius: 50% 50%;
+		border-bottom-left-radius: 50% 50%;
+	}
+
+ .sr {background-color: whitesmoke;}.
+    #page {background-color: whitesmoke;}
+    .mm-slideout { 
+        background-color: #299aea!important;
+        color: white !important;
+
+    }
+    .margin_80_55 {
+        background-color: whitesmoke !important;
+
+    }
+    
+    #registbotton{
+        margin-top: 0%;
+        margin-bottom: 0%;
+        
+       
+    }
+
+    #ofertas {
+        display: none;
+    }
+
+    .main_title_3 span em {
+    width: 60px;
+    height: 2px;
+    background-color: #0054a6!important;
+    display: block;
+}
+    .mm-slideout {
+        border-bottom: 1px solid #ededed!important;
+   
+    color: black !important;
+}
+   .mm-slideout p{
+    
+    color: black !important;
+}
+ .mm-slideout   ul > li span > a {
+    color: white !important;   
+}
+
+.mm-slideout   ul > li span > a:hover {
+    color: #fc5b62 !important;   
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+    width: 30px;
+    height: 4px;
+    background-color: #333 !important;
+    border-radius: 0;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: .15s;
+    transition-timing-function: ease;
+}
+
+
+
+
+</style>
+
+
+<br><br>
+        <div class="container margin_80_55"></div>
+
+
+
+
+	<div class="container">
+
+
+		    <div class="row">
+
+                <aside class="col-lg-3" id="sidebar">
+                       
+                        @include('user.panel-nav-layout')
+                </aside>
+                <!--/aside -->
+
+
+
 		
 
-		<div class="row">
+		<div class="col-lg-9">
 
-			@include('user.panel-nav-layout')
+			
 
-			<div class="col-md-9">
+		
+				
 
-				<h4 class="add_bottom_30">Reservas</h4>
 
-
-				<table class="table">
-					<thead>
-						<tr>
+				<div class="card" style="width: 28rem">
+					
+						<ul class="list-group list-group-flush">
 							<th></th>
-							<th>Fecha</th>
-							<th>Código</th>
-							<th>Estado</th>
-							<th>Instructor</th>
-							<th>Fecha clase</th>
-							<th>Pers.</th>
-							<th>Total</th>
-						</tr>
-					</thead>
-					<tbody>
-						@if($reservations->count() == 0)
-							<tr><td colspan="8" style="text-align: center;">No tienes reservas</td></tr>
-						@else
-							@foreach($reservations as $reservation)
+							<li class="list-group-item">Fecha</li>
+							<li class="list-group-item">Código</li>
+							<li class="list-group-item">Estado</li>
+							<li class="list-group-item">Instructor</li>
+							<li class="list-group-item">Fecha clase</li>
+							<li class="list-group-item">Pers.</li>
+							<li class="list-group-item">Total</li>
+						</ul>
+					
+					    <ul class="list-group list-group-flush">
+                                     <li class="list-group-item">
+                                     	<small>@if($reservations->count() == 0)
+							            <tr><td colspan="8" style="text-align: center;">No tienes reservas</td></tr>
+						                       @else
+							                   @foreach($reservations as $reservation)
+							               </small>
+							           </li>
+                        </ul>
+						
 							<tr>
 								<td><a href="{{ url('panel/reservas/'.$reservation->code) }}"><i class="fa fa-search" aria-hidden="true"></i></a></td>
 								<td>{{ $reservation->created_at->format('d/m/Y') }}</td>
@@ -65,14 +165,14 @@
 							@endforeach
 						@endif
 
-					</tbody>
-				</table>
+					
+				</div> <br><br><br><br>       
 
 				{{ $reservations->links() }}
 
-			</div>
+			
 
-
+      
 	</div>
             
 @endsection

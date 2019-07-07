@@ -4,18 +4,99 @@
 
 @section('content')
 
-	<section class="hero_in general start_bg_zoom"></section>
-	<div class="container margin_80_55">
+<style type="text/css">
+
+   html main {
+   	overflow-y: hidden;
+
+   }
+
+	.profile-pic {
+		width: 150px;
+		height: 150px;
+		border-top-left-radius: 50% 50%;
+		border-top-right-radius: 50% 50%;
+		border-bottom-right-radius: 50% 50%;
+		border-bottom-left-radius: 50% 50%;
+	}
+
+ .sr {background-color: whitesmoke;}.
+    #page {background-color: whitesmoke;}
+    .mm-slideout { 
+        background-color: #299aea!important;
+        color: white !important;
+
+    }
+    .margin_80_55 {
+        background-color: whitesmoke !important;
+
+    }
+    
+    #registbotton{
+        margin-top: 0%;
+        margin-bottom: 0%;
+        
+       
+    }
+
+    #ofertas {
+        display: none;
+    }
+
+    .main_title_3 span em {
+    width: 60px;
+    height: 2px;
+    background-color: #0054a6!important;
+    display: block;
+}
+    .mm-slideout {
+        border-bottom: 1px solid #ededed!important;
+   
+    color: black !important;
+}
+   .mm-slideout p{
+    
+    color: black !important;
+}
+ .mm-slideout   ul > li span > a {
+    color: white !important;   
+}
+
+.mm-slideout   ul > li span > a:hover {
+    color: #fc5b62 !important;   
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+    width: 30px;
+    height: 4px;
+    background-color: #333 !important;
+    border-radius: 0;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: .15s;
+    transition-timing-function: ease;
+}
+
+
+
+
+</style>
+
+	<br><br>
+        <div class="container margin_80_55"></div>
+
+	<div class="container">
 		
 
 
 		<div class="row">
+                <aside class="col-lg-3" id="sidebar">
+                        
+                        
+                </aside>
+			<div class="col-lg-12">
 
-			@include('instructor.panel-nav-layout')
-
-			<div class="col-md-9">
-
-				<a href="{{ route('instructor.account') }}"><span class="badge badge-pill badge-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> volver</span></a>
+				
 				<h4 class="add_bottom_30">Mi cuenta</h4>
 
 				<form action="{{ url('instructor/panel/cuenta/modificar') }}" method="POST">
@@ -67,12 +148,12 @@
 
 					</div>
 					
-					<h4 class="add_bottom_30">Mi perfil</h4>
+					
 
 					<div class="more_padding_left add_bottom_60">
 						<div class="row add_bottom_30">
 							<div class="col-6">
-								<strong>Cuenta de instagram</strong>
+								<strong>Cuenta de instagram (Opcional)</strong>
 							</div>
 							<div class="col-5">
 								<input type="text" class="form-control{{ $errors->has('instagram_username') ? ' is-invalid' : '' }}" value="{{ $instructor->instagram_username }}" name="instagram_username" />
@@ -87,8 +168,14 @@
 
 					<div class="row">
 						<div class="col-11">
+
 							<div style="text-align: right;">
+								<button  class="btn btn-primary">
+									<a style="color: white!important" href="{{ route('instructor.account') }}">Cancelar</a>
+								</button>
+
 								<button class="btn btn-primary">Guardar</button>
+
 							</div>
 						</div>	
 					</div>
@@ -99,5 +186,7 @@
 
 
 	</div>
+
+	<br><br>
             
 @endsection

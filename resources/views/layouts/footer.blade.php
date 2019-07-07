@@ -37,7 +37,9 @@
 					</div>
 				<br>
 				<hr>
-				<small><span>Diseño: vdvedia@gmail.com</span></small>	
+				<small><span>Diseño: vdvedia@gmail.com</span></small>
+				<br>
+				<small><span>Programación: agusfn20@gmail.com</span></small>	
 				</div>
 			</div>
 		</footer>
