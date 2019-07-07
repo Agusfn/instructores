@@ -64,20 +64,20 @@
 					@user
 					
 					<li>
-						<span><a href="{{ route('user.account') }}">MI CUENTA</a></span>
+						<span><a href="{{ route('user.account') }}"><i class="pe-7s-note2" style="margin-right: 5px;"></i>MI CUENTA</a></span>
 					</li>					
 					<li>
-						<span><a href="javascript:void(0);" onclick="event.preventDefault();document.getElementById('logout-form').submit();">CERRAR SESION</a></span>
+						<span><a href="javascript:void(0);" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="pe-7s-power" style="margin-right: 5px;"></i>CERRAR SESION</a></span>
 					</li>
                     <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
 					@else
 					<li>
-						<span><a href="{{ route('instructor.account') }}">PANEL INSTRUCTOR</a></span>
+						<span><a href="{{ route('instructor.account') }}"><i class="pe-7s-note2" style="margin-right: 5px;"></i>PANEL INSTRUCTOR</a></span>
 					</li>				
 					<li>
-						<span><a href="javascript:void(0);" onclick="event.preventDefault();document.getElementById('logout-form').submit();">CERRAR SESION</a></span>
+						<span><a href="javascript:void(0);" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="pe-7s-power" style="margin-right: 5px;"></i>CERRAR SESION</a></span>
 					</li>
                     <form id="logout-form" action="{{ route('instructor.logout') }}" method="POST" style="display: none;">
                         @csrf
