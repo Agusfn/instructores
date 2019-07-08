@@ -6,9 +6,9 @@
 	<!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">Dashboard</a>
+          <a href="#">Panel</a>
         </li>
-        <li class="breadcrumb-item active">Bookings list</li>
+        <li class="breadcrumb-item active">Lista de reservas</li>
       </ol>
 		<div class="box_general">
 			<div class="header_box">
@@ -51,12 +51,14 @@
 								<td>
 									@if($reservation->isPaymentPending())
 										<span class="badge badge-secondary">Pago pendiente -
-										@if($reservation->lastPayment->isPending()) 
-										Efectivo
-										@elseif($reservation->lastPayment->isProcessing())
-										Procesando
-										@elseif($reservation->lastPayment->isFailed())
-										Reintentar
+										@if($reservation->lastPayment) {{-- in case reservation was just created but payment being processed --}}
+											@if($reservation->lastPayment->isPending()) 
+											Efectivo
+											@elseif($reservation->lastPayment->isProcessing())
+											Procesando
+											@elseif($reservation->lastPayment->isFailed())
+											Reintentar
+											@endif
 										@endif
 										</span>
 									@elseif($reservation->isPendingConfirmation())

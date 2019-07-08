@@ -291,10 +291,10 @@ class Reservation extends Model
      * Returns the price breakdown table/array of the reservation (for display uses only)
      * @return array
      */
-    public function priceBreakdown()
+    /*public function priceBreakdown()
     {
         return json_decode($this->json_breakdown, true);
-    }
+    }*/
 
 
     /**

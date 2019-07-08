@@ -156,4 +156,45 @@ class InstructorsController extends Controller
 	}
 
 
+	/**
+	 * Delete an instructor account and their related service, date ranges, documents and profile picture. 
+	 * Only if they have no reservations.
+	 * @param  int $id
+	 * @return [type]     [description]
+	 */
+	public function delete($id)
+	{
+		$instructor = Instructor::find($id);
+
+		if(!$instructor)
+			return redirect()->route("admin.instructors.list");
+
+		if($instructor->reservations()->count() > 0) {
+			return redirect()->back()->withErrors("El instructor posee reservas registradas, no es posible eliminar.", "delete_instructor");
+		}
+
+		// If the instructor has no reservations, then they certainly won't have any wallet movement, nor collection.
+
+		if($instructor->isApproved()) {
+
+			$instructor->bankAccount()->delete(); // if exists
+			$instructor->wallet()->delete();
+
+			$instructor->service->availableDates()->delete(); // if any exist
+			$instructor->service->dateRanges()->delete(); // if any exist
+
+			$instructor->service()->delete();
+			$instructor->deleteApprovalDocuments();
+		}
+
+		$instructor->deleteCurrentProfilePic();
+		$instructor->delete();
+
+
+		return redirect()->route("admin.instructors.list");
+	}
+
+
+
+
 }

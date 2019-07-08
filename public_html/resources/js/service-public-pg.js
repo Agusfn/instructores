@@ -390,7 +390,7 @@ function updateTotalSummary()
 		var classesPrice = 0;
 		var subtotalPerPerson = price_per_block * selected_blocks.length;
 
-		for(var i=1; i <= personAmt; i++) 
+		/*for(var i=1; i <= personAmt; i++) 
 		{
 			if(typeof group_discounts[i] === "undefined")
 				group_discounts[i] = 0;
@@ -408,7 +408,13 @@ function updateTotalSummary()
 				var person = "Clases instructor";
 			
 			$(".total-summary table tbody").append("<tr><td>"+person+"</td><td>$"+round(personTotal)+"</td></tr>");
-		}
+
+		}*/
+
+
+		classesPrice = price_per_block * selected_blocks.length;
+		$(".total-summary table tbody").append("<tr><td>Clases instructor ("+selected_blocks.length+" x $"+price_per_block+")</td><td>$"+round(classesPrice)+"</td></tr>");
+
 
 		var mpFees = calculateMPFees(classesPrice);
 		var total = classesPrice + mpFees;

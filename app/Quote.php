@@ -85,7 +85,7 @@ class Quote
 	 * the discount for groups, and the total time blocks.
 	 * @var array
 	 */
-	public $classesPriceDetail;
+	//public $classesPriceDetail;
 
 
 
@@ -232,7 +232,8 @@ class Quote
 	public function calculate()
 	{
 		$this->pricePerBlock = $this->service->getPricePerBlockOnDate($this->serviceDate);
-		$groupDiscounts = $this->service->getGroupDiscounts();
+		
+		/*$groupDiscounts = $this->service->getGroupDiscounts();
 		$this->groupDiscounts = $groupDiscounts;
 
 		$subtotalPerPerson = $this->timeBlocksAmmt * $this->pricePerBlock;
@@ -248,7 +249,10 @@ class Quote
 				round($totalPerson, 2)
 			];
 
-		}
+		}*/
+
+
+		$this->classesPrice = $this->timeBlocksAmmt * $this->pricePerBlock;
 
 
 		$this->serviceFee = $this->classesPrice * self::getSiteFeePercent()/100;

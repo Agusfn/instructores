@@ -71,9 +71,9 @@
 
 		<!-- Breadcrumbs-->
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-			<li class="breadcrumb-item active">Lista de usuarios</li>
-			<li class="breadcrumb-item active">Detalles de usuario</li>
+			<li class="breadcrumb-item"><a href="#">Panel</a></li>
+			<li class="breadcrumb-item active">Lista de reservas</li>
+			<li class="breadcrumb-item active">Detalles de reserva</li>
 		</ol>
 
 
@@ -283,7 +283,7 @@
 					</div>
 				</div>
 
-				<div class="box_general padding_bottom">
+				{{--<div class="box_general padding_bottom">
 					<div class="header_box">
 						<h6 class="d-inline-block">Composición del precio de clase</h6>
 						<div style="float: right;">
@@ -330,7 +330,7 @@
 
 
 					</div>
-				</div>
+				</div>--}}
 
       		</div>
 
@@ -400,7 +400,7 @@
 						<table class="table table-sm table-borderless price-details-table">
 							<tbody>
 								<tr>
-									<td>Precio clases</td>
+									<td>Precio clases ({{ $reservation->time_blocks_amount }} x ${{ round($reservation->price_per_block, 2) }}/2hs)</td>
 									<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
 								</tr>
 								<tr>

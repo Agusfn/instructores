@@ -324,7 +324,7 @@
 									<option @if($service->max_group_size == 6) selected @endif>6</option>
 								</select>
 							</div>
-							<table class="table table-sm" id="group-discounts-table" @if(!$service->allows_groups) style="display: none" @endif>
+							{{--<table class="table table-sm" id="group-discounts-table" @if(!$service->allows_groups) style="display: none" @endif>
 								<thead>
 									<tr>
 										<th>Persona</th>
@@ -340,7 +340,7 @@
 									@endfor
 								</tbody>
 
-							</table>
+							</table>--}}
 						</div>
 
 

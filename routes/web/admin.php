@@ -32,12 +32,14 @@ Route::post("admin/instructores/{id}/aprobar", "Admin\InstructorsController@appr
 Route::post("admin/instructores/{id}/rechazar_doc", "Admin\InstructorsController@rejectDocs");
 Route::get("admin/instructores/{id}/documentos/{filename}", "Admin\InstructorsController@displayDocumentImg")->name("admin.instructors.documents");
 Route::post("admin/instructores/{id}/suspender", "Admin\InstructorsController@toggleSuspend");
+Route::post("admin/instructores/{id}/eliminar", "Admin\InstructorsController@delete");
+
 
 // Users
 Route::get("admin/usuarios", "Admin\UsersController@list")->name("admin.users.list");
 Route::get("admin/usuarios/{id}", "Admin\UsersController@details")->name("admin.users.details");
 Route::post("admin/usuarios/{id}/suspender", "Admin\UsersController@toggleSuspend");
-
+Route::post("admin/usuarios/{id}/eliminar", "Admin\UsersController@delete");
 
 // Reservations
 Route::get("admin/reservas", "Admin\ReservationsController@list")->name("admin.reservations.list");
@@ -54,3 +56,8 @@ Route::post("admin/pagos-instructores/rechazar", "Admin\InstructorCollectionsCon
 // Settings
 Route::get("admin/opciones", "Admin\SettingsController@index")->name("admin.settings");
 Route::post("admin/opciones", "Admin\SettingsController@save");
+
+
+// Account
+Route::get("admin/cuenta", "Admin\AccountSettingsController@index")->name("admin.account");
+Route::post("admin/cuenta/cambiar_password", "Admin\AccountSettingsController@changePassword");

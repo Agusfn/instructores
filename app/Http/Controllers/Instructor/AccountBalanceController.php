@@ -89,6 +89,7 @@ class AccountBalanceController extends Controller
 				"document_number" => $request->document_number,
 				"cuil_cuit" => $request->cuil_cuit
 			]);
+			$instructor->load("bankAccount");
 		}
 		else {
 			$instructor->bankAccount->fill($request->only([
@@ -100,7 +101,7 @@ class AccountBalanceController extends Controller
 			$instructor->bankAccount->save();
 		}
 
-
+        
 		Mail::to($instructor)->send(new BankAccountChanged($instructor));
 
 

@@ -65,14 +65,14 @@
 											<img src="{{ $service->instructor->getProfilePicUrl() }}" alt="$service->instructor->name">
 										</div>
 										<span class="item_cart">
-											Clases {{ $quote->discipline }}
+											Clases de {{ ucfirst($quote->discipline) }} por
+											{{ $quote->timeBlocksAmmt * \App\Lib\Reservations::RESERVATION_BLOCK_LENGTH }}hs para
 											{{ $quote->personAmmount }} @if($quote->personAmmount>1)personas @else persona @endif
-											x {{ $quote->timeBlocksAmmt * \App\Lib\Reservations::RESERVATION_BLOCK_LENGTH }}hs
-											(${{ $quote->personAmmount * $quote->pricePerBlock * $quote->timeBlocksAmmt }})
 										</span>
 									</td>
 									<td>
-										{{ round(100 - ($quote->classesPrice * 100 / ($quote->personAmmount * $quote->pricePerBlock * $quote->timeBlocksAmmt)), 1) }}%
+										{{-- round(100 - ($quote->classesPrice * 100 / ($quote->personAmmount * $quote->pricePerBlock * $quote->timeBlocksAmmt)), 1) --}}
+										0%
 									</td>
 									<td>
 										<strong>${{ $quote->classesPrice }}</strong>

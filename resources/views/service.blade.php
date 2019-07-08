@@ -78,9 +78,9 @@
                                     <ul>
                                         @if($service->allows_groups)
                                             <li><i class="fas fa-users"></i><span>Admite clases grupales de hasta {{ $service->max_group_size }} personas<span></li>
-                                            @if($service->hasGroupDiscounts())
+                                            {{--@if($service->hasGroupDiscounts())
                                             <li><i class="fas fa-percent"></i><span>Ofrece descuento por grupo</span></li>
-                                            @endif
+                                            @endif--}}
                                         @endif
 
                                         @if($service->offered_to_adults && $service->offered_to_kids)
@@ -402,7 +402,7 @@ var end_date = "{{ $activityEndDate->format('d/m/Y') }}";
 
 var app_url = "{{ config('app.url').'/' }}";
 var serv_number = {{ $service->number }};
-var group_discounts = {!! json_encode($service->getGroupDiscounts()) !!};
+{{--/*var group_discounts = {!! json_encode($service->getGroupDiscounts()) !!};*/--}}
 var max_group_size = {{ $service->allows_groups ? $service->max_group_size : "1" }};
 
 @if($setInitialDate)

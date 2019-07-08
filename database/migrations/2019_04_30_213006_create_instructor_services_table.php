@@ -31,11 +31,11 @@ class CreateInstructorServicesTable extends Migration
             $table->boolean('offered_to_kids')->default(false);
             $table->boolean('allows_groups')->default(false);
             $table->integer('max_group_size')->default(6);
-            $table->decimal('person2_discount', 5, 2)->default(0);
-            $table->decimal('person3_discount', 5, 2)->default(0);
-            $table->decimal('person4_discount', 5, 2)->default(0);
-            $table->decimal('person5_discount', 5, 2)->default(0);
-            $table->decimal('person6_discount', 5, 2)->default(0);
+            $table->decimal('person2_discount', 5, 2)->default(0); // not used currently
+            $table->decimal('person3_discount', 5, 2)->default(0); // not used currently
+            $table->decimal('person4_discount', 5, 2)->default(0); // not used currently
+            $table->decimal('person5_discount', 5, 2)->default(0); // not used currently
+            $table->decimal('person6_discount', 5, 2)->default(0); // not used currently
             $table->text('booking_calendar_json')->nullable();
             $table->timestamps();
 

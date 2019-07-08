@@ -99,7 +99,7 @@ function place_result(service)
 				
 				html += '\
 				<!--p>Idiomas: Ingles/español</p-->\
-				<span class="price"> <strong>$' + service.quote.classes_price + '</strong> /2 horas (' + service.quote.person_amt + ' personas)</span>\
+				<span class="price"> <strong>$' + service.quote.classes_price + '</strong> /2 horas de clase</span>\
 			</div>\
 			<!--ul>\
 				<li><div class="score"><span>Super instructor<em>350 Reseñas</em></span><strong>9.6</strong></div></li>\

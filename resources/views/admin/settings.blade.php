@@ -3,11 +3,10 @@
 
 @section('content')
 
-    <div class="container-fluid">
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">Dashboard</a>
+          <a href="#">Panel</a>
         </li>
         <li class="breadcrumb-item active">Opciones</li>
       </ol>
