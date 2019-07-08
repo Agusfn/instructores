@@ -105,6 +105,17 @@ class InstructorService extends Model
 
 
 	/**
+	 * [availableDate description]
+	 * @return [type] [description]
+	 */
+	public function availableDates()
+	{
+		return $this->hasMany("App\ServiceAvailableDate");
+	}
+
+
+
+	/**
 	 * Scope a query to only include active instructor services.
 	 * @param  [type] $query [description]
 	 * @return [type]        [description]
@@ -170,7 +181,7 @@ class InstructorService extends Model
 	 * The key of the array is the person number, and the value is the discount percentage 0-100.
 	 * @return array
 	 */
-	public function getGroupDiscounts()
+	/*public function getGroupDiscounts()
 	{
 		$discounts = [1 => 0];
 
@@ -184,7 +195,7 @@ class InstructorService extends Model
 		}
 
 		return $discounts;
-	}
+	}*/
 
 
 
@@ -367,14 +378,14 @@ class InstructorService extends Model
 	 * Check whether this service offers any discount for group
 	 * @return boolean
 	 */
-	public function hasGroupDiscounts()
+	/*public function hasGroupDiscounts()
 	{
 		for($i=2; $i<=6; $i++) {
 			if($this->{"person".$i."_discount"} > 0)
 				return true;
 		}
 		return false;
-	}
+	}*/
 
 
 

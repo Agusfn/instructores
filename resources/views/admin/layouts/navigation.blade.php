@@ -54,6 +54,14 @@
         </li>
 
 
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+          <a class="nav-link" href="{{ route('admin.account') }}">
+            <i class="fa fa-fw fa-user"></i>
+            <span class="nav-link-text">Mi cuenta</span>
+          </a>
+        </li>
+
+
       </ul>
       <ul class="navbar-nav sidenav-toggler">
         <li class="nav-item">

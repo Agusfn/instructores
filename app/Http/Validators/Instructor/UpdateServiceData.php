@@ -20,11 +20,11 @@ class UpdateServiceData extends Validator
         "allow_adults" => "required_without:allow_kids",
         "allow_kids" => "required_without:allow_adults",
 		"max_group_size" => "required|integer|between:2,6",
-		"person2_discount" => "required|numeric|between:0,100",
+		/*"person2_discount" => "required|numeric|between:0,100",
 		"person3_discount" => "required|numeric|between:0,100",
 		"person4_discount" => "required|numeric|between:0,100",
 		"person5_discount" => "required|numeric|between:0,100",
-		"person6_discount" => "required|numeric|between:0,100",
+		"person6_discount" => "required|numeric|between:0,100",*/
     );
 
 

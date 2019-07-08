@@ -19,21 +19,29 @@
 
 	<!-- Breadcrumbs-->
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="#">Panel</a></li>
         <li class="breadcrumb-item active">Lista de usuarios</li>
         <li class="breadcrumb-item active">Detalles de usuario</li>
       </ol>
 
 		<div class="box_general padding_bottom">
 			
-			<form action="{{ url('admin/usuarios/'.$user->id.'/suspender') }}" method="POST">
+			<form action="{{ url('admin/usuarios/'.$user->id.'/suspender') }}" method="POST" style="display: inline;margin-right: 30px">
 				@csrf
 				@if(!$user->suspended)
-				<button type="button" class="btn btn-danger" onclick="if(confirm('¿Suspender cuenta?')) $(this).parent().submit();">Suspender cuenta</button>
+				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿Suspender cuenta?')) $(this).parent().submit();">Suspender cuenta</button>
 				@else
-				<button type="button" class="btn btn-info" onclick="if(confirm('¿Reahabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
+				<button type="button" class="btn btn-info btn-sm" onclick="if(confirm('¿Reahabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
 				@endif
 			</form>
+
+			@if($user->reservations()->count() == 0)
+			<form action="{{ url('admin/usuarios/'.$user->id.'/eliminar') }}" method="POST" style="display: inline;">
+				@csrf
+				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿ELIMINAR cuenta? No se podrá recuperar')) $(this).parent().submit();">Eliminar cuenta</button>
+			</form>
+			@endif
+
 
 		</div>
 

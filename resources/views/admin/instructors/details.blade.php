@@ -123,13 +123,27 @@
 
 	<!-- Breadcrumbs-->
 		<ol class="breadcrumb">
-			<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+			<li class="breadcrumb-item"><a href="#">Panel</a></li>
 			<li class="breadcrumb-item active">Lista de instructores</li>
 			<li class="breadcrumb-item active">Detalles de instructor</li>
 		</ol>
 
+		@if($errors->delete_instructor->any())
+		<div class="alert alert-danger">
+			{{ $errors->delete_instructor->first() }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+		</div>
+		@endif
+
 
 		<div class="box_general padding_bottom">
+
+			@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
+			<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#approval-modal">Aprobar instructor</button>
+			<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#reject-docs-modal" style="margin-right: 30px">Rechazar documentación</button>
+			@endif
 			
 			<form action="{{ url('admin/instructores/'.$instructor->id.'/suspender') }}" method="POST" style="display: inline;margin-right: 30px">
 				@csrf
@@ -140,11 +154,15 @@
 				@endif
 			</form>
 
-
-			@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
-			<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#approval-modal">Aprobar instructor</button>
-			<button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#reject-docs-modal">Rechazar documentación</button>
+			@if($instructor->reservations()->count() == 0)
+			<form action="{{ url('admin/instructores/'.$instructor->id.'/eliminar') }}" method="POST" style="display: inline;">
+				@csrf
+				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿ELIMINAR cuenta? No se podrá recuperar')) $(this).parent().submit();">Eliminar cuenta</button>
+			</form>
 			@endif
+
+
+
 
 
 		</div>
@@ -298,7 +316,7 @@
 
 						<div class="row" style="margin: 10px 0 10px 0">
 							<div class="col-md-3">
-								<label><strong>ID usuario</strong></label><br/>
+								<label><strong>ID instructor</strong></label><br/>
 								{{ $instructor->id }}
 							</div>
 							<div class="col-md-3">

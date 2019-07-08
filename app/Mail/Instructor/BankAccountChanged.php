@@ -17,12 +17,6 @@ class BankAccountChanged extends Mailable
      */
     public $instructor;
 
-    /**
-     * [$bankAccount description]
-     * @var [type]
-     */
-    public $bankAccount;
-
 
     /**
      * Create a new message instance.
@@ -32,7 +26,6 @@ class BankAccountChanged extends Mailable
     public function __construct($instructor)
     {
         $this->instructor = $instructor;
-        $this->bankAccount = $instructor->bankAccount;
     }
 
 

@@ -63,4 +63,31 @@ class UsersController extends Controller
 	}
 
 
+
+	/**
+	 * Delete a user account and their related profile picture. 
+	 * Only if they have no reservations.
+	 * @param  int $id
+	 * @return [type]     [description]
+	 */
+	public function delete($id)
+	{
+		$user = User::find($id);
+
+		if(!$user)
+			return redirect()->route("admin.users.list");
+
+		if($user->reservations()->count() > 0) {
+			return redirect()->back()->withErrors("El usuario posee reservas registradas, no es posible eliminar.", "delete_user");
+		}
+
+		$user->deleteCurrentProfilePic();
+		$user->delete();
+
+
+		return redirect()->route("admin.users.list");
+	}
+
+
+
 }

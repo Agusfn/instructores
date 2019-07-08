@@ -8,6 +8,7 @@ use App\InstructorService;
 use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Lib\Traits\HasProfilePicture;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -218,6 +219,15 @@ class Instructor extends Authenticatable
     }
 
 
+
+    /**
+     * Deletes all certification images (if any) from storage. (Certif. images code may be refactored)
+     * @return void
+     */
+    public function deleteApprovalDocuments()
+    {
+        Storage::disk("local")->deleteDirectory("instructor_documents/".$this->id);
+    }
 
 
 
