@@ -22,6 +22,10 @@
         /*text-decoration: none;*/
 
     }
+
+    .hero_single.start_bg_zoom:before {
+    animation: pop-in 6s 0.3s cubic-bezier(0, 0.5, 0, 1) forwards disabled }
+
     
 </style>
 
@@ -33,8 +37,8 @@
             <div class="wrapper">
                 <div class="container">
 
-                    <div class="col-lg-10 col-md-10" style="padding-top: 50px; margin-left: 15px"><h1>Clases de Ski & Snowboard en Cerro Catedral</h1></div>
-                    <p style="color: gold">Hay un instructor para vos. Clases para niños y adultos</p>
+                    <div class="col-lg-11 col-md-10" style="padding-top: 50px; margin-left: 20px"><h1>Clases de Ski & Snowboard en Cerro Catedral</h1></div>
+                    <p style="color: gold">Hay un instructor para vos. Clases a medida para niños y adultos</p>
                     <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
                             <div class="col-lg-4">
@@ -85,7 +89,7 @@
                             <strong >#Bariloche2019</strong>
                             <strong >#CerroCatedral</strong>
                         </span><br>
-                       <p  style="color: #fc5b62" class="pull-left"><strong>Viví la emoción de la montaña. Reserva ahora.</strong></p>
+                       <p  style="background-color: #f8f9fad6;color: #fc5b62;" class="pull-left"><strong>Viví la emoción de la montaña. Reserva ahora.</strong></p>
                     </div>
                 </div>
             </div>

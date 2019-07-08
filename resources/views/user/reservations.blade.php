@@ -113,7 +113,7 @@
 				
 
 
-				<div class="card" style="width: 28rem">
+				<div class="card" style="width: 100%">
 					
 						<ul class="list-group list-group-flush">
 							<th></th>
