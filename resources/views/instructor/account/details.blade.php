@@ -139,7 +139,7 @@
 
 					@if($instructor->phone_number && $instructor->profile_picture)
 
-						<form action="{{ url('instructor/panel/cuenta/verificar') }}" method="post" enctype="multipart/form-data">
+						<form style="color: black"  action="{{ url('instructor/panel/cuenta/verificar') }}" method="post" enctype="multipart/form-data">
 							@csrf
 							<div class="form-group">
 								<label>Fotos de ambas caras del DNI, o una foto del pasaporte</label>
@@ -156,7 +156,7 @@
 					        </span>
 							</div>
 							<div class="form-group">
-								<label>Fotos de ambas caras del certificado profesional emitido por la AADIDESS</label>
+								<label>Fotos de ambas caras del certificado o cédula profesional que te habilite como instructor.</label>
 								<input type="file" style="display: block;" name="certificate_imgs[]" multiple="multiple" accept="image/*">
 							    @if ($errors->has('certificate_imgs'))
 							        <span class="invalid-feedback" role="alert" style="display: block;">
@@ -171,6 +171,7 @@
 
 							<button type="submit" class="btn btn-primary">Enviar</button>
 						</form>
+						<br>
 
 					@else
 						<p style="color: black!important">Para comenzar, <a href="{{ url('instructor/panel/cuenta/modificar') }}">ingresá tu número de teléfono</a> y seleccioná una foto de perfil. Despúes te pediremos tu documentación.</p>

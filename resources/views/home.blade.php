@@ -264,7 +264,7 @@
 
         <div class="call_section" >
             <div class="container clearfix">
-                <div class="col-lg-5 col-md-6 float-right wow" data-wow-offset="250">
+                <div class="col-lg-5 col-md-6 wow" data-wow-offset="250">
                     <div class="block-reveal" id="sosints">
                         
                         <div class="box_1" >

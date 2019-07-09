@@ -6,15 +6,120 @@
 
 
 @section('content')
+<style>
+	.noUi-connect {
+		background: #2489c5;
+	}
+	.noUi-pips-horizontal {
+		max-height: 53px;
+	}
+	.dz-image img {
+		width: 100%;
+		height: 100%
+	}
+	.dropzone .dz-preview:hover .dz-image img {
+	  -webkit-filter: blur(0px);
+	  filter: blur(0px); 
+	}
+	.dz-details {
+		display: none;
+	}
+	  html main {
+   	overflow-y: hidden;
+
+   }
+
+	.profile-pic {
+		width: 150px;
+		height: 150px;
+		border-top-left-radius: 50% 50%;
+		border-top-right-radius: 50% 50%;
+		border-bottom-right-radius: 50% 50%;
+		border-bottom-left-radius: 50% 50%;
+	}
+
+ .sr {background-color: whitesmoke;}.
+    #page {background-color: whitesmoke;}
+    .mm-slideout { 
+        background-color: #299aea!important;
+        color: white !important;
+
+    }
+    .margin_80_55 {
+        background-color: whitesmoke !important;
+
+    }
+    
+    #registbotton{
+        margin-top: 0%;
+        margin-bottom: 0%;
+        
+       
+    }
+
+    #ofertas {
+        display: none;
+    }
+
+    .main_title_3 span em {
+    width: 60px;
+    height: 2px;
+    background-color: #0054a6!important;
+    display: block;
+}
+    .mm-slideout {
+        border-bottom: 1px solid #ededed!important;
+   
+    color: black !important;
+}
+   .mm-slideout p{
+    
+    color: black !important;
+}
+ .mm-slideout   ul > li span > a {
+    color: white !important;   
+}
+
+.mm-slideout   ul > li span > a:hover {
+    color: #fc5b62 !important;   
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+    width: 30px;
+    height: 4px;
+    background-color: #333 !important;
+    border-radius: 0;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: .15s;
+    transition-timing-function: ease;
+}
+#logo p {
+    margin-top: -10px;
+    font-size: medium;
+    color: white!important;
+}
+
+
+	</style>
 	
-	<section class="hero_in general start_bg_zoom"></section>
-	<div class="container margin_60">
-		
+	    
+		 <br><br>
+        <div class="container margin_80_55"></div>
 
 
-		<div class="row">
 
-			@include('instructor.panel-nav-layout')
+		<div class="container">
+
+
+		    <div class="row">
+
+                <aside class="col-lg-3" id="sidebar">
+                       
+                        @include('instructor.panel-nav-layout')
+                </aside>
+                <!--/aside -->
+
 
 			<div class="col-lg-9">
 
@@ -160,10 +265,10 @@
 			</div>
 
 		</div>
-
+        
 
 	</div>
-            
+            <br><br>
 @endsection
 
 
@@ -215,9 +320,13 @@
 				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Confirmar?')) $('#collection-form').submit();">Confirmar</button>
 				@endif
 			</div>
+			
 		</div>
+
 	</div>
+
 </div>
+
 @endif
 @endsection
 

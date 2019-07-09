@@ -97,6 +97,11 @@
     transition-duration: .15s;
     transition-timing-function: ease;
 }
+#logo p {
+    margin-top: -10px;
+    font-size: medium;
+    color: white!important;
+}
 
 
 	</style>
@@ -114,13 +119,21 @@
 
 
 
-	<div class="container">
 
-		<div class="row">
 
-			@include('instructor.panel-nav-layout')
+		<div class="container">
 
-			<div class="col-md-9">
+
+		    <div class="row">
+
+                <aside class="col-lg-3" id="sidebar">
+                       
+                        @include('instructor.panel-nav-layout')
+                </aside>
+                <!--/aside -->
+
+
+			<div class="col-lg-9">
 
 				@if($instructor->isApproved())
 
@@ -161,10 +174,10 @@
                 </div>
                 @endif
 
-
+                 <p><strong>Por favor completa todos los campos para poder activar tu publicación. Cualquier duda estamos para ayudarte.</strong></p>
 				<h5 style="margin-bottom: 20px">
 					Información del servicio
-
+                    
 					@if($service->published)
 					<span style="font-size:15px">(<a href="{{ url('instructor/'.$service->number) }}" target="_blank">ver pag</a>)</span>
 
@@ -221,7 +234,7 @@
 
 
 				<div class="form-group">
-					<label>Imágenes de presentación</label>
+					<label>Imágenes de portada para tu perfil</label><p>(una como mínimo)</p>
 					<form action="{{ url('instructor/panel/servicio/subir_imagen') }}" method="POST" enctype="multipart/form-data" class="dropzone" id="img-dropzone">
 						@csrf
 						<div class="fallback">
@@ -235,6 +248,7 @@
 				<form method="POST" action="{{ url('instructor/panel/servicio/guardar_cambios') }}" id="service-details">
 					@csrf
 					<h5 style="margin: 30px 0">Disponibilidad y precios</h5>
+					<p>Selecciona una fecha y el precio de la clase. Puedes hacerlo tantas veces quieras para tener diferentes precios por dia si así lo deseas.También puedes crear un rango de fechas y definir tu horario de trabajo.<br> Por ahora las clases estan definidas por bloques de 2hs. </p>
 
 					<div class="row">
 
@@ -277,7 +291,7 @@
 							</div>
 							<div style="margin-top: 20px">
 								<input type="checkbox" id="separate-working-hours" autocomplete="off" @if($service->hasSplitWorkHours()) checked @endif>
-								<label for="separate-working-hours" style="cursor: pointer;margin-left: 10px;">Dividir en dos partes</label>
+								<label for="separate-working-hours" style="cursor: pointer;margin-left: 10px;">Dividir en dos partes <br> </label><p>(opcional por si quieres tomarte un descanso.)</p>
 							</div>
 
 							<input type="hidden" name="worktime_hour_start" value="{{ $service->worktime_hour_start }}" autocomplete="off">
@@ -292,7 +306,9 @@
 					
 					<div class="row">
 
-						<div class="col-md-5">
+						<div class="container"><h5>Selecciona la que corresponda</h5></div>
+
+						<div class="col-lg-12">
 
 							<div style="margin-top: 15px">
 								<input type="checkbox" id="allow-adults" autocomplete="off" name="allow_adults" @if($service->offered_to_adults) checked @endif>
@@ -306,9 +322,9 @@
 
 						</div>
 
-						<div class="col-md-2"></div>
+						<div class="col-lg-12"></div>
 
-						<div class="col-md-5">
+						<div class="col-lg-12">
 							
 							<div class="form-group" style="margin-top: 20px">
 								<input type="checkbox" id="allow-group-classes" autocomplete="off" name="allow_groups" @if($service->allows_groups) checked @endif>
@@ -346,8 +362,8 @@
 
 					</div>
 
-
-
+                    <br><br>
+                    <div class="container text-center"><h6>Listo! No olvides activar tu publicación una vez que hayas guardado los cambios.</h6></div>
 					<div class="clearix" style="margin-top: 50px">
 						<button type="button" id="submit-form-btn" class="btn btn-primary" style="float: right;">Guardar cambios</button>
 					</div>
@@ -362,6 +378,8 @@
 			</div>
 
 		</div>
+
+		<br><br>
 
 
 	</div>

@@ -7,87 +7,34 @@
 @section('content')
 <style type="text/css">
 
-   html main {
-   	overflow-y: hidden;
-
-   }
-
-	.profile-pic {
-		width: 150px;
-		height: 150px;
-		border-top-left-radius: 50% 50%;
-		border-top-right-radius: 50% 50%;
-		border-bottom-right-radius: 50% 50%;
-		border-bottom-left-radius: 50% 50%;
-	}
-
- .sr {background-color: whitesmoke;}.
-    #page {background-color: whitesmoke;}
-    .mm-slideout { 
-        background-color: #299aea!important;
-        color: white !important;
-
-    }
-    .margin_80_55 {
-        background-color: whitesmoke !important;
-
-    }
-    
-    #registbotton{
-        margin-top: 0%;
-        margin-bottom: 0%;
-        
-       
-    }
-
-    #ofertas {
-        display: none;
-    }
-
-    .main_title_3 span em {
-    width: 60px;
-    height: 2px;
+.hero_in {
+    margin-top: 17px;
+}
+.mm-slideout {
     background-color: #0054a6!important;
-    display: block;
-}
-    .mm-slideout {
-        border-bottom: 1px solid #ededed!important;
    
-    color: black !important;
-}
-   .mm-slideout p{
-    
-    color: black !important;
-}
- .mm-slideout   ul > li span > a {
-    color: white !important;   
 }
 
-.mm-slideout   ul > li span > a:hover {
-    color: #fc5b62 !important;   
+header.header.sticky #logo p {
+    color: #f8f9fa!important;
 }
 
-.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
-    width: 30px;
-    height: 4px;
-    background-color: #333 !important;
-    border-radius: 0;
-    position: absolute;
-    transition-property: transform;
-    transition-duration: .15s;
-    transition-timing-function: ease;
+header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.sticky .hamburger-inner::after {
+    background-color: #f8f9fa!important;
 }
 
-
+.bs-wizard > .bs-wizard-step.active > .bs-wizard-dot:after {
+   
+    color: green;
+}
 
 
 </style>
 
-<br><br>
-        <div class="container margin_80_55"></div>
+<br><br><br>
 
 		<div class="hero_in cart_section">
-			<div class="wrapper">
+			<div class="row">
 				<div class="container">
 					<div class="bs-wizard clearfix">
 						<div class="bs-wizard-step active">
@@ -95,15 +42,15 @@
 							<div class="progress">
 								<div class="progress-bar"></div>
 							</div>
-							<a href="#0" class="bs-wizard-dot"></a>
+							<span class="bs-wizard-dot"></span>
 						</div>
 
-						<div class="bs-wizard-step active">
+						<div class="bs-wizard-step">
 							<div class="text-center bs-wizard-stepnum">Pago</div>
 							<div class="progress">
 								<div class="progress-bar"></div>
 							</div>
-							<a href="#0" class="bs-wizard-dot"></a>
+							<span class="bs-wizard-dot"></span>
 						</div>
 
 						<div class="bs-wizard-step disabled">
@@ -111,7 +58,7 @@
 							<div class="progress">
 								<div class="progress-bar"></div>
 							</div>
-							<a href="#0" class="bs-wizard-dot"></a>
+							<span class="bs-wizard-dot"></span>
 						</div>
 					</div>
 					<!-- End bs-wizard -->
