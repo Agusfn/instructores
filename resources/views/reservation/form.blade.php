@@ -5,8 +5,36 @@
 
 
 @section('content')
+<style type="text/css">
+
+.hero_in {
+    margin-top: 17px;
+}
+.mm-slideout {
+    background-color: #0054a6!important;
+   
+}
+
+header.header.sticky #logo p {
+    color: #f8f9fa!important;
+}
+
+header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.sticky .hamburger-inner::after {
+    background-color: #f8f9fa!important;
+}
+
+.bs-wizard > .bs-wizard-step.active > .bs-wizard-dot:after {
+   
+    color: green;
+}
+
+
+</style>
+
+<br><br><br>
+
 		<div class="hero_in cart_section">
-			<div class="wrapper">
+			<div class="row">
 				<div class="container">
 					<div class="bs-wizard clearfix">
 						<div class="bs-wizard-step active">
@@ -14,15 +42,15 @@
 							<div class="progress">
 								<div class="progress-bar"></div>
 							</div>
-							<a href="#0" class="bs-wizard-dot"></a>
+							<span class="bs-wizard-dot"></span>
 						</div>
 
-						<div class="bs-wizard-step active">
+						<div class="bs-wizard-step">
 							<div class="text-center bs-wizard-stepnum">Pago</div>
 							<div class="progress">
 								<div class="progress-bar"></div>
 							</div>
-							<a href="#0" class="bs-wizard-dot"></a>
+							<span class="bs-wizard-dot"></span>
 						</div>
 
 						<div class="bs-wizard-step disabled">
@@ -30,7 +58,7 @@
 							<div class="progress">
 								<div class="progress-bar"></div>
 							</div>
-							<a href="#0" class="bs-wizard-dot"></a>
+							<span class="bs-wizard-dot"></span>
 						</div>
 					</div>
 					<!-- End bs-wizard -->
@@ -145,7 +173,7 @@
 												</div>
 											</div>
 											<div class="col-md-6 col-sm-12">
-												<img src="{{ asset('resources/img/cards_all.svg') }}" alt="Cards" class="cards-payment">
+												<!--  <img src="{{ asset('resources/img/cards_all.svg') }}" alt="Cards" class="cards-payment">  -->
 											</div>
 										</div>
 										<div class="row">
@@ -154,12 +182,12 @@
 												<div class="row">
 													<div class="col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control" placeholder="MM" data-checkout="cardExpirationMonth" maxlength="2" autocomplete="off">
+															<input type="text" class="form-control" placeholder="MES" data-checkout="cardExpirationMonth" maxlength="2" autocomplete="off">
 														</div>
 													</div>
 													<div class="col-md-6">
 														<div class="form-group">
-															<input type="text" class="form-control" placeholder="Year" data-checkout="cardExpirationYear" maxlength="4" autocomplete="off">
+															<input type="text" class="form-control" placeholder="AÑO" data-checkout="cardExpirationYear" maxlength="4" autocomplete="off">
 														</div>
 													</div>
 												</div>
@@ -266,7 +294,7 @@
 							<!--End step -->
 							<div id="policy">
 								<h5>Política de cancelación</h5>
-								<p class="nomargin">Por favor lea <a href="#0">Nuestras política de cancelación</a>, antes de finalizar su compra.</p>
+								<p class="nomargin">Por favor lea <a  href="{{ route('faq') }}">Nuestras política de cancelación</a>, antes de finalizar su compra.</p>
 							</div>
 							
 						</div>

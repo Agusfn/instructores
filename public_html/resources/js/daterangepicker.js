@@ -81,6 +81,8 @@
             firstDay: moment.localeData().firstDayOfWeek()
         };
 
+        
+
         this.callback = function() { };
 
         //some state information

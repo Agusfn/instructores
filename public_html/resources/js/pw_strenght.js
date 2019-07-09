@@ -21,23 +21,23 @@ function passwordStrengthCheck(password1, password2, passwordsInfo)
 	$(password1).on('keyup', function(e) {
 		if(VryStrongPass.test(password1.val()))
 		{
-			passwordsInfo.removeClass().addClass('vrystrongpass').html("Very Strong! (Awesome, please don't forget your pass now!)");
+			passwordsInfo.removeClass().addClass('vrystrongpass').html("Contraseña fuerte! (muy bien, por favor no la olvides.)");
 		}	
 		else if(StrongPass.test(password1.val()))
 		{
-			passwordsInfo.removeClass().addClass('strongpass').html("Strong! (Enter special chars to make even stronger");
+			passwordsInfo.removeClass().addClass('strongpass').html("Fuerte! (Agrega caracteres especiales para hacerla mas fuerte");
 		}	
 		else if(MediumPass.test(password1.val()))
 		{
-			passwordsInfo.removeClass().addClass('goodpass').html("Good! (Enter uppercase letter to make strong)");
+			passwordsInfo.removeClass().addClass('goodpass').html("Bien! (Agrega mayusculas para hacerla mas fuerte)");
 		}
 		else if(WeakPass.test(password1.val()))
     	{
-			passwordsInfo.removeClass().addClass('stillweakpass').html("Still Weak! (Enter digits to make good password)");
+			passwordsInfo.removeClass().addClass('stillweakpass').html("Débil (Agrega numeros y letras para hacerla mas fuerte)");
     	}
 		else
 		{
-			passwordsInfo.removeClass().addClass('weakpass').html("Very Weak! (Must be 5 or more chars)");
+			passwordsInfo.removeClass().addClass('weakpass').html("Muy Débil (Tienen que sar más de 5 caracteres)");
 		}
 	});
 	
@@ -45,9 +45,9 @@ function passwordStrengthCheck(password1, password2, passwordsInfo)
 		
 		if(password1.val() !== password2.val())
 		{
-			passwordsInfo.removeClass().addClass('weakpass').html("Passwords do not match!");	
+			passwordsInfo.removeClass().addClass('weakpass').html("Contraseñas no coinciden!");	
 		}else{
-			passwordsInfo.removeClass().addClass('goodpass').html("Passwords match!");	
+			passwordsInfo.removeClass().addClass('goodpass').html("Las contraseñas coinciden!");	
 		}
 			
 	});

@@ -2614,7 +2614,7 @@ video {
   height: 620px;
 }
 .hero_single.version_2:before {
-  background: url(../img/2.png) center center no-repeat;
+  background: url(../img/2.jpg) center center no-repeat;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -5285,7 +5285,8 @@ span.infobox_rate {
 
 /*-------- 2.9 Cart section --------*/
 .cart_section {
-  background: #0054a6 url(../img/pattern_1.svg) center bottom repeat-x;
+  background: #0054a6!important;
+
 }
 @media (max-width: 767px) {
   .cart_section {
@@ -6040,7 +6041,7 @@ ul.list_3 li:before {
 }
 
 .call_section {
-  background: url(../img/2.png) center center no-repeat fixed;
+  background: url(../img/2.jpg) center center no-repeat fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

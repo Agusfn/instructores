@@ -3,10 +3,11 @@
 /*============================================================================================*/
 
 
-main {
-	overflow-x: hidden;
-}
+ html main {
+   	overflow-y: hidden;
+   	overflow-x: hidden;
 
+   }
 
 /*header*/
 
@@ -227,7 +228,7 @@ a.btn_1:hover, .btn_1:hover {
 /*imagen call*/
 
 .call_section {
-  background: url(../img/2.png?4) center center no-repeat;
+  background: url(../img/2.jpg?4)center center no-repeat;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -350,5 +351,25 @@ a.btn_1.full-width.purchase, .btn_1.full-width.purchase {
 	/*margin-top: 8% !important;*/
 	/*margin-bottom: 5%!important;*/
 	
+}
+
+
+
+/*boton totop*/
+
+#toTop {
+    position: fixed;
+    right: 25px;
+    bottom: 75px!important;
+    z-index: 9999;
+    width: 46px;
+    height: 46px;
+    background-color: rgba(0, 0, 0, 0.6);
+    opacity: 1;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 21px;
+    color: #fff;
+    cursor: pointer;
 }
 

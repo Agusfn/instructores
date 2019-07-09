@@ -36,7 +36,7 @@
 		navbar: {
 			title: 'MENU'
 		},
-		navbars: [{position:'bottom',content: ['<a href="#0">© 2018 Panagea</a>']}]}, 
+		navbars: [{position:'bottom',content: ['<a href="#0">© 2018 Instructores</a>']}]}, 
 		{
 		// configuration
 		clone: true,

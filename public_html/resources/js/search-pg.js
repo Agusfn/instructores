@@ -38,7 +38,7 @@ function load_more_results()
 			// put loading spinner
 		},
 		success: function(response) {
-			console.log(response);
+			//console.log(response);
 			search_response(response);
 		},
 		error: function (jqXhr, textStatus, errorMessage) {
@@ -53,7 +53,6 @@ function load_more_results()
 
 function search_response(response)
 {
-	
 	if(response.data.length == 0) {
 		if(page == 1)
 			$("#no-results").show();
@@ -74,7 +73,8 @@ function search_response(response)
 
 function place_result(service)
 {
-	var service_url = app_url + "instructor/" + service.number;
+	var date_formatted = moment(date, "DD/MM/YYYY").format("DD-MM-YYYY");
+	var service_url = app_url + "instructor/" + service.number + "?discipline="+discipline+"&date="+date_formatted+"&adults="+qty_adults+"&kids="+qty_kids;
 	var profile_pic_url = app_url + "storage/img/instructors/" + service.instructor.profile_picture;
 
 	var html = '\
@@ -99,7 +99,7 @@ function place_result(service)
 				
 				html += '\
 				<!--p>Idiomas: Ingles/español</p-->\
-				<span class="price"> <strong>$' + service.quote.classes_price + '</strong> /2 horas (' + service.quote.person_amt + ' personas)</span>\
+				<span class="price"> <strong>$' + service.quote.classes_price + '</strong> /2 horas de clase</span>\
 			</div>\
 			<!--ul>\
 				<li><div class="score"><span>Super instructor<em>350 Reseñas</em></span><strong>9.6</strong></div></li>\

@@ -27,6 +27,83 @@
 	.dz-details {
 		display: none;
 	}
+	  html main {
+   	overflow-y: hidden;
+
+   }
+
+	.profile-pic {
+		width: 150px;
+		height: 150px;
+		border-top-left-radius: 50% 50%;
+		border-top-right-radius: 50% 50%;
+		border-bottom-right-radius: 50% 50%;
+		border-bottom-left-radius: 50% 50%;
+	}
+
+ .sr {background-color: whitesmoke;}.
+    #page {background-color: whitesmoke;}
+    .mm-slideout { 
+        background-color: #299aea!important;
+        color: white !important;
+
+    }
+    .margin_80_55 {
+        background-color: whitesmoke !important;
+
+    }
+    
+    #registbotton{
+        margin-top: 0%;
+        margin-bottom: 0%;
+        
+       
+    }
+
+    #ofertas {
+        display: none;
+    }
+
+    .main_title_3 span em {
+    width: 60px;
+    height: 2px;
+    background-color: #0054a6!important;
+    display: block;
+}
+    .mm-slideout {
+        border-bottom: 1px solid #ededed!important;
+   
+    color: black !important;
+}
+   .mm-slideout p{
+    
+    color: black !important;
+}
+ .mm-slideout   ul > li span > a {
+    color: white !important;   
+}
+
+.mm-slideout   ul > li span > a:hover {
+    color: #fc5b62 !important;   
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+    width: 30px;
+    height: 4px;
+    background-color: #333 !important;
+    border-radius: 0;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: .15s;
+    transition-timing-function: ease;
+}
+#logo p {
+    margin-top: -10px;
+    font-size: medium;
+    color: white!important;
+}
+
+
 	</style>
 	@endif
 @endsection
@@ -36,14 +113,27 @@
 
 @section('content')
 	
-	<section class="hero_in general start_bg_zoom"></section>
-	<div class="container margin_60">
+	
+    <br><br>
+        <div class="container margin_80_55"></div>
 
-		<div class="row">
 
-			@include('instructor.panel-nav-layout')
 
-			<div class="col-md-9">
+
+
+		<div class="container">
+
+
+		    <div class="row">
+
+                <aside class="col-lg-3" id="sidebar">
+                       
+                        @include('instructor.panel-nav-layout')
+                </aside>
+                <!--/aside -->
+
+
+			<div class="col-lg-9">
 
 				@if($instructor->isApproved())
 
@@ -84,21 +174,21 @@
                 </div>
                 @endif
 
-
+                 <p><strong>Por favor completa todos los campos para poder activar tu publicación. Cualquier duda estamos para ayudarte.</strong></p>
 				<h5 style="margin-bottom: 20px">
 					Información del servicio
-
+                    
 					@if($service->published)
 					<span style="font-size:15px">(<a href="{{ url('instructor/'.$service->number) }}" target="_blank">ver pag</a>)</span>
 
 					<form style="float:right;" action="{{ url('instructor/panel/servicio/pausar') }}" method="POST">
 						@csrf
-						<button class="btn btn-default">Pausar publicación</button>
+						<button type="button" class="btn btn-default" onclick="if(confirm('Recuerda guardar los cambios si modificaste alguno. ¿Continuar?')) $(this).parent().submit();">Pausar publicación</button>
 					</form>
 					@else
 					<form style="float:right;" action="{{ url('instructor/panel/servicio/activar') }}" method="POST">
 						@csrf
-						<button class="btn btn-info">Activar publicación</button>
+						<button type="button" class="btn btn-info" onclick="if(confirm('Recuerda guardar los cambios si modificaste alguno. ¿Continuar?')) $(this).parent().submit();">Activar publicación</button>
 					</form>
 					@endif
 					
@@ -144,7 +234,7 @@
 
 
 				<div class="form-group">
-					<label>Imágenes de presentación</label>
+					<label>Imágenes de portada para tu perfil</label><p>(una como mínimo)</p>
 					<form action="{{ url('instructor/panel/servicio/subir_imagen') }}" method="POST" enctype="multipart/form-data" class="dropzone" id="img-dropzone">
 						@csrf
 						<div class="fallback">
@@ -158,6 +248,7 @@
 				<form method="POST" action="{{ url('instructor/panel/servicio/guardar_cambios') }}" id="service-details">
 					@csrf
 					<h5 style="margin: 30px 0">Disponibilidad y precios</h5>
+					<p>Selecciona una fecha y el precio de la clase. Puedes hacerlo tantas veces quieras para tener diferentes precios por dia si así lo deseas.También puedes crear un rango de fechas y definir tu horario de trabajo.<br> Por ahora las clases estan definidas por bloques de 2hs. </p>
 
 					<div class="row">
 
@@ -181,9 +272,10 @@
 									@endforeach
 									<tr id="insert-form-row">
 										<td>
+											@php($minDate = $activityStartDate->isPast() ? (new Carbon\Carbon())->addDays(1)->format('d/m/y') : $activityStartDate->format('d/m/y'))
 											<input type="text" class="form-control" id="date-range-selector">
-											<input type="hidden" class="form-control" id="date_start">
-											<input type="hidden" class="form-control" id="date_end">
+											<input type="hidden" class="form-control" id="date_start" value="{{ $minDate }}">
+											<input type="hidden" class="form-control" id="date_end" value="{{ $minDate }}">
 										</td>
 										<td><input type="text" class="form-control" id="block_price"></td>
 										<td><button type="button" class="btn btn-success btn-sm" id="btn_submit_range"><i class="fa fa-plus" aria-hidden="true"></i></button></td>
@@ -199,7 +291,7 @@
 							</div>
 							<div style="margin-top: 20px">
 								<input type="checkbox" id="separate-working-hours" autocomplete="off" @if($service->hasSplitWorkHours()) checked @endif>
-								<label for="separate-working-hours" style="cursor: pointer;margin-left: 10px;">Dividir en dos partes</label>
+								<label for="separate-working-hours" style="cursor: pointer;margin-left: 10px;">Dividir en dos partes <br> </label><p>(opcional por si quieres tomarte un descanso.)</p>
 							</div>
 
 							<input type="hidden" name="worktime_hour_start" value="{{ $service->worktime_hour_start }}" autocomplete="off">
@@ -214,7 +306,9 @@
 					
 					<div class="row">
 
-						<div class="col-md-5">
+						<div class="container"><h5>Selecciona la que corresponda</h5></div>
+
+						<div class="col-lg-12">
 
 							<div style="margin-top: 15px">
 								<input type="checkbox" id="allow-adults" autocomplete="off" name="allow_adults" @if($service->offered_to_adults) checked @endif>
@@ -228,9 +322,9 @@
 
 						</div>
 
-						<div class="col-md-2"></div>
+						<div class="col-lg-12"></div>
 
-						<div class="col-md-5">
+						<div class="col-lg-12">
 							
 							<div class="form-group" style="margin-top: 20px">
 								<input type="checkbox" id="allow-group-classes" autocomplete="off" name="allow_groups" @if($service->allows_groups) checked @endif>
@@ -246,11 +340,11 @@
 									<option @if($service->max_group_size == 6) selected @endif>6</option>
 								</select>
 							</div>
-							<table class="table table-sm" id="group-discounts-table" @if(!$service->allows_groups) style="display: none" @endif>
+							{{--<table class="table table-sm" id="group-discounts-table" @if(!$service->allows_groups) style="display: none" @endif>
 								<thead>
 									<tr>
 										<th>Persona</th>
-										<th>Descuento (%)</th>
+										<th>Descuento (%) <strong>(Opcional)</strong></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -262,14 +356,14 @@
 									@endfor
 								</tbody>
 
-							</table>
+							</table>--}}
 						</div>
 
 
 					</div>
 
-
-
+                    <br><br>
+                    <div class="container text-center"><h6>Listo! No olvides activar tu publicación una vez que hayas guardado los cambios.</h6></div>
 					<div class="clearix" style="margin-top: 50px">
 						<button type="button" id="submit-form-btn" class="btn btn-primary" style="float: right;">Guardar cambios</button>
 					</div>
@@ -284,6 +378,8 @@
 			</div>
 
 		</div>
+
+		<br><br>
 
 
 	</div>
@@ -306,8 +402,8 @@
 		@else
 		var uploaded_imgs = [];
 		@endif
-		var start_date = "{{ $activityStartDate->isPast() ? (new Carbon\Carbon())->format('d/m/y') : $activityStartDate->format('d/m/y') }}";
-		var end_date = "{{ $activityEndDate->format('d/m/y') }}";
+		var minDate = "{{ $minDate }}";
+		var maxDate = "{{ $activityEndDate->format('d/m/y') }}";
 	</script>
 	@endif
 @endsection

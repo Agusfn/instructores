@@ -29,6 +29,7 @@ $(document).ready(function() {
 	fetchCalendarData(function(response) {
 		calendar = response["calendar"];
 		$("#price-per-block").text("$"+response["lowest_price"]);
+		loadInitialSearchedDate();
 	});
 
 
@@ -60,31 +61,7 @@ $(document).ready(function() {
 
 
 	$('#date-picker-input').on('apply.daterangepicker', function(ev, picker) {
-
-		if($("#hour-selection:hidden"))
-			$("#hour-selection").show();
-
-		$("#hour-block-0, #hour-block-1, #hour-block-2, #hour-block-3").removeClass("hour-selected");
-		selected_blocks = [];
-
-		selected_date = picker.startDate;
-
-		$(this).val(selected_date.format('DD/MM/YYYY'));
-
-		var dayData = calendar[selected_date.month()+1][selected_date.date()];
-
-		if(typeof dayData !== 'undefined')
-		{
-			price_per_block = dayData.ppb;
-
-			updateTimeBlockButtons(selected_date, dayData);
-
-			$("#price-from-label").hide();
-			$("#price-per-block").text("$"+Math.round(price_per_block));
-
-			updateTotalSummary();
-		}
-		
+		selectClassesDate(picker.startDate);
 	});
 
 
@@ -226,7 +203,7 @@ function addPricesAndDisableUnavailables()
 
 
 		// unmark initial selected date if no date has been chosen yet (datepicker doesn't support no initial date)
-		if($(elem).hasClass("start-date") && selected_date == null) 
+		if($(elem).hasClass("start-date") && selected_date == null)  // start-date is for selected date
 			$(elem).removeClass("active start-date end-date");
 
 
@@ -413,7 +390,7 @@ function updateTotalSummary()
 		var classesPrice = 0;
 		var subtotalPerPerson = price_per_block * selected_blocks.length;
 
-		for(var i=1; i <= personAmt; i++) 
+		/*for(var i=1; i <= personAmt; i++) 
 		{
 			if(typeof group_discounts[i] === "undefined")
 				group_discounts[i] = 0;
@@ -431,7 +408,13 @@ function updateTotalSummary()
 				var person = "Clases instructor";
 			
 			$(".total-summary table tbody").append("<tr><td>"+person+"</td><td>$"+round(personTotal)+"</td></tr>");
-		}
+
+		}*/
+
+
+		classesPrice = price_per_block * selected_blocks.length;
+		$(".total-summary table tbody").append("<tr><td>Clases instructor ("+selected_blocks.length+" x $"+price_per_block+")</td><td>$"+round(classesPrice)+"</td></tr>");
+
 
 		var mpFees = calculateMPFees(classesPrice);
 		var total = classesPrice + mpFees;
@@ -483,4 +466,59 @@ function kFormatter(num) {
 function round(num)
 {
 	return Math.round(num * 100) / 100;
+}
+
+
+function loadInitialSearchedDate()
+{
+	if(typeof initialSearchedDate != "undefined") {
+
+		var date = moment(initialSearchedDate, "DD-MM-YYYY");
+
+		if(typeof calendar[date.month()+1][date.date()] !== "undefined") {
+			
+			if(calendar[date.month()+1][date.date()].available == true) {
+
+				$('#date-picker-input').data('daterangepicker').setStartDate(date.format(DATE_FORMAT));
+				$('#date-picker-input').data('daterangepicker').setEndDate(date.format(DATE_FORMAT));
+
+				selectClassesDate(date);
+
+			}
+
+		}
+
+	}
+}
+
+
+/**
+ * Select a date (which exists in calendar variable)
+ * @param  {moment} selected_date
+ */
+function selectClassesDate(date)
+{
+	if($("#hour-selection:hidden"))
+		$("#hour-selection").show();
+
+	$("#hour-block-0, #hour-block-1, #hour-block-2, #hour-block-3").removeClass("hour-selected");
+	selected_blocks = [];
+
+	selected_date = date;
+
+	$("#date-picker-input").val(selected_date.format('DD/MM/YYYY'));
+
+	var dayData = calendar[selected_date.month()+1][selected_date.date()];
+
+	if(typeof dayData !== 'undefined')
+	{
+		price_per_block = dayData.ppb;
+
+		updateTimeBlockButtons(selected_date, dayData);
+
+		$("#price-from-label").hide();
+		$("#price-per-block").text("$"+Math.round(price_per_block));
+
+		updateTotalSummary();
+	}
 }

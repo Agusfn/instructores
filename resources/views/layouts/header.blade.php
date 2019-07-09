@@ -1,4 +1,5 @@
-	<header class="header menu_fixed">
+
+	<header class="header menu_fixed ">
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-129656474-1"></script>
 <script>
@@ -52,33 +53,31 @@
 				
 				@guest
 				<li>
-					<span><a href="{{ route('instructor.login') }}">SOY INSTRUCTOR</a></span>
+					<span><a href="{{ route('instructor.login') }}"><i class="pe-7s-medal" style="margin-right: 5px; font-size: 18px"></i>SOY INSTRUCTOR</a></span>
 				</li>
 				<li>
-					<span><a href="{{ route('user.login') }}">INGRESAR</a></span>
+					<span><a href="{{ route('user.login') }}"><i class="pe-7s-user" style="margin-right: 5px; font-size: 18px"></i>INGRESAR</a></span>
 				</li>
 
 
 				@else
 					@user
+					
 					<li>
-						<span><a href="{{ route('user.reservations') }}">MIS RESERVAS</a></span>
-					</li>
-					<li>
-						<span><a href="{{ route('user.account') }}">MI CUENTA</a></span>
+						<span><a href="{{ route('user.account') }}"><i class="pe-7s-note2" style="margin-right: 5px; font-size: 18px"></i>MI CUENTA</a></span>
 					</li>					
 					<li>
-						<span><a href="javascript:void(0);" onclick="event.preventDefault();document.getElementById('logout-form').submit();">CERRAR SESION</a></span>
+						<span><a href="javascript:void(0);" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="pe-7s-power" style="margin-right: 5px; font-size: 18px"></i>CERRAR SESION</a></span>
 					</li>
                     <form id="logout-form" action="{{ route('user.logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
 					@else
 					<li>
-						<span><a href="{{ route('instructor.account') }}">PANEL INSTRUCTOR</a></span>
+						<span><a href="{{ route('instructor.account') }}"><i class="pe-7s-note2" style="margin-right: 5px; font-size: 18px"></i>PANEL INSTRUCTOR</a></span>
 					</li>				
 					<li>
-						<span><a href="javascript:void(0);" onclick="event.preventDefault();document.getElementById('logout-form').submit();">CERRAR SESION</a></span>
+						<span><a href="javascript:void(0);" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="pe-7s-power" style="margin-right: 5px; font-size: 18px"></i>CERRAR SESION</a></span>
 					</li>
                     <form id="logout-form" action="{{ route('instructor.logout') }}" method="POST" style="display: none;">
                         @csrf

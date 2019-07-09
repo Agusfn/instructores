@@ -163,7 +163,7 @@
 										{{ $payment->paid_at->format('d/m/Y H:i') }}
 									</div>
 									@endif
-									@if($payment->isMercadoPago())
+									@if($payment->isMercadoPago() && $payment->mercadopagoPayment->isWithCreditCard())
 									<div class="col-md-6">
 										<label>Cuotas:</label><br/>
 										{{ $payment->mercadopagoPayment->installment_amount }}
@@ -177,7 +177,7 @@
 
 
 
-						<div class="card">
+						{{--<div class="card">
 							<div class="card-body">
 								<h6 class="card-title">
 									Composición del precio 
@@ -220,7 +220,7 @@
 								</div>
 
 							</div>
-						</div>
+						</div>--}}
 
 					</div>
 
@@ -268,7 +268,7 @@
 								<table class="table table-sm table-borderless price-details-table">
 									<tbody>
 										<tr>
-											<td>Precio clases</td>
+											<td>Precio clases ({{ $reservation->time_blocks_amount }} x ${{ round($reservation->price_per_block, 2) }}/2hs)</td>
 											<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
 										</tr>
 										<tr>

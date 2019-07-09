@@ -73,19 +73,32 @@ class ServiceDetailsController extends Controller
 	public function activate()
 	{
 		$instructor = Auth::user();
+		$service = $instructor->service;
 
-		if(!$instructor->service->published) {
+		if($service->published)
+			return redirect()->back();
 
-			if(!$instructor->service->canBePublished())
-				return redirect()->back()->withErrors([
-					"cant_activate" => "Debes ingresar la información de tu servicio (descripción, disciplina, características, alguna foto, un rango de días de trabajo, y público) para activar la publicación."
-				]);
 
-			$instructor->service->published = true;
-			$instructor->service->save();
-			request()->session()->flash('activate-success');
+		if(!$service->description || !$service->features)
+			return redirect()->back()->withErrors(["cant_activate" => "Escribe una descripción y las características de tu servicio antes de publicarlo."]);
 
-		}
+		if(!$service->snowboard_discipline && !$service->ski_discipline)
+			return redirect()->back()->withErrors(["cant_activate" => "Ingresa los tipos de clases que dictas (ski o snowboard) antes de publicar tu servicio."]);
+
+		if(!$service->images_json || sizeof($service->images()) < 1)
+			return redirect()->back()->withErrors(["cant_activate" => "Sube al menos una imágen de presentación de tu servicio antes de publicarlo."]);
+
+		if(!$service->offered_to_adults && !$service->offered_to_kids)
+			return redirect()->back()->withErrors(["cant_activate" => "Ingresa el tipo de público al que ofreces tu servicio antes de publicarlo."]);
+
+		if($service->dateRanges()->count() == 0)
+			return redirect()->back()->withErrors(["cant_activate" => "Ingresa al menos un rango de fechas de trabajo antes de publicar tu servicio."]);
+
+
+		$instructor->service->published = true;
+		$instructor->service->save();
+		request()->session()->flash('activate-success');
+
 
 		
 		return redirect()->back();
@@ -250,11 +263,11 @@ class ServiceDetailsController extends Controller
 			"worktime_hour_start",
 			"worktime_hour_end",
 			"max_group_size",
-			"person2_discount",
+			/*"person2_discount",
 			"person3_discount",
 			"person4_discount" ,
 			"person5_discount",
-			"person6_discount"
+			"person6_discount"*/
 		]));
 
 		$service->fill([

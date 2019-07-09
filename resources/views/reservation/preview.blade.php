@@ -2,10 +2,31 @@
 
 @section('title', 'Reservar clases')
 
+<style type="text/css">
+
+.hero_in {
+    margin-top: 17px;
+}
+.mm-slideout {
+    background-color: #0054a6!important;
+   
+}
+
+header.header.sticky #logo p {
+    color: #f8f9fa!important;
+}
+
+header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.sticky .hamburger-inner::after {
+    background-color: #f8f9fa!important;
+}
+
+</style>
 
 @section('content')
+<br><br><br>
+
 		<div class="hero_in cart_section">
-			<div class="wrapper">
+			<div class="">
 				<div class="container">
 					<div class="bs-wizard clearfix">
 						<div class="bs-wizard-step active">
@@ -65,14 +86,14 @@
 											<img src="{{ $service->instructor->getProfilePicUrl() }}" alt="$service->instructor->name">
 										</div>
 										<span class="item_cart">
-											Clases {{ $quote->discipline }}
+											Clases de {{ ucfirst($quote->discipline) }} por
+											{{ $quote->timeBlocksAmmt * \App\Lib\Reservations::RESERVATION_BLOCK_LENGTH }}hs para
 											{{ $quote->personAmmount }} @if($quote->personAmmount>1)personas @else persona @endif
-											x {{ $quote->timeBlocksAmmt * \App\Lib\Reservations::RESERVATION_BLOCK_LENGTH }}hs
-											(${{ $quote->personAmmount * $quote->pricePerBlock * $quote->timeBlocksAmmt }})
 										</span>
 									</td>
 									<td>
-										{{ round(100 - ($quote->classesPrice * 100 / ($quote->personAmmount * $quote->pricePerBlock * $quote->timeBlocksAmmt)), 1) }}%
+										{{-- round(100 - ($quote->classesPrice * 100 / ($quote->personAmmount * $quote->pricePerBlock * $quote->timeBlocksAmmt)), 1) --}}
+										0%
 									</td>
 									<td>
 										<strong>${{ $quote->classesPrice }}</strong>

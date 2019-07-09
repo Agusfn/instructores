@@ -60,7 +60,7 @@ trait HasProfilePicture
 
             $fileName = $this->generateFileName();
 
-            $this->deleteCurrentPicIfExists();
+            $this->deleteCurrentProfilePic();
 
             Storage::put($this->profilePicPath().$fileName, $image->stream());
 
@@ -87,7 +87,7 @@ trait HasProfilePicture
 	 * Deletes from disk the current profile pic if it exists.
 	 * @return null
 	 */
-	private function deleteCurrentPicIfExists()
+	public function deleteCurrentProfilePic()
 	{
 		if($this->profile_picture) {
 			Storage::delete($this->profilePicPath().$this->profile_picture);
