@@ -54,7 +54,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapPublicWebRoutes()
     {
-        Route::middleware('web')
+        Route::middleware('web', 'frontoffice')
              ->namespace($this->namespace)
              ->group(base_path('routes/web/public.php'));
     }
@@ -68,7 +68,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapAdminWebRoutes()
     {
-        Route::middleware('web')
+        Route::middleware('web', 'backoffice')
              ->namespace($this->namespace)
              ->group(base_path('routes/web/admin.php'));
     }
@@ -82,7 +82,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapInstructorWebRoutes()
     {
-        Route::middleware('web')
+        Route::middleware('web', 'frontoffice')
              ->namespace($this->namespace)
              ->group(base_path('routes/web/instructor.php'));
     }
@@ -97,7 +97,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapUserWebRoutes()
     {
-        Route::middleware('web')
+        Route::middleware('web', 'frontoffice')
              ->namespace($this->namespace)
              ->group(base_path('routes/web/user.php'));
     }

@@ -16,7 +16,8 @@ class HomeController extends Controller
 
 	public function index()
 	{
-		return view("admin.index");
+		return redirect()->route("admin.instructors.list");
+		//return view("admin.index");
 	}
 
 
