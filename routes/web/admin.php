@@ -49,6 +49,9 @@ Route::get("admin/pagos-instructores", "Admin\InstructorCollectionsController@li
 Route::post("admin/pagos-instructores/confirmar", "Admin\InstructorCollectionsController@confirmCollection");
 Route::post("admin/pagos-instructores/rechazar", "Admin\InstructorCollectionsController@rejectCollection");
 
+// Claims
+Route::get("admin/reclamos", "Admin\ClaimsController@list")->name("admin.claims");
+
 
 // Settings
 Route::get("admin/opciones", "Admin\SettingsController@index")->name("admin.settings");

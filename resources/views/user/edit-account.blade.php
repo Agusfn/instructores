@@ -11,7 +11,7 @@
 
 		<div class="row">
 
-			@include('user.panel-nav-layout')
+			@include('user.panel-sidebar')
 
 			<div class="col-md-9">
 

@@ -41,11 +41,20 @@
 
 		<div class="row">
 
-			@include('user.panel-nav-layout')
+	
+			@include('user.panel-sidebar')
 
 			<div class="col-lg-9">
 
-				<h4 class="add_bottom_30">Reserva #{{ $reservation->code }}</h4>
+				<h4 class="add_bottom_30">Reserva #{{ $reservation->code }}
+
+					@if($reservation->claim)
+					<a href="{{ route('user.reservations.claim', $reservation->code) }}" class="btn btn-light" style="float: right;">Ver reclamo</a>
+					@elseif($reservation->isPaymentPending() || $reservation->isPendingConfirmation() || $reservation->isConfirmed())
+					<a href="{{ route('user.reservations.make-claim', $reservation->code) }}" class="btn btn-light" style="float: right;">Tengo un problema</a>
+					@endif
+
+				</h4>
 
 				<div class="row">
 
@@ -112,6 +121,11 @@
 
 							</div>
 						</div>
+
+						@if($reservation->claim)
+						asd
+						@endif
+
 
 						@if($reservation->isConfirmed() && $reservation->confirm_message)
 						<div class="card" style="margin-bottom: 30px">
@@ -266,10 +280,6 @@
             
 @endsection
 
-
-@section('body-end')
-
-@endsection
 
 
 @section('custom-js')

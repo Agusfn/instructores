@@ -27,3 +27,7 @@ Route::post("panel/cuenta/modificar", "User\AccountDetailsController@editAccount
 // Reservations
 Route::get("panel/reservas", "User\ReservationsController@showList")->name("user.reservations");
 Route::get("panel/reservas/{reservation_code}", "User\ReservationsController@details")->name("user.reservation");
+Route::get("panel/reservas/{reservation_code}/crear-reclamo", "User\ReservationsController@showClaimForm")->name("user.reservations.make-claim");
+Route::get("panel/reservas/{reservation_code}/reclamo", "User\ReservationsController@showClaimDetails")->name("user.reservations.claim");
+Route::post("panel/reservas/{reservation_code}/reclamo", "User\ReservationsController@submitClaim");
+Route::post("panel/reservas/{reservation_code}/reclamo/mensaje", "User\ReservationsController@submitClaimMessage");

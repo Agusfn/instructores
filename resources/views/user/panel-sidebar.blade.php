@@ -1,4 +1,4 @@
-<div class="col-lg-12" style="margin-bottom: 30px">
+<aside class="col-lg-3" id="sidebar">
 
 	<ul class="nav nav-pills flex-column h5">
 		<li class="nav-item">
@@ -9,4 +9,4 @@
 		</li>			
 	</ul>
 
-</div>
+</aside>

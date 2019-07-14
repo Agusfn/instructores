@@ -123,6 +123,18 @@ class Reservation extends Model
     }
 
 
+    /**
+     * Obtain the claim associated with this reservation (if it exists)
+     * @return App\Claim|null
+     */
+    public function claim()
+    {
+        return $this->hasOne("App\Claim");
+    }
+
+
+
+
 
     /**
      * Scope a query to find a reservation by code (used to stack with other queries)
@@ -470,9 +482,6 @@ class Reservation extends Model
 
         return $pass; 
     }
-
-
-
 
 
 }

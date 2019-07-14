@@ -97,11 +97,7 @@
 
 		    <div class="row">
 
-                <aside class="col-lg-3" id="sidebar">
-                       
-                        @include('user.panel-nav-layout')
-                </aside>
-                <!--/aside -->
+                @include('user.panel-sidebar')
                 
 
                 <div class="col-lg-9">
