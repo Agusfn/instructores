@@ -19,10 +19,7 @@ Route::post("admin/logout", "Admin\Auth\LoginController@logout")->name("admin.lo
 
 
 // Home
-//Route::get("admin", "Admin\HomeController@index")->name("admin.home");
-Route::get('admin', function () {
-    return redirect()->route("admin.instructors.list");
-})->name("admin.home");
+Route::get("admin", "Admin\HomeController@index")->name("admin.home");
 
 
 // Instructors
