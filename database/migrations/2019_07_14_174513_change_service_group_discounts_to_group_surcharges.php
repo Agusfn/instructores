@@ -16,11 +16,17 @@ class ChangeServiceGroupDiscountsToGroupSurcharges extends Migration
 
         Schema::table('instructor_services', function($table) {
 
-            $table->renameColumn('person2_discount', 'person2_surcharge');
-            $table->renameColumn('person3_discount', 'person3_surcharge');
-            $table->renameColumn('person4_discount', 'person4_surcharge');
-            $table->renameColumn('person5_discount', 'person5_surcharge');
-            $table->renameColumn('person6_discount', 'person6_surcharge');
+            $table->dropColumn('person2_discount');
+            $table->dropColumn('person3_discount');
+            $table->dropColumn('person4_discount');
+            $table->dropColumn('person5_discount');
+            $table->dropColumn('person6_discount');
+
+            $table->decimal('person2_surcharge', 5, 2)->default(100);
+            $table->decimal('person3_surcharge', 5, 2)->default(100);
+            $table->decimal('person4_surcharge', 5, 2)->default(100);
+            $table->decimal('person5_surcharge', 5, 2)->default(100);
+            $table->decimal('person6_surcharge', 5, 2)->default(100);
 
         });
 
@@ -34,12 +40,18 @@ class ChangeServiceGroupDiscountsToGroupSurcharges extends Migration
     public function down()
     {
         Schema::table('instructor_services', function($table) {
+
+            $table->dropColumn('person2_surcharge');
+            $table->dropColumn('person3_surcharge');
+            $table->dropColumn('person4_surcharge');
+            $table->dropColumn('person5_surcharge');
+            $table->dropColumn('person6_surcharge');
             
-            $table->renameColumn('person2_surcharge', 'person2_discount');
-            $table->renameColumn('person3_surcharge', 'person3_discount');
-            $table->renameColumn('person4_surcharge', 'person4_discount');
-            $table->renameColumn('person5_surcharge', 'person5_discount');
-            $table->renameColumn('person6_surcharge', 'person6_discount');
+            $table->decimal('person2_discount', 5, 2)->default(0);
+            $table->decimal('person3_discount', 5, 2)->default(0);
+            $table->decimal('person4_discount', 5, 2)->default(0);
+            $table->decimal('person5_discount', 5, 2)->default(0);
+            $table->decimal('person6_discount', 5, 2)->default(0);
 
         });
 
