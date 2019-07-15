@@ -33,6 +33,11 @@
     transition-timing-function: ease;
 }
 
+
+    header.header.sticky #logo p{
+     color: black!important;
+}
+
 </style>
         <br/>
         <br/>
