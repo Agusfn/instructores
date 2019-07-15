@@ -525,9 +525,9 @@
 							</div>
 							@if($service->allows_groups)
 							<div class="col-lg-6">
-								<label><strong>Descuentos grupales:</strong></label><br/>
+								<label><strong>Recargos por clases grupales:</strong></label><br/>
 								@for($i=2; $i <= $service->max_group_size; $i++)
-								{{ $i }}º persona: {{ round($service->{'person'.$i.'_discount'},2) }}%<br/>
+								{{ $i }}º persona: {{ round($service->{'person'.$i.'_surcharge'},2) }}%<br/>
 								@endfor
 							</div>
 							@endif
