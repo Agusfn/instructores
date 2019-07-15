@@ -26,7 +26,9 @@
     .hero_single.start_bg_zoom:before {
     animation: pop-in 6s 0.3s cubic-bezier(0, 0.5, 0, 1) forwards disabled }
 
-    
+    header.header.sticky #logo p{
+     color: black!important;
+}
 </style>
 
 @endsection
@@ -37,8 +39,8 @@
             <div class="wrapper">
                 <div class="container">
 
-                    <div class="col-lg-11 col-md-10" style="padding-top: 50px; margin-left: 20px"><h1>Clases de Ski & Snowboard en Cerro Catedral</h1></div>
-                    <p style="color: gold">Hay un instructor para vos. Clases a medida para niños y adultos</p>
+                    <div class="col-lg-12" ><div class="row" style="background-color: #adadaf36 "><h1>Clases de Ski & Snowboard en el Cerro Catedral</h1>
+                    <p style="color: #ffc107;">Hay un instructor a tu medida, ¡Esperándote! Clases personalizadas, dirigidas a niños y adultos.</p></div></div>
                     <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
                             <div class="col-lg-4">
@@ -81,15 +83,19 @@
                         <input type="hidden" name="sort" value="default">
                         <!-- /row -->
                     </form>
-                     <div class="container"><br/><br/>
-                      <div class="col-lg-12">
-
-                        <span class="pull-left">
-                            <strong >#Ski&Snowboard</strong></n>
-                            <strong >#Bariloche2019</strong>
-                            <strong >#CerroCatedral</strong>
-                        </span><br>
-                       <p  style="background-color: #f8f9fad6;color: #fc5b62;" class="pull-left"><strong>Viví la emoción de la montaña. Reserva ahora.</strong></p>
+                     <div class="container">
+                      <div class="row text-center">
+                        
+                        <span style="margin-top: 5px;margin-left:45px;opacity: 0.9;">
+                            
+                            <strong style="padding: 2px;background-color:#299aeaa3;margin-left: 10px;">
+                            #Ski&Snowboard
+                            #Bariloche2019
+                            #CerroCatedral
+                            </strong>
+                        </span>
+                       <p  style="padding: 2px;border-radius: 12px;background-color: #f8f9fac9;color:#da192bfa;margin-left:65px;opacity: 0.9;" class="float-right">
+                        <strong>Vive la emoción de la montaña ¡Reserva en este momento!</strong></p>
                     </div>
                 </div>
             </div>
@@ -116,7 +122,7 @@
                     
                     <div class="col-lg-4">
                     <div class="box_feat" id="tittlebanbox">
-                        <h6>Todos los metodos de pago.</h6> <p>Efectivo, transferencias, tarjetas de débito y crédito.</p>
+                        <h6>Contamos con todos los métodos de pago</h6> <p>Efectivo, transferencias, tarjetas de débito y crédito.</p>
                     </div>
                     
                     </div>
@@ -124,7 +130,7 @@
 
                     <div class="col-lg-5">
                     <div class="box_feat" id="tittlebanbox">
-                        <h6>Cuotas sin intéres.</h6>
+                        <h6>Cuotas sin interés.</h6>
                         <p>Con tarjetas de crédito Mastercard emitidas por Banco Patagonia y Mercado Pago.<a href="https://www.mercadopago.com.ar/cuotas" target="_blank"> Ver condiciones.</a></p>
 
                     </div>
@@ -160,7 +166,7 @@
                     <a class="box_feat">
                         <i class="pe-7s-global"></i>
                         <h3>Instructores internacionales</h3>
-                        <p>Todos nuestros instructores tienen experiencia en diferentes centros invernales de todo el globo.</p>
+                        <p>Vasta experiencia en centros invernales de todo el globo.</p>
                     </a>
                 </div>
                 <div class="col-lg-4 col-md-6" id="box2">
@@ -174,8 +180,8 @@
                     <div class="col-lg-4 col-md-6" id="box3">
                     <a class="box_feat" id="contben">
                         <i class="pe-7s-piggy"></i>
-                        <h3>Ahorrá</h3>
-                        <p>Accede a a los mejores precios por clase, al nivel que necesitas.</p>
+                        <h3>Ahorra</h3>
+                        <p>Accede a cada clase que tomes, según tu nivel, al mejor precio.</p>
                     </a>
                 </div>
 
@@ -191,7 +197,7 @@
                     <a class="box_feat">
                         <i class="pe-7s-chat"></i>
                         <h3>Sistema de reputación</h3>
-                        <p>Nos manejamos por un sistema de reputación para cada instructor, basado en  el nivel académico del mismo, en la responsabilidad al momento de ejercer su profesión y en los comentarios y sugerencias de nuestros clientes.</p>
+                        <p>Poseemos un sistema de reputación para cada instructor basado en el nivel académico del mismo, en la responsabilidad al momento de ejercer su profesión y los comentarios y sugerencias de nuestros clientes.</p>
                     </a>
                 </div>
 
@@ -222,9 +228,9 @@
 
                         <div class="col-lg-5" class="whatsapp"> 
                         <h5>Whatsapp </h5>
-                        <h3>+54 924 4305813</h3>
+                        <h3>+54 9294 4305813</h3>
                        </div>
-                       <div class="col-lg-6"><strong><p>Ante cualquier duda comunicate con nosotros, estamos para asistirte.</p></strong></div>
+                       <div class="col-lg-6"><strong><p>Ante cualquier consulta, comunícate con nuestro equipo, estamos aquí para asistirte.</p></strong></div>
                        
                     
                      </div>
@@ -268,8 +274,8 @@
                     <div class="block-reveal" id="sosints">
                         
                         <div class="box_1" >
-                            <h3>¿Sos instructor?</h3>
-                            <p>Deberías trabajar con nosotros!</p>
+                            <h3>¿Eres instructor? </h3>
+                            <p>¡Deberías trabajar con nosotros!</p>
                             <a href="{{ route('become-instructor') }}" class="btn_1 rounded">Saber más</a>
                         </div>
                     </div>

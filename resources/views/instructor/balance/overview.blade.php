@@ -87,7 +87,7 @@
 .hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
     width: 30px;
     height: 4px;
-    background-color: #333 !important;
+    background-color: white !important;
     border-radius: 0;
     position: absolute;
     transition-property: transform;
@@ -213,44 +213,47 @@
 
 				<div class="card">
 					<div class="card-body">
-						<h5 class="card-title">Movimientos</h5>
-						<table class="table">
-
-							<thead>
-								<tr>
-									<th>Fecha</th>
-									<th>Concepto</th>
-									<th>Reserva</th>
-									<th>Monto</th>
-									<th>Saldo</th>
-								</tr>
-							</thead>
-							<tbody>
+					<div class="col-lg-12"><h5 class="card-title">Movimientos</h5>
 								@if($walletMovements->count() == 0)
-									<tr><td colspan="5" style="text-align: center;">No tienes movimientos</td></tr>
-								@else
+									No tienes movimientos
+							</div>
+
+						<ul class="list-group list-group-flush"> 
+                            
+							@else
 									@foreach($walletMovements as $movement)
-									<tr>
-										<td>{{ $movement->date->format('d/m/Y') }}</td>
-										<td>
+							<li class="list-group-item">Fecha<span>{{ $movement->date->format('d/m/Y') }}</span>
+							</li>
+
+							<li class="list-group-item">Concepto<span>
 											@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
 											Pago de reserva
 											@elseif($movement->motive == App\InstructorWalletMovement::MOTIVE_COLLECTION)
 											Retiro de dinero
 											@endif
-										</td>
-										<td>
+										</span>
+							</li>
+
+							<li class="list-group-item">Reserva<span>
 											@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
 											<a href="{{ route('instructor.reservation', $movement->reservation->code) }}">#{{ $movement->reservation->code }}</a>
 											@endif
-										</td>
-										<td>${{ round($movement->net_amount, 2) }}</td>
-										<td>${{ round($movement->new_balance, 2) }}</td>
-									</tr>
+										</span>
+							</li>
+
+							<li class="list-group-item">Monto<span>${{ round($movement->net_amount, 2) }}</span>
+							</li>
+
+							<li class="list-group-item">Saldo<span>${{ round($movement->new_balance, 2) }}</span>
+							</li>
+								
+							</thead>
+									
+								
 									@endforeach
 								@endif
-							</tbody>
-						</table>
+							
+					    </ul>
 
 						<div style="text-align: center;">{{ $walletMovements->links() }}</div>
 					</div>

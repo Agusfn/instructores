@@ -9,20 +9,34 @@
 
   gtag('config', 'UA-129656474-1');
 </script>
-        <div class="col-lg-12">
+
+<div class="wrapper">
+        
 		<div id="preloader"><div data-loader="circle-side"></div></div><!-- /Page Preload -->
 		
-         
-		 <div id="logo">       
+		
+
+         <div class="col-lg-6">
+		 <div  id="logo">       
 			<a  href="{{ route('home') }}"><h6>INSTRUCTORES</h6><p>SKI&SNOWBOARD</p>
 				<!--
 				<img src="resources/img/logo.png" width="150" height="36" data-retina="true" alt="" class="logo_normal">
 				<img src="resources/img/logosticky.png" width="150" height="36" data-retina="true" alt="" class="logo_sticky">
 				-->
 			</a>
+          </div>
 		
 		</div> 
 
+		<div class="col-md-2">
+		<a href="#menu" class="btn_mobile">
+			<div  class="hamburger hamburger--spin" id="hamburger">
+				<div class="hamburger-box">
+					<div class="hamburger-inner"></div>
+				</div>
+			</div>
+		</a>
+		</div>
 		
         
 
@@ -33,18 +47,15 @@
                 </div>
                  </div>
         BARRA DE OFERTAS-->        
-            
+        
 		
-		<a href="#menu" class="btn_mobile">
-			<div class="hamburger hamburger--spin" id="hamburger">
-				<div class="hamburger-box">
-					<div class="hamburger-inner"></div>
-				</div>
-			</div>
-		</a>
-
+        
 		<nav id="menu" class="main-menu">
+
+           
 			<ul>
+
+
 
 				<li>
 					<span><a href="{{ route('faq') }}">PREGUNTAS FRECUENTES</a></span>
@@ -87,8 +98,8 @@
 				
 			</ul>
 		</nav>
-		</div>
+		
 
-       
+ </div>      
 
 	</header>

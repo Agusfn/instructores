@@ -191,7 +191,7 @@
 
 				<div class="more_padding_left add_bottom_60" id="datos">
 					
-					<div class="row add_bottom_30">
+					<div class="">
 						<div class="col-6"><strong>Foto de perfil</strong></div>
 						<div class="col-6">
 
@@ -230,11 +230,11 @@
 					</li>
  
                     <li class="list-group-item">
-				   
+				    
 
 					<div class="row">
 						<div class="col-6"><strong>Login cuenta</strong></div>
-						<div class="col-6">{{ ucfirst($instructor->provider) }}</div>
+						<div class="col-6"><small>{{ ucfirst($instructor->provider) }}</small></div>
 					</div>
 
 				    </li>
@@ -321,16 +321,24 @@
 						</div>
 					</div>
 				    </li>
-				</div>
 
-			      
+				       <li class="list-group-item" style="text-align: center;">
+					<div class="container" >
+						
+						<small ><a href="{{ url('instructor/panel/cuenta/modificar') }}">Modificar Datos</a></small>
+						
+					</div>
+				    </li>
+				</div>
+                    
+			
 				</div>	
 
 
-
+                 
 				 </ul>
 
-
+                 
 			</div>
 
 		</div>
