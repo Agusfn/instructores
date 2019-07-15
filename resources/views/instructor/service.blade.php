@@ -147,7 +147,7 @@
 				</div>
 				@endif
 
-				@if($errors->has('person2_discount') || $errors->has('person3_discount') || $errors->has('person4_discount') || $errors->has('person5_discount') || $errors->has('person6_discount'))
+				@if($errors->has('person2_surcharge') || $errors->has('person3_surcharge') || $errors->has('person4_surcharge') || $errors->has('person5_surcharge') || $errors->has('person6_surcharge'))
 				<div class="alert alert-danger alert-dismissible fade show" role="alert">
 					Ingresa todos los valores de descuento grupal correctamente, entre 0 y 100.
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -174,7 +174,10 @@
                 </div>
                 @endif
 
-                 <p><strong>Por favor completa todos los campos para poder activar tu publicación. Cualquier duda estamos para ayudarte.</strong></p>
+                @if(!$service->published)
+                <p><strong>Por favor completa todos los campos para poder activar tu publicación. Cualquier duda estamos para ayudarte.</strong></p>
+                @endif
+
 				<h5 style="margin-bottom: 20px">
 					Información del servicio
                     
@@ -324,7 +327,7 @@
 
 						<div class="col-lg-12"></div>
 
-						<div class="col-lg-12">
+						<div class="col-md-6">
 							
 							<div class="form-group" style="margin-top: 20px">
 								<input type="checkbox" id="allow-group-classes" autocomplete="off" name="allow_groups" @if($service->allows_groups) checked @endif>
@@ -340,23 +343,26 @@
 									<option @if($service->max_group_size == 6) selected @endif>6</option>
 								</select>
 							</div>
-							{{--<table class="table table-sm" id="group-discounts-table" @if(!$service->allows_groups) style="display: none" @endif>
+							<table class="table table-sm" id="group-surcharges-table" @if(!$service->allows_groups) style="display: none" @endif>
 								<thead>
 									<tr>
 										<th>Persona</th>
-										<th>Descuento (%) <strong>(Opcional)</strong></th>
+										<th>Recargo <i class="fa fa-question-circle" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Porcentaje de recargo sobre el precio del primer estudiante. 0% es sin cargo, y 100% es igual al precio del primero."></i></th>
 									</tr>
 								</thead>
 								<tbody>
 									@for($i=2; $i <= 6; $i++)
 									<tr @if(!$service->allows_groups || $service->max_group_size < $i) style="display: none" @endif>
 										<td>{{ $i }}º</td>
-										<td><input type="text" class="form-control form-control-sm" name="person{{ $i }}_discount" id="person{{ $i }}-discount" value="{{ $service->{'person'.$i.'_discount'} }}" style="width: 60px"></td>
+										<td>
+											<input type="text" class="form-control form-control-sm" name="person{{ $i }}_surcharge" id="person{{ $i }}-surcharge" value="{{ $service->{'person'.$i.'_surcharge'} }}" style="width: 60px;display:inline">
+											%
+										</td>
 									</tr>
 									@endfor
 								</tbody>
 
-							</table>--}}
+							</table>
 						</div>
 
 
@@ -393,7 +399,7 @@
 	<script src="{{ asset('resources/vendor/nouislider/nouislider.min.js') }}"></script>
 	<script src="{{ asset('resources/js/wNumb.js') }}"></script>
 	<script src="{{ asset('resources/js/icheck.min.js') }}"></script>
-	<script src="{{ asset('resources/js/instructor-service-pg.js') }}"></script>
+	<script src="{{ asset('resources/js/instructor-service-pg.js?2') }}"></script>
 	<script>
 		var app_url = "{{ config('app.url').'/' }}";
 		var img_dir = "{{ config('filesystems.disks.public.url').'/img/service/'.$service->number.'/' }}";

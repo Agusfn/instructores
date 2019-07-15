@@ -87,12 +87,12 @@ header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.s
 										</div>
 										<span class="item_cart">
 											Clases de {{ ucfirst($quote->discipline) }} por
-											{{ $quote->timeBlocksAmmt * \App\Lib\Reservations::RESERVATION_BLOCK_LENGTH }}hs para
-											{{ $quote->personAmmount }} @if($quote->personAmmount>1)personas @else persona @endif
+											{{ $quote->timeBlocksAmt * \App\Lib\Reservations::RESERVATION_BLOCK_LENGTH }}hs para
+											{{ $quote->personAmount }} @if($quote->personAmount>1)personas @else persona @endif
 										</span>
 									</td>
 									<td>
-										{{-- round(100 - ($quote->classesPrice * 100 / ($quote->personAmmount * $quote->pricePerBlock * $quote->timeBlocksAmmt)), 1) --}}
+										{{-- round(100 - ($quote->classesPrice * 100 / ($quote->personAmount * $quote->pricePerBlock * $quote->timeBlocksAmt)), 1) --}}
 										0%
 									</td>
 									<td>
@@ -135,7 +135,7 @@ header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.s
 							<ul class="cart_details">
 								<li>Fecha <span>{{ $quote->serviceDate->format("d/m/Y") }}</span></li>
 								<li>Horas <span>{{ App\Lib\Reservations::blocksToReadableHourRange($quote->blockStart, $quote->blockEnd) }}</span></li>
-								<li>Personas <span>{{ $quote->personAmmount }}</span></li>
+								<li>Personas <span>{{ $quote->personAmount }}</span></li>
 							</ul>
 							<form action="{{ url('reservar/'.$service->number.'/confirmar') }}" method="POST">
 								@csrf

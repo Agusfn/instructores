@@ -82,9 +82,11 @@ function place_result(service)
 		<div class="box_grid">\
 			<figure>\
 				\
-				<a href="' + service_url + '"><img src="' + profile_pic_url + '" class="img-fluid" alt="" width="800" height="533"><div class="read_more"><span>Ver más</span></div></a>\
-				<small>Nivel ' + service.instructor.level + '</small>\
-			</figure>\
+				<a href="' + service_url + '"><img src="' + profile_pic_url + '" class="img-fluid" alt="" width="800" height="533"><div class="read_more"><span>Ver más</span></div></a>';
+				if(service.instructor.level != null) {
+					html += '<small>Nivel ' + service.instructor.level + '</small>';
+				}
+			html += '</figure>\
 			<div class="wrapper">\
 				<!--div class="cat_star"><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i><i class="icon_star"></i></div-->\
 				<h3><a href="' + service_url + '">' + service.instructor.name + '</a></h3>\

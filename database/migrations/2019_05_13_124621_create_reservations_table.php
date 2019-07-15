@@ -31,7 +31,7 @@ class CreateReservationsTable extends Migration
             $table->integer('adults_amount');
             $table->integer('kids_amount');
 
-            $table->text('json_breakdown'); // not used currently
+            $table->text('json_breakdown');
             $table->decimal('final_price', 8, 2);
             $table->decimal('instructor_pay', 8, 2);
             $table->decimal('service_fee', 8, 2);

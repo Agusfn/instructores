@@ -105,25 +105,25 @@ $(document).ready(function() {
 
 	$("#allow-group-classes").on("ifChecked", function(event) {
 		$("#max-group-size").parent().show();
-		//$("#group-discounts-table").show();
+		$("#group-surcharges-table").show();
 		$("#max-group-size").trigger("change");
 	});
 
 	$("#allow-group-classes").on("ifUnchecked", function(event) {
-		//$("#group-discounts-table").hide();
+		$("#group-surcharges-table").hide();
 		$("#max-group-size").parent().hide();
 	});
 
-	/*$("#max-group-size").change(function() {
+	$("#max-group-size").change(function() {
 
-		$("#group-discounts-table tbody tr").hide();
+		$("#group-surcharges-table tbody tr").hide();
 
 		var max_persons = $(this).val();
 
 		for(var i=2; i<=max_persons; i++) {
-			$("#person"+i+"-discount").closest("tr").show();
+			$("#person"+i+"-surcharge").closest("tr").show();
 		}
-	});*/
+	});
 
 
 	create_hour_slider(
@@ -168,12 +168,12 @@ $(document).ready(function() {
 			return;
 		}
 
-		/*for(var i=2; i<=6; i++) {
-			if(!$.isNumeric($("#person" + i + "-discount").val())) {
-				alert("Ingresa valores numéricos en los porcentajes de descuento.");
+		for(var i=2; i<=6; i++) {
+			if(!$.isNumeric($("#person" + i + "-surcharge").val())) {
+				alert("Ingresa valores numéricos en los porcentajes de recargo.");
 				return;
 			}
-		}*/
+		}
 
 		if($("#block_price").val() != "") {
 			if(!confirm("Hay un rango de fechas de trabajo ingresado pero que aún no guardaste, si continuas no se guardará. ¿Continuar?"))

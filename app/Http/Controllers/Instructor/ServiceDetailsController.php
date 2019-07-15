@@ -263,11 +263,11 @@ class ServiceDetailsController extends Controller
 			"worktime_hour_start",
 			"worktime_hour_end",
 			"max_group_size",
-			/*"person2_discount",
-			"person3_discount",
-			"person4_discount" ,
-			"person5_discount",
-			"person6_discount"*/
+			"person2_surcharge",
+			"person3_surcharge",
+			"person4_surcharge",
+			"person5_surcharge",
+			"person6_surcharge"
 		]));
 
 		$service->fill([

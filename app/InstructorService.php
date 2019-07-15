@@ -177,25 +177,25 @@ class InstructorService extends Model
 
 
 	/**
-	 * Return an array indicating the percentage of discount for each additional person in the same reservation. 
-	 * The key of the array is the person number, and the value is the discount percentage 0-100.
+	 * Get an array with 6 numbers, each one being the surcharge percentage for each additional student (apart from the first one, which is 100%) in a reservation.
+	 * The key of the array is the person number (1-6), and the value is the surcharge percentage (0: free - 100: same as first student)
 	 * @return array
 	 */
-	/*public function getGroupDiscounts()
+	public function getGroupSurcharges()
 	{
-		$discounts = [1 => 0];
+		$surcharges[1] = 100;
 
 		if(!$this->allows_groups)
-			return $discounts;
+			return $surcharges;
 
 		else {
 			for($i=2; $i<=$this->max_group_size; $i++) {
-				$discounts[$i] = floatval($this->{"person".$i."_discount"});
+				$surcharges[$i] = floatval($this->{"person".$i."_surcharge"});
 			}
 		}
 
-		return $discounts;
-	}*/
+		return $surcharges;
+	}
 
 
 
@@ -378,10 +378,10 @@ class InstructorService extends Model
 	 * Check whether this service offers any discount for group
 	 * @return boolean
 	 */
-	/*public function hasGroupDiscounts()
+	/*public function hasGroupSurcharges()
 	{
 		for($i=2; $i<=6; $i++) {
-			if($this->{"person".$i."_discount"} > 0)
+			if($this->{"person".$i."_surcharge"} > 0)
 				return true;
 		}
 		return false;

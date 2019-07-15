@@ -19,7 +19,7 @@
 @section('body-start')
 
 
-@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
+@if(!$instructor->isApproved())
 <div class="modal" tabindex="-1" role="dialog" id="approval-modal">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -30,7 +30,6 @@
 				</button>
 			</div>
 			<div class="modal-body">
-
 				<div class="alert alert-info">Ingresa los datos de los documentos enviados por el instructor.</div>
 
 				<form action="{{ url('admin/instructores/'.$instructor->id.'/aprobar') }}" method="POST" id="approve-form">
@@ -59,7 +58,7 @@
 					</div>
 					<div class="form-group">
 						<label>Nivel de instructor (1-5)</label>
-						<input type="text" class="form-control{{ $errors->approval->has('level') ? ' is-invalid' : '' }}" name="level">
+						<input type="text" class="form-control{{ $errors->approval->has('level') ? ' is-invalid' : '' }}" name="level" placeholder="Dejar vacío en caso de no querer registrar el nivel">
 						@if ($errors->approval->has('level'))
 				        <span class="invalid-feedback" role="alert">
 				            <strong>{{ $errors->approval->first('level') }}</strong>
@@ -77,39 +76,40 @@
 	</div>
 </div>
 
+	@if($instructor->approvalDocsSent())
+	<div class="modal" tabindex="-1" role="dialog" id="reject-docs-modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Rechazar documentación</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
 
-<div class="modal" tabindex="-1" role="dialog" id="reject-docs-modal">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Rechazar documentación</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
+					<form action="{{ url('admin/instructores/'.$instructor->id.'/rechazar_doc') }}" method="POST" id="reject-docs-form">
+						@csrf
+						<div class="form-group">
+							<label>Motivo del rechazo de documentación</label>
+							<input type="text" class="form-control{{ $errors->doc_rejectal->has('reason') ? ' is-invalid' : '' }}" name="reason">
+							@if ($errors->doc_rejectal->has('reason'))
+					        <span class="invalid-feedback" role="alert" style="display: block;">
+					            <strong>{{ $errors->doc_rejectal->first('reason') }}</strong>
+					        </span>
+					    	@endif
+						</div>
+					</form>
 
-				<form action="{{ url('admin/instructores/'.$instructor->id.'/rechazar_doc') }}" method="POST" id="reject-docs-form">
-					@csrf
-					<div class="form-group">
-						<label>Motivo del rechazo de documentación</label>
-						<input type="text" class="form-control{{ $errors->doc_rejectal->has('reason') ? ' is-invalid' : '' }}" name="reason">
-						@if ($errors->doc_rejectal->has('reason'))
-				        <span class="invalid-feedback" role="alert" style="display: block;">
-				            <strong>{{ $errors->doc_rejectal->first('reason') }}</strong>
-				        </span>
-				    	@endif
-					</div>
-				</form>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Rechazar documentacion?')) $('#reject-docs-form').submit();">Confirmar</button>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+					<button type="button" class="btn btn-primary" onclick="if(confirm('¿Rechazar documentacion?')) $('#reject-docs-form').submit();">Confirmar</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+	@endif
 @endif
 
 
@@ -140,15 +140,17 @@
 
 		<div class="box_general padding_bottom">
 
-			@if(!$instructor->isApproved() && $instructor->approvalDocsSent())
+			@if(!$instructor->isApproved())
 			<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#approval-modal">Aprobar instructor</button>
-			<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#reject-docs-modal" style="margin-right: 30px">Rechazar documentación</button>
+				@if($instructor->approvalDocsSent())
+				<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#reject-docs-modal" style="margin-right: 30px">Rechazar documentación</button>
+				@endif
 			@endif
 			
 			<form action="{{ url('admin/instructores/'.$instructor->id.'/suspender') }}" method="POST" style="display: inline;margin-right: 30px">
 				@csrf
 				@if(!$instructor->suspended)
-				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿Suspender cuenta?')) $(this).parent().submit();">Suspender cuenta</button>
+				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿Suspender cuenta? No podrá iniciar sesión.')) $(this).parent().submit();">Suspender cuenta</button>
 				@else
 				<button type="button" class="btn btn-info btn-sm" onclick="if(confirm('¿Reahabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
 				@endif
@@ -296,7 +298,7 @@
 
 							<div class="col-md-3">
 								<label><strong>Nivel instructor</strong></label><br/>
-								@if($instructor->isApproved())
+								@if($instructor->isApproved() && $instructor->level)
 									{{ $instructor->level }}
 								@else
 									-

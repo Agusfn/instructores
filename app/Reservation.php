@@ -288,13 +288,13 @@ class Reservation extends Model
 
 
     /**
-     * Returns the price breakdown table/array of the reservation (for display uses only)
+     * Get an array with the breakdown of the class price. It contains the price of each student. (Exists for info display uses only)
      * @return array
      */
-    /*public function priceBreakdown()
+    public function priceBreakdown()
     {
         return json_decode($this->json_breakdown, true);
-    }*/
+    }
 
 
     /**

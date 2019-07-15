@@ -388,32 +388,32 @@ function updateTotalSummary()
 	{
 		
 		var classesPrice = 0;
-		var subtotalPerPerson = price_per_block * selected_blocks.length;
+		var studentBasePrice = price_per_block * selected_blocks.length;
 
-		/*for(var i=1; i <= personAmt; i++) 
+		for(var i=1; i <= personAmt; i++) 
 		{
-			if(typeof group_discounts[i] === "undefined")
-				group_discounts[i] = 0;
+			if(typeof group_surcharges[i] === "undefined")
+				group_surcharges[i] = 100;
 
-			var personTotal = subtotalPerPerson - (subtotalPerPerson * group_discounts[i]/100);
-			classesPrice += personTotal;
+			var studentTotal = studentBasePrice * (group_surcharges[i]/100);
+			classesPrice += studentTotal;
 
 
-			if(personAmt > 1) {
-				var person = i + "º persona";
-				if(group_discounts[i] > 0)
-					person += " ("+group_discounts[i]+"% off)";
-			}
-			else
+			if(i == 1) {
 				var person = "Clases instructor";
+			}
+			else {
+				var person = i + "º persona adicional";
+				/*if(group_surcharges[i] > 0)
+					person += " ("+group_surcharges[i]+"% off)";*/
+			}
 			
-			$(".total-summary table tbody").append("<tr><td>"+person+"</td><td>$"+round(personTotal)+"</td></tr>");
+			$(".total-summary table tbody").append("<tr><td>"+person+"</td><td>$"+round(studentTotal)+"</td></tr>");
 
-		}*/
+		}
 
-
-		classesPrice = price_per_block * selected_blocks.length;
-		$(".total-summary table tbody").append("<tr><td>Clases instructor ("+selected_blocks.length+" x $"+price_per_block+")</td><td>$"+round(classesPrice)+"</td></tr>");
+		/*classesPrice = price_per_block * selected_blocks.length;
+		$(".total-summary table tbody").append("<tr><td>Clases instructor ("+selected_blocks.length+" x $"+price_per_block+")</td><td>$"+round(classesPrice)+"</td></tr>");*/
 
 
 		var mpFees = calculateMPFees(classesPrice);
