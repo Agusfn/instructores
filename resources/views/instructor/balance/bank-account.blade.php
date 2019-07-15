@@ -69,7 +69,7 @@
 .hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
     width: 30px;
     height: 4px;
-    background-color: #333 !important;
+    background-color: white !important;
     border-radius: 0;
     position: absolute;
     transition-property: transform;
@@ -106,7 +106,7 @@
 
 			<div class="col-md-9">
 
-				<a href="{{ route('instructor.balance.overview') }}"><span class="badge badge-pill badge-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> volver</span></a>
+				
 				<h4 class="add_bottom_30">Mi cuenta bancaria</h4>
 
 				@if($instructor->wallet->collections()->pending()->count() > 0)
@@ -183,12 +183,16 @@
 					
 					@if(!$formDisabled)
 					<div class="row">
-						<div class="col-11">
-							<div style="text-align: right;">
+						<div class="col-11" style="text-align: right;">
+
+							<button class="btn btn-primary"><a style="color: white" href="{{ route('instructor.balance.overview') }}">Cancelar</a>
+							</button>		
+							
 								<button class="btn btn-primary">Guardar</button>
-							</div>
+							
 						</div>	
 					</div>
+					<br><br>
 					@endif
 				</form>
 

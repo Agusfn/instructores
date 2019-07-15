@@ -26,7 +26,9 @@
     .hero_single.start_bg_zoom:before {
     animation: pop-in 6s 0.3s cubic-bezier(0, 0.5, 0, 1) forwards disabled }
 
-    
+    header.header.sticky #logo p{
+     color: black!important;
+}
 </style>
 
 @endsection
@@ -37,8 +39,8 @@
             <div class="wrapper">
                 <div class="container">
 
-                    <div class="col-lg-11 col-md-10" style="padding-top: 50px; margin-left: 20px"><h1>Clases de Ski & Snowboard en Cerro Catedral</h1></div>
-                    <p style="color: gold">Hay un instructor para vos. Clases a medida para niños y adultos</p>
+                    <div class="col-lg-12" ><div class="row" style="background-color: #adadaf36 "><h1>Clases de Ski & Snowboard en Cerro Catedral</h1>
+                    <p style="color: #ffc107;">Hay un instructor para vos. Clases a medida para niños y adultos</p></div></div>
                     <form action="{{ route('search') }}" method="GET" id="search-form">
                         <div class="row no-gutters custom-search-input-2">
                             <div class="col-lg-4">
@@ -81,15 +83,19 @@
                         <input type="hidden" name="sort" value="default">
                         <!-- /row -->
                     </form>
-                     <div class="container"><br/><br/>
-                      <div class="col-lg-12">
-
-                        <span class="pull-left">
-                            <strong >#Ski&Snowboard</strong></n>
-                            <strong >#Bariloche2019</strong>
-                            <strong >#CerroCatedral</strong>
-                        </span><br>
-                       <p  style="background-color: #f8f9fad6;color: #fc5b62;" class="pull-left"><strong>Viví la emoción de la montaña. Reserva ahora.</strong></p>
+                     <div class="container">
+                      <div class="row text-right">
+                        
+                        <span style="margin-top: 5px;margin-left:45px;opacity: 0.9;">
+                            
+                            <strong style="padding: 2px;background-color:#299aeaa3;margin-left: 10px;">
+                            #Ski&Snowboard
+                            #Bariloche2019
+                            #CerroCatedral
+                            </strong>
+                        </span>
+                       <p  style="padding: 2px;border-radius: 12px;background-color: #f8f9fac9;color:#da192bfa;margin-left:65px;opacity: 0.9;" class="float-right">
+                        <strong>Viví la emoción de la montaña. Reserva ahora.</strong></p>
                     </div>
                 </div>
             </div>

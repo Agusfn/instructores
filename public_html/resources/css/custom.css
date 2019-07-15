@@ -14,7 +14,7 @@
 
 
 header.header.sticky #logo p{
-     color: black;
+     color: white;
 }
 /*LOGO*/
 
@@ -27,7 +27,7 @@ header.header.sticky #logo p{
 
 	margin-top: -10px ;
 	font-size: medium;
-	color: white;
+	color: white!important;
 }
 
 
@@ -280,7 +280,7 @@ ul#cat_nav li a:hover, ul#cat_nav li a#active, ul#cat_nav li a.active {
 
 /*Propiedades del contenedor de la cabecera*/
 .mm-slideout {
-	background-color: #00000040;
+	background-color: #00000040 disabled!important;
     height: 83px;
 
 
