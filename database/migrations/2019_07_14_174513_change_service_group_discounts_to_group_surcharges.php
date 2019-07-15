@@ -22,11 +22,11 @@ class ChangeServiceGroupDiscountsToGroupSurcharges extends Migration
             $table->dropColumn('person5_discount');
             $table->dropColumn('person6_discount');
 
-            $table->decimal('person2_surcharge', 5, 2)->default(100);
-            $table->decimal('person3_surcharge', 5, 2)->default(100);
-            $table->decimal('person4_surcharge', 5, 2)->default(100);
-            $table->decimal('person5_surcharge', 5, 2)->default(100);
-            $table->decimal('person6_surcharge', 5, 2)->default(100);
+            $table->decimal('person2_surcharge', 5, 2)->default(0);
+            $table->decimal('person3_surcharge', 5, 2)->default(0);
+            $table->decimal('person4_surcharge', 5, 2)->default(0);
+            $table->decimal('person5_surcharge', 5, 2)->default(0);
+            $table->decimal('person6_surcharge', 5, 2)->default(0);
 
         });
 
