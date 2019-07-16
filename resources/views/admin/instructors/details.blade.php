@@ -391,6 +391,43 @@
 				</div>
 				@endif
 
+				<div class="box_general padding_bottom">
+					<div class="header_box">
+						<h2 class="d-inline-block">Cuentas para retiro de dinero</h2>
+					</div>
+					<div class="list_general">
+						
+						<div class="row">
+
+							<div class="col-md-6">
+								<label>Cuenta bancaria:</label>
+								@if($instructor->bankAccount)
+								<div>
+									<strong>CBU:</strong> {{ $instructor->bankAccount->cbu }}<br/>
+									<strong>Titular:</strong> {{ $instructor->bankAccount->holder_name }}<br/>
+									<strong>Documento:</strong> {{ $instructor->bankAccount->document_number }}<br/>
+									<strong>CUIL/CUIT:</strong> {{ $instructor->bankAccount->cuil_cuit }}<br/>
+								</div>
+								@else
+								No
+								@endif
+							</div>
+
+							<div class="col-md-6">
+								<label>Cuenta mercadopago:</label>
+								@if($instructor->mpAccount)
+								<br/>
+								{{ $instructor->mpAccount->email }}
+								@else
+								No
+								@endif
+							</div>
+
+						</div>
+						
+					</div>
+				</div>
+
 
 
       		</div>

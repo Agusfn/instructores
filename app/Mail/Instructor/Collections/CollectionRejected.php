@@ -42,7 +42,7 @@ class CollectionRejected extends Mailable
      */
     public function build()
     {
-        $this->subject("Se ha rechazado tu solicitud de retiro de saldo de ".$this->collection->amount." ARS a tu cuenta bancaria");
+        $this->subject("Se ha rechazado tu solicitud de retiro de saldo de ".$this->collection->amount." ARS a tu cuenta ".($this->collection->isToBank() ? "bancaria" : "de MercadoPago"));
         
         return $this->view('emails.instructor.collections.collection-rejected');
     }

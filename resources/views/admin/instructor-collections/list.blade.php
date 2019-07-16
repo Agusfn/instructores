@@ -32,7 +32,7 @@
 							<th>Instructor</th>
 							<th>Estado</th>
 							<th>Monto</th>
-							<th>CBU</th>
+							<th>Medio de retiro</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -54,7 +54,11 @@
 									@elseif($collection->isCompleted())
 									<span class="badge badge-success">Completado</span>
 									@elseif($collection->isRejected())
-									<span class="badge badge-danger">Rechazado</span>
+										@if($collection->reject_reason)
+										<span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="{{ $collection->reject_reason }}" style="text-decoration: underline dotted;">Rechazado</span>
+										@else
+										<span class="badge badge-danger">Rechazado</span>
+										@endif
 									@elseif($collection->isCanceled())
 									<span class="badge badge-secondary">Cancelado por instructor</span>
 									@endif
@@ -62,15 +66,27 @@
 								<td>
 									{{ $collection->amount }} ARS
 								</td>
-								@php($bankAccount = $instructor->bankAccount)
-								<td><button class="btn btn-primary btn-sm" onclick="alert('{{ 'CBU '.$bankAccount->cbu.'\nTitular: '.$bankAccount->holder_name.'\n Doc: '.$bankAccount->document_number.'\n CUIL/CUIT: '.$bankAccount->cuil_cuit }}')">Ver cbu</button></td>
+								
+								<td>
+									@if($collection->isPending())
+										@if($collection->isToBank())
+										@php($bankAccount = $instructor->bankAccount)
+										<a href="javascript:void(0);" onclick="alert('{{ 'CBU '.$bankAccount->cbu.'\nTitular: '.$bankAccount->holder_name.'\n Doc: '.$bankAccount->document_number.'\n CUIL/CUIT: '.$bankAccount->cuil_cuit }}')">Cuenta bancaria</a>
+										@else
+										<a href="javascript:void(0);" onclick="alert('Email cuenta: {{ $instructor->mpAccount->email }}');">MercadoPago</a>
+										@endif
+									@else
+										@if($collection->isToBank()) Cuenta bancaria @else MercadoPago @endif
+									@endif
+
+								</td>
 								<td>
 									@if($collection->isPending())
 									<ul>
 										<li style="display: inline-block;">
 											<form action="{{ url('admin/pagos-instructores/confirmar') }}" method="POST">
 												@csrf
-												<button type="button" class="btn_1 gray approve" onclick="if(confirm('¿Ya fue el dinero enviado a la cuenta bancaria? ¿Confirmar?')) $(this).parent().submit();"><i class="fa fa-fw fa-check-circle-o"></i> Confirmar</button>
+												<button type="button" class="btn_1 gray approve" onclick="if(confirm('¿Ya fue el dinero enviado a la cuenta correspondiente? ¿Confirmar?')) $(this).parent().submit();"><i class="fa fa-fw fa-check-circle-o"></i> Confirmar</button>
 												<input type="hidden" name="collection_id" value="{{ $collection->id }}">
 											</form>
 										</li>

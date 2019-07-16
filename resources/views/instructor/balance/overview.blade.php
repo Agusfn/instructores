@@ -127,44 +127,94 @@
 
 				<h4 class="add_bottom_30">Mi cuenta de saldo</h4>
 
+				@include('layouts.errors')
+
 				<div class="row">
-					<div class="col-sm-6">
-						<div class="card">
+					<div class="col-md-6" style="padding-right: 5px">
+						<div class="card" style="height: calc(100% - 10px);">
 							<div class="card-body" style="padding: 24px 20px;">
-								<div class="row" style="font-size: 19px">
-									<div class="col-md-6">
+
+								<div class="row" style="font-size: 18px">
+									<div class="col-7">
 										Balance
 									</div>
-
-									<div class="col-md-6">
-										<span style="color: #2e79b9">${{ $wallet->balance }} ARS</span>
+									<div class="col-5">
+										<span style="color: #2e79b9">${{ $wallet->balance }} <small>ARS</small></span>
 									</div>
 								</div>
+
+								<div class="row">
+									<div class="col-7">
+										Saldo pendiente acredit.
+									</div>
+									<div class="col-5">${{ $instructor->getPendingAmountToBeAccredited() }} ARS</div>
+								</div>
+
+								<a href="{{ route('instructor.balance.withdraw') }}" class="btn btn-success btn-sm" style="width: 100%; margin-top: 40px">Retirar fondos</a>
 							</div>
 						</div>
 					</div>
 
-					<div class="col-sm-6">
-						<div class="card">
+					<div class="col-md-6" style="padding-left: 5px">
+						<div class="card" style="margin-bottom: 10px">
 							<div class="card-body">
-								<div class="row">
-									<div class="col-md-6">
-										<button type="button" class="btn btn-success" @if($bankAccount) data-toggle="modal" data-target="#collection-modal" @else onclick="alert('Debes asociar tu cuenta bancaria para poder retirar tus fondos.')" @endif>Retirar fondos</button>
-									</div>
-									<div class="col-md-6" style="padding-top: 9px;">
-										@if(!$bankAccount)
-										<a href="{{ route('instructor.balance.bank-account') }}">Agregar cta. bancaria</a>
-										@else
-										<a href="{{ route('instructor.balance.bank-account') }}">Modificar cta. bancaria</a>
-										@endif
-									</div>
-								</div>
+								<table class="table" style="margin: 0">
+									<tbody>
+
+										<tr>
+											<td style="border-top: none">
+												<strong>Cuenta bancaria</strong>
+												@if($instructor->bankAccount)
+												<br/>
+												CBU {{ $instructor->bankAccount->cbu }}
+												@if(!$instructor->bankAccount->lockTimePassed())
+												<i class="fas fa-exclamation-circle" style="color: #ee8918" data-toggle="tooltip" data-placement="top" title="La cuenta se agregó hace menos de {{ App\Lib\InstructorCollections\WithdrawableAccount::LOCK_TIME_DAYS }} día/s. Deberás esperar que pase este tiempo para realizar extracciones a la misma."></i>
+												@endif
+												@endif
+											</td>
+											<td style="border-top: none">
+												<a href="{{ route('instructor.balance.bank-account') }}">@if(!$instructor->bankAccount) Agregar @else Modificar @endif</a>
+											</td>
+										</tr>
+
+										<tr>
+											<td>
+
+												<strong>Cuenta de MercadoPago</strong>
+												@if($instructor->mpAccount)
+												<br/>
+												<span id="mp-mail-label">
+													{{ $instructor->mpAccount->email }}
+													@if(!$instructor->mpAccount->lockTimePassed())
+													<i class="fas fa-exclamation-circle" style="color: #ee8918" data-toggle="tooltip" data-placement="top" title="La cuenta se agregó hace menos de {{ App\Lib\InstructorCollections\WithdrawableAccount::LOCK_TIME_DAYS }} día/s. Deberás esperar que pase este tiempo para realizar extracciones a la misma."></i>
+													@endif
+												</span>
+												@endif
+
+												<form action="{{ url('instructor/panel/saldo/actualizar-cta-mp') }}" method="POST" id="change-mp-acc-form" style="display: none;" onkeydown="return event.key != 'Enter';">
+													@csrf
+													<div class="input-group input-group-sm">
+														<input type="text" name="email" class="form-control" placeholder="Email" value="{{ $instructor->mpAccount ? $instructor->mpAccount->email : '' }}" autocomplete="off">
+														<div class="input-group-append">
+															<button type="button" class="btn btn-outline-secondary">Guardar</button>
+														</div>
+													</div>
+												</form>
+
+											</td>
+											<td><a href="javascript:void(0);" id="update-mp-acc">@if(!$instructor->mpAccount) Agregar @else Modificar @endif</a></td>
+										</tr>
+									</tbody>
+
+								</table>
+
+
 							</div>
 						</div>
 					</div>
 				</div>
 
-				@if($bankAccount && $wallet->collections()->pending()->count() > 0)
+				@if($wallet->collections()->pending()->count() > 0)
 				<div class="card" style="margin: 15px 0">
 					<div class="card-body">
 						<h6 class="card-title">Extracciones de dinero pendientes</h6>
@@ -188,7 +238,13 @@
 									<td>
 										${{ $collection->amount }}
 									</td>
-									<td>Cuenta bancaria</td>
+									<td>
+										@if($collection->isToBank())
+										Cuenta bancaria
+										@else
+										Cuenta Mercadopago
+										@endif
+									</td>
 									<td>
 										@if($collection->isPending())
 										Pendiente
@@ -277,7 +333,7 @@
 
 
 @section('body-end')
-@if($instructor->isApproved() && $bankAccount)
+@if($instructor->isApproved() && $instructor->bankAccount)
 <div class="modal menu_fixed" style="z-index: 1050" tabindex="-1" role="dialog" id="collection-modal">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -289,7 +345,7 @@
 			</div>
 			<div class="modal-body">
 
-				@if($bankAccount->lockTimePassed())
+				@if($instructor->bankAccount->lockTimePassed())
 				<form action="{{ url('instructor/panel/saldo/retirar') }}" method="POST" id="collection-form">
 					@csrf
 					<div class="form-group" style="text-align: center;">
@@ -305,21 +361,21 @@
 				<div>
 					<div style="margin-bottom: 12px">Los fondos se retirarán a la siguiente cuenta bancaria:</div>
 					<div style="">
-						<strong>CBU:</strong> {{ $bankAccount->cbu }}<br/>
-						<strong>Titular:</strong> {{ $bankAccount->holder_name }}<br/>
-						<strong>Documento:</strong> {{ $bankAccount->document_number }}<br/>
-						<strong>CUIL/CUIT:</strong> {{ $bankAccount->cuil_cuit }}<br/>
+						<strong>CBU:</strong> {{ $instructor->bankAccount->cbu }}<br/>
+						<strong>Titular:</strong> {{ $instructor->bankAccount->holder_name }}<br/>
+						<strong>Documento:</strong> {{ $instructor->bankAccount->document_number }}<br/>
+						<strong>CUIL/CUIT:</strong> {{ $instructor->bankAccount->cuil_cuit }}<br/>
 					</div>
 				</div>
 				@else
 				<div class="alert alert-info">
-					Tu cuenta bancaria fue recientemente configurada, debés esperar al {{ $bankAccount->unlockTime()->format('d/m/Y H:i') }} para poder retirar dinero.
+					Tu cuenta bancaria fue recientemente configurada, debés esperar al {{ $instructor->bankAccount->unlockTime()->format('d/m/Y H:i') }} para poder retirar dinero.
 				</div>
 				@endif
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				@if($bankAccount->lockTimePassed())
+				@if($instructor->bankAccount->lockTimePassed())
 				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Confirmar?')) $('#collection-form').submit();">Confirmar</button>
 				@endif
 			</div>
@@ -337,10 +393,45 @@
 
 @section('custom-js')
 
-@if($instructor->isApproved() && !$errors->collection->isEmpty())
+
 <script type="text/javascript">
+	
+$(document).ready(function() {
+
+	$('[data-toggle="tooltip"]').tooltip();
+
+	@if($instructor->isApproved() && !$errors->collection->isEmpty())
 	$('#collection-modal').modal("show");
+	@endif
+
+
+	$("#update-mp-acc").click(function() {
+		$(this).hide();
+		$("#mp-mail-label").hide();
+		$("#change-mp-acc-form").show();
+	});
+
+	$("#change-mp-acc-form button").click(function() {
+		if(!validateEmail($("input[name=email]").val())) {
+			alert("Ingresa un e-mail válido");
+			return;
+		}
+
+		if(!confirm("Si modificas tu cuenta de MercadoPago, no podrás retirar hacia esta por {{ App\Lib\InstructorCollections\WithdrawableAccount::LOCK_TIME_DAYS }} día/s. ¿Continuar?"))
+			return;
+
+		$("#change-mp-acc-form").submit();
+
+	});
+
+});
+
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 </script>
-@endif
+
 
 @endsection

@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class CollectionConfirmed extends Mailable
+class CollectionAccountChanged extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -19,9 +19,10 @@ class CollectionConfirmed extends Mailable
 
 
     /**
-     * @var App\InstructorCollection
+     * 'bank' or 'mercadopago'
+     * @var string
      */
-    public $collection;
+    public $accountType;
 
 
     /**
@@ -29,10 +30,10 @@ class CollectionConfirmed extends Mailable
      *
      * @return void
      */
-    public function __construct($instructor, $collection)
+    public function __construct($instructor, $accountType)
     {
         $this->instructor = $instructor;
-        $this->collection = $collection;
+        $this->accountType = $accountType;
     }
 
 
@@ -43,10 +44,8 @@ class CollectionConfirmed extends Mailable
      */
     public function build()
     {
-        $this->subject("Se ha transferido tu saldo de ".$this->collection->amount." ARS a tu cuenta ".($this->collection->isToBank() ? "bancaria" : "de MercadoPago"));
-        
-        return $this->view('emails.instructor.collections.collection-confirmed');
+        $this->subject("Se modificó la cuenta ".($this->accountType == "bank" ? "bancaria" : "de MercadoPago")." para extracciones de saldo");        
+
+        return $this->view('emails.instructor.collections.collection-account-changed');
     }
-
-
 }

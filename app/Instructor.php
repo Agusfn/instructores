@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Reservation;
 use App\InstructorWallet;
 use App\Lib\Reservations;
 use App\InstructorService;
@@ -106,10 +107,10 @@ class Instructor extends Authenticatable
 
 
 
-    /*public function mpAccount()
+    public function mpAccount()
     {
         return $this->hasOne("App\InstructorMpAccount");
-    }*/
+    }
 
     public function bankAccount()
     {
@@ -231,6 +232,14 @@ class Instructor extends Authenticatable
 
 
 
+    /**
+     * Get the total amount of the instructor pay of all the confirmed reservations of the instructor.
+     * @return float
+     */
+    public function getPendingAmountToBeAccredited()
+    {
+        return $this->reservations()->where("status", Reservation::STATUS_CONFIRMED)->sum("instructor_pay");
+    }
 
 
 }

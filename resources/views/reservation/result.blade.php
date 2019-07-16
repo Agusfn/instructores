@@ -4,31 +4,7 @@
 
 
 @section('custom-css')
-<style type="text/css">
 
-.hero_in {
-    margin-top: 17px;
-}
-.mm-slideout {
-    background-color: #0054a6!important;
-   
-}
-
-header.header.sticky #logo p {
-    color: #f8f9fa!important;
-}
-
-header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.sticky .hamburger-inner::after {
-    background-color: #f8f9fa!important;
-}
-
-.bs-wizard > .bs-wizard-step.active > .bs-wizard-dot:after {
-   
-    color: green;
-}
-
-
-</style>
 
 
 @endsection

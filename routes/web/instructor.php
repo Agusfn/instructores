@@ -41,9 +41,16 @@ Route::get("instructor/panel/reservas/{reservation_code}", "Instructor\Reservati
 Route::post("instructor/panel/reservas/{reservation_code}/confirmar", "Instructor\ReservationsController@confirm");
 Route::post("instructor/panel/reservas/{reservation_code}/rechazar", "Instructor\ReservationsController@reject");
 
+
+
 // Balance
 Route::get("instructor/panel/saldo", "Instructor\AccountBalanceController@overview")->name("instructor.balance.overview");
+
 Route::get("instructor/panel/saldo/cta-bancaria", "Instructor\AccountBalanceController@showBankAccountForm")->name("instructor.balance.bank-account");
 Route::post("instructor/panel/saldo/cta-bancaria", "Instructor\AccountBalanceController@saveBankAccount");
+Route::post("instructor/panel/saldo/actualizar-cta-mp", "Instructor\AccountBalanceController@updateMpAccount");
+
+Route::get("instructor/panel/saldo/retirar", "Instructor\AccountBalanceController@showCollectionForm")->name("instructor.balance.withdraw");
 Route::post("instructor/panel/saldo/retirar", "Instructor\AccountBalanceController@createCollectionRequest");
 Route::post("instructor/panel/saldo/cancelar-retiro", "Instructor\AccountBalanceController@cancelCollection");
+
