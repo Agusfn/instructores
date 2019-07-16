@@ -9,7 +9,18 @@
     @section('title', $instructor->name.' - Instructor Ski')
 @endif
 
-
+<style type="text/css">
+    .hero_in {
+    width: 100%;
+    height: 450px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    color: #fff;}
+    header.header.sticky #logo p {
+    color: black!important;
+}
+</style>
 
 @section('custom-css')
 <link rel="stylesheet" type="text/css" href="{{ asset('resources/css/service-public-pg.css') }}">
@@ -20,17 +31,17 @@
 
         <section class="hero_in hotels_detail" 
         @if(isset($service->imageUrls()[0]))
-        style="background-position: center center; background-size: cover; background-repeat: no-repeat; background-image: url('{{ $service->imageUrls()[0]['fullsize'] }}'); "
+        style="background-position: center center; background-size: cover; background-repeat: no-repeat; background-image: url('{{ $service->imageUrls()[0]['fullsize'] }}');"
         @endif
         >
             <div class="wrapper">
                 <div class="container">
-                    <h1 class="fadeInUp">
+                    <h1 class="fadeIn">
                         @if($instructor->profile_picture)
                         <img src="{{ Storage::url('img/instructors/'.$instructor->profile_picture) }}" class="profile-pic">
                         @endif
-                        <span></span>Perfil
-                    </h1>
+                        
+                    </h1><h4 style="color: whitesmoke">PERFIL</h4>
                 </div>
                 <span class="magnific-gallery">
 
