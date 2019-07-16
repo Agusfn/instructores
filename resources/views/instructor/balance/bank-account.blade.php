@@ -109,16 +109,16 @@
 				
 				<h4 class="add_bottom_30">Mi cuenta bancaria</h4>
 
-				@if($instructor->wallet->collections()->pending()->count() > 0)
-				@php($formDisabled = true)
-				<div class="alert alert-warning">
-					Tenés solicitudes de retiro de dinero pendientes. No podrás modificar tu cuenta bancaria hasta que estas se concluyan.
-				</div>
+				@if($bankAccount && $bankAccount->hasPendingCollections())
+					@php($formDisabled = true)
+					<div class="alert alert-warning">
+						Tenés solicitudes de retiro de dinero pendientes. No podrás modificar tu cuenta bancaria hasta que estas se concluyan.
+					</div>
 				@else
-				@php($formDisabled = false)
-				<div class="alert alert-info">
-					Si guardas/modificas los datos de tu cuenta bancaria, deberás esperar {{ \App\InstructorBankAccount::LOCK_TIME_DAYS }} días para poder realizar extracciones de dinero a la misma.
-				</div>
+					@php($formDisabled = false)
+					<div class="alert alert-info">
+						Si guardas/modificas los datos de tu cuenta bancaria, deberás esperar {{ \App\InstructorBankAccount::LOCK_TIME_DAYS }} días para poder realizar extracciones de dinero a la misma.
+					</div>
 				@endif
 
 				<form action="{{ url('instructor/panel/saldo/cta-bancaria') }}" method="POST">

@@ -14,6 +14,10 @@ class InstructorCollection extends Model
     const STATUS_CANCELED = "canceled"; // Canceled by instructor
 
 
+    const DESTINATION_BANK = "bank";
+    const DESTINATION_MP = "mercadopago";
+
+
     protected $guarded = [];
 
 
@@ -40,6 +44,25 @@ class InstructorCollection extends Model
         return $query->where("status", self::STATUS_PENDING);/*->orWhere("status", self::STATUS_IN_PROCESS);*/
     }
 
+
+    /**
+     * [isToBank description]
+     * @return boolean [description]
+     */
+    public function isToBank()
+    {
+        return $this->destination_acc_type == self::DESTINATION_BANK;
+    }
+
+
+    /**
+     * [isToMercadopago description]
+     * @return boolean [description]
+     */
+    public function isToMercadopago()
+    {
+        return $this->destination_acc_type == self::DESTINATION_MP;
+    }
 
 
     public function isPending()
