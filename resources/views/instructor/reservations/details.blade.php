@@ -53,7 +53,11 @@
 
 		<div class="row">
 
-			@include('instructor.panel-nav-layout')
+            <aside class="col-lg-3" id="sidebar">
+                   
+                    @include('instructor.panel-nav-layout')
+            </aside>
+            <!--/aside -->
 
 			<div class="col-lg-9">
 
