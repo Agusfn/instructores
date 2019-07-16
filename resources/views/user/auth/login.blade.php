@@ -13,14 +13,14 @@
     padding: 20px 60px 25px 60px;
 }
 
-.mm-slideout {
-    background-color: #ffdead00;
-    
-}
 
 #logo {
     padding: 20px;
 }
+#logo p{
+    color: black!important;
+}
+
 
 </style>
 
