@@ -139,7 +139,7 @@
 											<div class="col-md-6 col-sm-12">
 												<div class="form-group">
 													<label>Número de tarjeta</label>
-													<input type="text" class="form-control" id="card_number" data-checkout="cardNumber" maxlength="16" autocomplete="off">
+													<input type="text" class="form-control" id="card_number" data-checkout="cardNumber" maxlength="18" autocomplete="off">
 												</div>
 											</div>
 											<div class="col-md-6 col-sm-12">

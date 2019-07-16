@@ -169,7 +169,7 @@ header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.s
 											<div class="col-md-6 col-sm-12">
 												<div class="form-group">
 													<label>Número de tarjeta</label>
-													<input type="text" class="form-control" id="card_number" data-checkout="cardNumber" maxlength="16" autocomplete="off">
+													<input type="text" class="form-control" id="card_number" data-checkout="cardNumber" maxlength="18" autocomplete="off">
 												</div>
 											</div>
 											<div class="col-md-6 col-sm-12">
@@ -326,7 +326,7 @@ header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.s
 							<ul class="cart_details">
 								<li>Fecha <span>{{ $quote->serviceDate->format("d/m/Y") }}</span></li>
 								<li>Horas <span>{{ App\Lib\Reservations::blocksToReadableHourRange($quote->blockStart, $quote->blockEnd) }}</span></li>
-								<li>Personas <span>{{ $quote->personAmmount }}</span></li>
+								<li>Personas <span>{{ $quote->personAmount }}</span></li>
 							</ul>
 							<button type="button" class="btn_1 full-width purchase">Pagar</button>
 							<div class="text-center"></div>

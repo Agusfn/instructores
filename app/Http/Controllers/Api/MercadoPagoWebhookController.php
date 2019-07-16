@@ -69,7 +69,7 @@ class MercadoPagoWebhookController extends Controller
 		}
 		else if($reservPayment->isSuccessful()) {
 
-			//if($mpApiPayment->status == "charged_back") { // credit card (and ticket?)
+			if($mpApiPayment->status == "charged_back") { // credit card (and ticket?)
 
 				ReservationPayments::updateMpPaymentStatusFromApiPayment($mpPayment, $mpApiPayment);
 				$mpPayment->save();
@@ -87,7 +87,7 @@ class MercadoPagoWebhookController extends Controller
 
 
 				Mail::to(AdminEmailNotifications::recipients())->send(new PaymentChargebacked($reservPayment, $reservPayment->reservation));
-			//}
+			}
 
 		}
 

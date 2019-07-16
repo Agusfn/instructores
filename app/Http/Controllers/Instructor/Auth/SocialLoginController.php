@@ -9,7 +9,10 @@ use App\Lib\SocialLogin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\Lib\AdminEmailNotifications;
+use App\Mail\Instructor\WelcomeEmail;
+use App\Mail\Admin\InstructorRegistered;
 
 class SocialLoginController extends Controller
 {
@@ -19,7 +22,7 @@ class SocialLoginController extends Controller
      * Redirect instructors after logging in (if no intended redirection)
      * @var string
      */
-    public $redirectTo = "/";
+    public $redirectTo = "instructor/panel/cuenta";
 
 
 
@@ -81,6 +84,9 @@ class SocialLoginController extends Controller
     		}
 
             $instructor = SocialLogin::createInstructor($socialUser, $provider);
+
+            Mail::to($instructor)->send(new WelcomeEmail($instructor));
+            Mail::to(AdminEmailNotifications::recipients())->send(new InstructorRegistered());
     	}
 
         if($instructor->suspended) {

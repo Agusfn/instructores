@@ -66,7 +66,7 @@ class InstructorsController extends Controller
 		$validator = Validator::make($request->all(), [
 			"identification_type" => "required|in:dni,passport",
 			"identification_number" => "required|between:5,20|regex:/^[0-9+ -]*$/",
-			"level" => "required|integer|between:1,5"
+			"level" => "present|nullable|integer|between:1,5"
 		]);
 
 		if($validator->fails()) {
@@ -75,7 +75,7 @@ class InstructorsController extends Controller
 
 		$instructor = Instructor::find($id);
 
-		if(!$instructor)
+		if(!$instructor || $instructor->isApproved())
 			return redirect()->back();
 
 

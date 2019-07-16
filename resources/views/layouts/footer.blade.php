@@ -3,7 +3,6 @@
 			<div class="container margin_60_35">
 				
 				<div class="contact_info">
-				<div class="container">
 					<ul class="clearfix">
 						<li>
 							<i class="pe-7s-map-marker"></i>
@@ -22,24 +21,24 @@
 							<span>+ 54 294 4305813<br><small>Lunes a Domingo 24hs</small></span>
 						</li>
 					</ul>
-
 				</div>
-			</div>
-				<!--/row-->
+
 				<hr>
 			       
-					<div class="col-lg-8 offset-0">
-						<ul id="additional_links">
-							<li><a href="{{ route('faq') }}">Terminos y condiciones</a></li>
-							<li><a href="{{ route('faq') }}">Privacidad</a></li>
-							<li><span>© 2018 Instructores</span></li>
-						</ul>
-					</div>
+				<div class="col-lg-8 offset-0">
+					<ul id="additional_links">
+						<li><a href="{{ route('faq') }}">Terminos y condiciones</a></li>
+						<li><a href="{{ route('faq') }}">Privacidad</a></li>
+						<li><span>© 2018 Instructores</span></li>
+					</ul>
+				</div>
 				<br>
 				<hr>
 				<small><span>Diseño: vdvedia@gmail.com</span></small>
 				<br>
 				<small><span>Programación: agusfn20@gmail.com</span></small>	
-				</div>
+
 			</div>
+
+
 		</footer>

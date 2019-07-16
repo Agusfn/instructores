@@ -189,10 +189,10 @@
 
 
 
-						{{--<div class="card">
+						<div class="card">
 							<div class="card-body">
 								<h6 class="card-title">
-									Composición del precio 
+									Composición del precio de clases
 									<div style="float: right;">
 										<a data-toggle="collapse" href="#collapse-price-breakdown" role="button">
 											<i class="far fa-plus-square"></i>
@@ -201,29 +201,23 @@
 								</h6>
 
 								<div class="collapse" id="collapse-price-breakdown">
-									${{ round($reservation->price_per_block, 2) }}/2hs x {{ $reservation->time_blocks_amount }} = ${{ round($reservation->price_per_block * $reservation->time_blocks_amount, 2) }} (precio base p/ pers.)
+									${{ round($reservation->price_per_block, 2) }}/2hs x {{ $reservation->time_blocks_amount }} = ${{ round($reservation->price_per_block * $reservation->time_blocks_amount, 2) }} (precio base por persona)
 
 									<table class="table table-sm" style="margin-top: 10px">
 										<thead>
 											<tr>
 												<th>Persona</th>
-												<th>Precio base</th>
-												<th>Dto.</th>
-												<th>Total</th>
+												<th>Precio</th>
 											</tr>
 										</thead>
 										<tbody>
-											@foreach($reservation->priceBreakdown() as $person)
+											@foreach($reservation->priceBreakdown() as $studentPrice)
 											<tr>
 												<td>{{ $loop->iteration }}º</td>
-												<td>${{ $person[0] }}</td>
-												<td>-${{ $person[1] }}</td>
-												<td>${{ $person[2] }}</td>
+												<td>${{ $studentPrice }}</td>
 											</tr>
 											@endforeach
 											<tr>
-												<td></td>
-												<td></td>
 												<td></td>
 												<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
 											</tr>
@@ -232,7 +226,7 @@
 								</div>
 
 							</div>
-						</div>--}}
+						</div>
 
 					</div>
 
@@ -280,7 +274,7 @@
 								<table class="table table-sm table-borderless price-details-table">
 									<tbody>
 										<tr>
-											<td>Precio clases ({{ $reservation->time_blocks_amount }} x ${{ round($reservation->price_per_block, 2) }}/2hs)</td>
+											<td>Precio clases</td>
 											<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
 										</tr>
 										<tr>

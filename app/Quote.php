@@ -40,7 +40,7 @@ class Quote
 	 * Adults + kids.
 	 * @var int
 	 */
-	public $personAmmount;
+	public $personAmount;
 
 
 
@@ -52,7 +52,7 @@ class Quote
 	 * The ammount of time blocks that these classes will span.
 	 * @var int
 	 */
-	public $timeBlocksAmmt;
+	public $timeBlocksAmt;
 
 
 
@@ -81,11 +81,10 @@ class Quote
 
 
 	/**
-	 * An array with a breakdown of the price of the classes. It is a sum of the price for each person (if group), taking into account the price per block,
-	 * the discount for groups, and the total time blocks.
+	 * Breakdown array of the price of the classes. Each element is the price of each student, and the sum of all is the classes price.
 	 * @var array
 	 */
-	//public $classesPriceDetail;
+	public $classesPriceDetail;
 
 
 
@@ -105,7 +104,7 @@ class Quote
 
 
 	/**
-	 * The fees that the selected payment processor charges for this payment.
+	 * The fees that the selected payment processor charges for this payment. They are added to classes price and conform the total.
 	 * @var float
 	 */
 	public $payProviderFee = 0;
@@ -122,8 +121,11 @@ class Quote
 
 
 
-
-	private $groupDiscounts;
+	/**
+	 * Surcharges of each additional student in case it's a group class.
+	 * @var array
+	 */
+	private $groupSurcharges;
 
 
 
@@ -171,7 +173,7 @@ class Quote
 		$this->discipline = $discipline;
 		$this->setPaymentMethod($paymentMethod);
 		$this->setServiceDate($date);
-		$this->setPersonAmmount($adultsAmount, $kidsAmount);
+		$this->setPersonAmount($adultsAmount, $kidsAmount);
 		$this->setBlocksSpan($blockStart, $blockEnd);
 	}
 
@@ -202,23 +204,23 @@ class Quote
 	 * @param int $adultsAmount
 	 * @param int $kidsAmount
 	 */
-	public function setPersonAmmount($adultsAmount, $kidsAmount)
+	public function setPersonAmount($adultsAmount, $kidsAmount)
 	{
 		$this->adultsAmount = $adultsAmount;
 		$this->kidsAmount = $kidsAmount;
-		$this->personAmmount = $adultsAmount + $kidsAmount;
+		$this->personAmount = $adultsAmount + $kidsAmount;
 	}
 
 	/**
 	 * Set the length of these classes in ammount of time blocks.
-	 * The important thing is the timeBlocksAmmt, but start and end times should be compatible with instructor working times in the given date.
+	 * The important thing is the timeBlocksAmt, but start and end times should be compatible with instructor working times in the given date.
 	 * @param int $ammount
 	 */
 	public function setBlocksSpan($blockStart, $blockEnd)
 	{
 		$this->blockStart = $blockStart;
 		$this->blockEnd = $blockEnd;
-		$this->timeBlocksAmmt = ($blockEnd - $blockStart) + 1;
+		$this->timeBlocksAmt = ($blockEnd - $blockStart) + 1;
 		
 	}
 
@@ -233,40 +235,28 @@ class Quote
 	{
 		$this->pricePerBlock = $this->service->getPricePerBlockOnDate($this->serviceDate);
 		
-		/*$groupDiscounts = $this->service->getGroupDiscounts();
-		$this->groupDiscounts = $groupDiscounts;
+		$this->groupSurcharges = $this->service->getGroupSurcharges();
 
-		$subtotalPerPerson = $this->timeBlocksAmmt * $this->pricePerBlock;
+		
+		$studentBasePrice = $this->timeBlocksAmt * $this->pricePerBlock;
 
-		for($i=1; $i <= $this->personAmmount; $i++) {
+		for($i=1; $i <= $this->personAmount; $i++) {
+			
+			$totalStudent = $studentBasePrice * ($this->groupSurcharges[$i]/100);
 
-			$totalPerson = $subtotalPerPerson * (1 - $groupDiscounts[$i]/100);
-			$this->classesPrice += $totalPerson;
-
-			$this->classesPriceDetail[] = [
-				round($subtotalPerPerson, 2),
-				$groupDiscounts[$i],
-				round($totalPerson, 2)
-			];
-
-		}*/
-
-
-		$this->classesPrice = $this->timeBlocksAmmt * $this->pricePerBlock;
-
-
-		$this->serviceFee = $this->classesPrice * self::getSiteFeePercent()/100;
-
-		$this->instructorPay = $this->classesPrice - $this->serviceFee;
+			$this->classesPrice += $totalStudent;
+			$this->classesPriceDetail[] = round($totalStudent, 2);
+		}
 
 		if($this->paymentMethod == PaymentMethods::CODE_MERCADOPAGO) {
 			$this->payProviderFee = PaymentMethods::calculateMercadoPagoFees($this->classesPrice);
 		}
 		
-
 		$this->total = $this->classesPrice + $this->payProviderFee;
 
 
+		$this->serviceFee = $this->classesPrice * self::getSiteFeePercent()/100;
+		$this->instructorPay = $this->classesPrice - $this->serviceFee;
 	}
 
 
@@ -276,13 +266,13 @@ class Quote
 	 * Each column is a person, and the 1st column is the p
 	 * @return string
 	 */
-	public function getJsonBreakdown()
+	/*public function getJsonBreakdown()
 	{
-		$subtotalPerPerson = $this->timeBlocksAmmt * $this->pricePerBlock;
+		$subtotalPerPerson = $this->timeBlocksAmt * $this->pricePerBlock;
 
 		$table = [];
 
-		for($i=1; $i <= $this->personAmmount; $i++) {	
+		for($i=1; $i <= $this->personAmount; $i++) {	
 			$row = [
 				round($subtotalPerPerson, 2),
 				round($subtotalPerPerson * $this->groupDiscounts[$i]/100, 2),
@@ -292,7 +282,7 @@ class Quote
 		}
 
 		return json_encode($table);
-	}
+	}*/
 
 
 }

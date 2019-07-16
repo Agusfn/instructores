@@ -141,7 +141,7 @@ class SearchInstructorsController extends Controller
 
 			$quote->calculate();
 			$resultsArray["data"][$i]["quote"]["classes_price"] = $quote->classesPrice;
-			$resultsArray["data"][$i]["quote"]["person_amt"] = $quote->personAmmount;
+			$resultsArray["data"][$i]["quote"]["person_amt"] = $quote->personAmount;
 		}
 
 		return $resultsArray;
