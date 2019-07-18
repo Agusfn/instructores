@@ -14,7 +14,7 @@ class AddPausedByAdminToInstructorServices extends Migration
     public function up()
     {
         Schema::table('instructor_services', function (Blueprint $table) {
-            $table->boolean('paused_by_admin');
+            $table->boolean('paused_by_admin')->default(false);
         });
     }
 
