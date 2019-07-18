@@ -18,7 +18,7 @@
 						<li>
 							<i class="pe-7s-phone"></i>
 							<h4>Contacto</h4>
-							<span>+ 54 294 4305813<br><small>Lunes a Domingo 24hs</small></span>
+							<span>+ 54 9294 4305813<br><small>Lunes a Domingo 24hs</small></span>
 						</li>
 					</ul>
 				</div>
