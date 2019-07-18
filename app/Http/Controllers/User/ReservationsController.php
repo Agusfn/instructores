@@ -25,7 +25,7 @@ class ReservationsController extends Controller
 
 		$reservations = $user->reservations()->orderBy("created_at", "DESC")->paginate(10);
 		
-		return view("user.reservations")->with("reservations", $reservations);
+		return view("user.panel.reservations.list")->with("reservations", $reservations);
 	}
 
 
@@ -42,7 +42,7 @@ class ReservationsController extends Controller
 		if(!$reservation)
 			return redirect()->route("user.reservations");
 
-		return view("user.reservation")->with([
+		return view("user.panel.reservations.details")->with([
 			"reservation" => $reservation,
 			"payment" => $reservation->lastPayment
 		]);

@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('user.panel.layouts.main-layout')
 
 @section('title', 'Modificar cuenta')
 
@@ -95,24 +95,8 @@
 </style>
 @endsection
 
-@section('content')
+@section('panel-tab-content')
 
-
-	<br><br>
-        <div class="container margin_80_55"></div>
-
-	<div class="container">
-		
-
-
-		<div class="row">
-
-            <aside class="col-lg-3" id="sidebar">
-                   
-                    @include('user.panel-nav-layout')
-            </aside>
-
-			<div class="col-md-9">
 
 				<a href="{{ route('user.account') }}"><span class="badge badge-pill badge-secondary"><i class="fa fa-arrow-left" aria-hidden="true"></i> volver</span></a>
 				<h4 class="add_bottom_30">Modificar cuenta</h4>
@@ -173,11 +157,5 @@
 					</form>
 				</div>
 
-			</div>
-
-		</div>
-
-
-	</div>
             
 @endsection

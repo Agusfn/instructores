@@ -130,7 +130,7 @@
                             <div id="collapseThree_payment" class="collapse" role="tabpanel" data-parent="#payment">
                                 <div class="card-body">
                                     
-                                    <p>Aplica un 5% del total de la reserva efectuada en concepto de tarifa del servicio y mantenimiento de la plataforma.</p>
+                                    <p>Aplica un 7.1% del total de la reserva efectuada en concepto de tarifa del servicio y mantenimiento de la plataforma.</p>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +201,7 @@
 
                             <div id="collapseOne_reccomendations" class="collapse" role="tabpanel" data-parent="#reccomendations">
                                 <div class="card-body">
-                                    <p>Todos los instructores de snowboard y ski anunciados en la plataforma cuentan con una certificación que los habilita como profesionales en la materia. Puedes encontrarlos por niveles, de 3 a 5. Al ser independientes las tarifas las proponen ellos. 
+                                    <p>Todos los instructores de snowboard y ski anunciados en la plataforma cuentan con una habilitacion y/o certificación para ejercer su actividad como profesionales en la materia. Al ser independientes las tarifas las proponen ellos. 
                                    </p>                                   
                                 </div>
                             </div>

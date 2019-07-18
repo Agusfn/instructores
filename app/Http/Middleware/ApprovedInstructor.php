@@ -11,6 +11,7 @@ class ApprovedInstructor
 
 
     /**
+     * ********EDIT LATER (check that instructor check is done previously)*******************
      * Redirect guest to instructor login. Redirect unapproved instructors to their panel (account pg).
      *
      * @param  \Illuminate\Http\Request  $request

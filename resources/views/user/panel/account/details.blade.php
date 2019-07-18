@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('user.panel.layouts.main-layout')
 
 @section('title', 'Mi cuenta')
 
@@ -96,28 +96,9 @@
 </style>
 @endsection
 
-@section('content')
-
-	
-	<br><br>
-        <div class="container margin_80_55"></div>
+@section('panel-tab-content')
 
 
-
-
-	<div class="container">
-
-
-		    <div class="row">
-
-                <aside class="col-lg-3" id="sidebar">
-                       
-                        @include('user.panel-nav-layout')
-                </aside>
-                <!--/aside -->
-                
-
-                <div class="col-lg-9">
 
                 <div class="card" style="width: 28.5rem;">
 
@@ -157,15 +138,6 @@
                                      </ul>
                          </div>
                  </div>
-             </div>
-    </div>         
-                      
-        
-
-        <br><br><br><br>               
-
-
-		
             
 @endsection
 

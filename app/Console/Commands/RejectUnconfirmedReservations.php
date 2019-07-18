@@ -51,7 +51,7 @@ class RejectUnconfirmedReservations extends Command
                 continue;
             }
 
-            $reservation->reject("Reserva rechazada de forma automática por falta de confirmación del instructor.");
+            $reservation->reject("Rechazada automáticamente por falta de confirmación del instructor.");
                 
             Mail::to($reservation->instructor)->send(new ReservationAutoRejected($reservation->instructor, $reservation));
             Mail::to($reservation->user)->send(new ReservationRejectAutomatic($reservation->user, $reservation));

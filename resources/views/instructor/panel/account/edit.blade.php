@@ -1,3 +1,6 @@
+{{-- THIS VIEW DOES NOT EXTEND THE INSTRUCTOR PANEL LAYOUT --}}
+
+
 @extends('layouts.main')
 
 @section('title', 'Modificar cuenta')
@@ -6,19 +9,6 @@
 
 <style type="text/css">
 
-   html main {
-   	overflow-y: hidden;
-
-   }
-
-	.profile-pic {
-		width: 150px;
-		height: 150px;
-		border-top-left-radius: 50% 50%;
-		border-top-right-radius: 50% 50%;
-		border-bottom-right-radius: 50% 50%;
-		border-bottom-left-radius: 50% 50%;
-	}
 
  .sr {background-color: whitesmoke;}.
     #page {background-color: whitesmoke;}

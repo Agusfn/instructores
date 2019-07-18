@@ -1,8 +1,9 @@
-@extends('layouts.main')
+@extends('instructor.panel.layouts.main-layout')
 
 @section('title', 'Retirar fondos')
 
-@section('content')
+
+@section('custom-css')
 <style>
 	.noUi-connect {
 		background: #2489c5;
@@ -21,19 +22,8 @@
 	.dz-details {
 		display: none;
 	}
-	  html main {
-   	overflow-y: hidden;
 
-   }
 
-	.profile-pic {
-		width: 150px;
-		height: 150px;
-		border-top-left-radius: 50% 50%;
-		border-top-right-radius: 50% 50%;
-		border-bottom-right-radius: 50% 50%;
-		border-bottom-left-radius: 50% 50%;
-	}
 
  .sr {background-color: whitesmoke;}.
     #page {background-color: whitesmoke;}
@@ -91,35 +81,14 @@
     transition-duration: .15s;
     transition-timing-function: ease;
 }
-#logo p {
-    margin-top: -10px;
-    font-size: medium;
-    color: white!important;
-}
+
 
 
 	</style>
+@endsection
 
 
-<br><br>
-        <div class="container margin_80_55"></div>
-
-
-	
-	<div class="container">
-		
-
-
-		 <div class="row">
-
-                <aside class="col-lg-3" id="sidebar">
-                       
-                        @include('instructor.panel-nav-layout')
-                </aside>
-                <!--/aside -->
-
-			<div class="col-md-9">
-
+@section('panel-tab-content')
 				
 				<h4 class="add_bottom_30">Retirar fondos</h4>
 
@@ -188,12 +157,7 @@
 				@endif
 
 				<div class="add_bottom_30"></div>
-			</div>
 
-		</div>
-
-
-	</div>
             
 @endsection
 

@@ -4,7 +4,7 @@
 @section('title', 'Reservar clases')
 
 
-@section('content')
+@section('custom-css')
 <style type="text/css">
 
 .hero_in {
@@ -28,8 +28,15 @@ header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.s
     color: green;
 }
 
-
+.btn_1:disabled {
+	opacity: 0.65;
+}
 </style>
+@endsection
+
+
+
+@section('content')
 
 <br><br><br>
 
@@ -198,7 +205,7 @@ header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.s
 													<div class="row">
 														<div class="col-4">
 															<div class="form-group">
-																<input type="text" class="form-control" placeholder="CCV" data-checkout="securityCode" maxlength="4" autocomplete="off">
+																<input type="password" class="form-control" placeholder="CCV" data-checkout="securityCode" maxlength="4" autocomplete="new-password">
 															</div>
 														</div>
 														<div class="col-8">

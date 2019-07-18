@@ -1,11 +1,9 @@
-@extends('layouts.main')
+@extends('instructor.panel.layouts.main-layout')
 
 
 @section('title', 'Mi saldo')
 
-
-
-@section('content')
+@section('custom-css')
 <style>
 	.noUi-connect {
 		background: #2489c5;
@@ -24,19 +22,7 @@
 	.dz-details {
 		display: none;
 	}
-	  html main {
-   	overflow-y: hidden;
 
-   }
-
-	.profile-pic {
-		width: 150px;
-		height: 150px;
-		border-top-left-radius: 50% 50%;
-		border-top-right-radius: 50% 50%;
-		border-bottom-right-radius: 50% 50%;
-		border-bottom-left-radius: 50% 50%;
-	}
 
  .sr {background-color: whitesmoke;}.
     #page {background-color: whitesmoke;}
@@ -94,34 +80,46 @@
     transition-duration: .15s;
     transition-timing-function: ease;
 }
-#logo p {
-    margin-top: -10px;
-    font-size: medium;
-    color: white!important;
+
+
+
+.movements-table  .row.head > div {
+	font-weight: bold
+}
+
+.movements-table .row {
+	padding: 13px 0;
+	margin: 0;
+	border-bottom: 1px solid #DDD;
+}
+
+.movements-table > .row {
+	color: #505050;
+}
+
+.movements-table > .row:not(:first-child):hover {
+	background-color: #F0F0F0;
+}
+
+.movements-table .row > div {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+
+.space {
+	width: 20px; 
+	height: 1px
 }
 
 
 	</style>
-	
-	    
-		 <br><br>
-        <div class="container margin_80_55"></div>
+@endsection
 
 
-
-		<div class="container">
-
-
-		    <div class="row">
-
-                <aside class="col-lg-3" id="sidebar">
-                       
-                        @include('instructor.panel-nav-layout')
-                </aside>
-                <!--/aside -->
+@section('panel-tab-content')
 
 
-			<div class="col-lg-9">
 
 				@if($instructor->isApproved())
 
@@ -156,7 +154,7 @@
 					</div>
 
 					<div class="col-md-6" style="padding-left: 5px">
-						<div class="card" style="margin-bottom: 10px">
+						<div class="card" style="height: calc(100% - 10px);">
 							<div class="card-body">
 								<table class="table" style="margin: 0">
 									<tbody>
@@ -269,125 +267,82 @@
 
 				<div class="card">
 					<div class="card-body">
-					<div class="col-lg-12"><h5 class="card-title">Movimientos</h5>
-								@if($walletMovements->count() == 0)
-									No tienes movimientos
+
+						<h5 class="card-title">Movimientos</h5>
+
+						<div class="movements-table add_bottom_30">
+							<div class="row head d-none d-md-flex">
+								<div class="col-md-2">Fecha</div>
+								<div class="col-md-3">Concepto</div>
+								<div class="col-md-2">Reserva</div>
+								<div class="col-md-2">Monto</div>
+								<div class="col-md-3">Saldo</div>
 							</div>
 
-						<ul class="list-group list-group-flush"> 
-                            
+							@if($walletMovements->count() == 0)
+								<div class="row" style="text-align: center;">No tienes movimientos</div>
 							@else
-									@foreach($walletMovements as $movement)
-							<li class="list-group-item">Fecha<span>{{ $movement->date->format('d/m/Y') }}</span>
-							</li>
+								@foreach($walletMovements as $movement)
 
-							<li class="list-group-item">Concepto<span>
+								<div class="row">
+
+									<div class="col-md-2">
+										<div class="float-left d-md-none space"></div>
+										<div class="float-left d-md-none"><label>Fecha</label></div>
+										<div class="float-right d-md-none space"></div>
+										<div class="float-right float-md-none">{{ $movement->date->format('d/m/Y') }}</div>
+									</div>
+									<div class="col-md-3">
+										<div class="float-left d-md-none space"></div>
+										<div class="float-left d-md-none"><label>Concepto</label></div>
+										<div class="float-right d-md-none space"></div>	
+										<div class="float-right float-md-none">
 											@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
 											Pago de reserva
 											@elseif($movement->motive == App\InstructorWalletMovement::MOTIVE_COLLECTION)
 											Retiro de dinero
 											@endif
-										</span>
-							</li>
-
-							<li class="list-group-item">Reserva<span>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="float-left d-md-none space"></div>
+										<div class="float-left d-md-none"><label>Reserva</label></div>
+										<div class="float-right d-md-none space"></div>
+										<div class="float-right float-md-none">
 											@if($movement->motive == App\InstructorWalletMovement::MOTIVE_RESERVATION_PAYMENT)
 											<a href="{{ route('instructor.reservation', $movement->reservation->code) }}">#{{ $movement->reservation->code }}</a>
 											@endif
-										</span>
-							</li>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="float-left d-md-none space"></div>
+										<div class="float-left d-md-none"><label>Monto</label></div>
+										<div class="float-right d-md-none space"></div>
+										<div class="float-right float-md-none">
+											${{ round($movement->net_amount, 2) }}
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="float-left d-md-none space"></div>
+										<div class="float-left d-md-none"><label>Saldo</label></div>
+										<div class="float-right d-md-none space"></div>
+										<div class="float-right float-md-none">
+											${{ round($movement->new_balance, 2) }}
+										</div>
+									</div>
+								</div>
+								@endforeach
+							@endif
+						</div>
 
-							<li class="list-group-item">Monto<span>${{ round($movement->net_amount, 2) }}</span>
-							</li>
+						{{ $walletMovements->links() }}
 
-							<li class="list-group-item">Saldo<span>${{ round($movement->new_balance, 2) }}</span>
-							</li>
-								
-							</thead>
-									
-								
-									@endforeach
-								@endif
-							
-					    </ul>
-
-						<div style="text-align: center;">{{ $walletMovements->links() }}</div>
 					</div>
 				</div>
-				@else
-				<div class="alert alert-warning">
-					Tu cuenta no ha sido aprobada aún. Para empezar a ofrecer tus servicios debés verificar tu documentación de identidad y certificación.
-				</div>
 				@endif
-
-
-			</div>
-
-		</div>
-        
-
-	</div>
-            <br><br>
+				
 @endsection
 
-
-
-@section('body-end')
-@if($instructor->isApproved() && $instructor->bankAccount)
-<div class="modal menu_fixed" style="z-index: 1050" tabindex="-1" role="dialog" id="collection-modal">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Retirar fondos</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-
-				@if($instructor->bankAccount->lockTimePassed())
-				<form action="{{ url('instructor/panel/saldo/retirar') }}" method="POST" id="collection-form">
-					@csrf
-					<div class="form-group" style="text-align: center;">
-						<label>Ingresa el monto en pesos</label>
-						<input name="amount" type="text" class="form-control{{ $errors->collection->has('amount') ? ' is-invalid' : '' }}" value="{{ old('amount') }}" style="width: 150px;margin: 0 auto;">
-						@if ($errors->collection->has('amount'))
-				        <span class="invalid-feedback" role="alert">
-				            <strong>{{ $errors->collection->first('amount') }}</strong>
-				        </span>
-				    	@endif
-					</div>
-				</form>
-				<div>
-					<div style="margin-bottom: 12px">Los fondos se retirarán a la siguiente cuenta bancaria:</div>
-					<div style="">
-						<strong>CBU:</strong> {{ $instructor->bankAccount->cbu }}<br/>
-						<strong>Titular:</strong> {{ $instructor->bankAccount->holder_name }}<br/>
-						<strong>Documento:</strong> {{ $instructor->bankAccount->document_number }}<br/>
-						<strong>CUIL/CUIT:</strong> {{ $instructor->bankAccount->cuil_cuit }}<br/>
-					</div>
-				</div>
-				@else
-				<div class="alert alert-info">
-					Tu cuenta bancaria fue recientemente configurada, debés esperar al {{ $instructor->bankAccount->unlockTime()->format('d/m/Y H:i') }} para poder retirar dinero.
-				</div>
-				@endif
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				@if($instructor->bankAccount->lockTimePassed())
-				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Confirmar?')) $('#collection-form').submit();">Confirmar</button>
-				@endif
-			</div>
-			
-		</div>
-
-	</div>
-
-</div>
-
-@endif
-@endsection
 
 
 
@@ -399,11 +354,6 @@
 $(document).ready(function() {
 
 	$('[data-toggle="tooltip"]').tooltip();
-
-	@if($instructor->isApproved() && !$errors->collection->isEmpty())
-	$('#collection-modal').modal("show");
-	@endif
-
 
 	$("#update-mp-acc").click(function() {
 		$(this).hide();

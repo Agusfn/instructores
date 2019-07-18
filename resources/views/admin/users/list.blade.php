@@ -72,6 +72,7 @@
 				</table>
 
 			</div>
+			{{ $users->links() }}
 		</div>
 		<!-- /box_general-->
 		<!--nav aria-label="...">
@@ -87,7 +88,7 @@
 				</li>
 			</ul>
 		</nav-->
-		{{ $users->links() }}
+		
 		<!-- /pagination-->
 
 @endsection

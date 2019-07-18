@@ -96,8 +96,9 @@
 
 					</tbody>
 				</table>
-
 			</div>
+			{{ $reservations->links() }}
+
 		</div>
 		<!-- /box_general-->
 		<!--nav aria-label="...">
@@ -113,7 +114,7 @@
 				</li>
 			</ul>
 		</nav-->
-		{{ $reservations->links() }}
+		
 		<!-- /pagination-->
 
 @endsection

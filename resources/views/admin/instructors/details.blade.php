@@ -141,13 +141,22 @@
 		<div class="box_general padding_bottom">
 
 			@if(!$instructor->isApproved())
-			<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#approval-modal">Aprobar instructor</button>
+				<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#approval-modal">Aprobar instructor</button>
 				@if($instructor->approvalDocsSent())
-				<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#reject-docs-modal" style="margin-right: 30px">Rechazar documentación</button>
+					<button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#reject-docs-modal" style="margin-right: 30px">Rechazar documentación</button>
 				@endif
 			@endif
 			
-			<form action="{{ url('admin/instructores/'.$instructor->id.'/suspender') }}" method="POST" style="display: inline;margin-right: 30px">
+			@if($instructor->isApproved())
+			<form action="{{ url('admin/instructores/'.$instructor->id.'/pausa') }}" method="POST" style="display: inline;margin-right: 20px">
+				@csrf
+				<button type="button" class="btn btn-secondary btn-sm" onclick="if(confirm('¿Confirmar?')) $(this).parent().submit();">
+					@if(!$service->paused_by_admin) Pausar publicación @else Quitar pausa publicación @endif
+				</button>
+			</form>
+			@endif
+
+			<form action="{{ url('admin/instructores/'.$instructor->id.'/suspender') }}" method="POST" style="display: inline;margin-right: 20px">
 				@csrf
 				@if(!$instructor->suspended)
 				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿Suspender cuenta? No podrá iniciar sesión.')) $(this).parent().submit();">Suspender cuenta</button>
@@ -266,16 +275,36 @@
 								@if(!$instructor->isApproved())
 									<label><strong>Fecha enviados</strong></label><br/>
 									@if($instructor->approvalDocsSent())
-										{{ date('d/m/Y H:i:s', strtotime($instructor->documents_sent_at)) }}
+										{{ $instructor->documents_sent_at->format('d/m/Y H:i:s') }}
 									@else
 										-
 									@endif
 								@else
 									<label><strong>Fecha aprobado</strong></label><br/>
-									{{ date('d/m/Y', strtotime($instructor->approved_at)) }}
+									{{ $instructor->approved_at->format('d/m/Y') }}
 								@endif
 							</div>
 						</div>
+
+						
+						@if(!$instructor->isApproved() && !$instructor->approvalDocsSent() && $instructor->last_docs_reject_at)
+						<div class="row" style="margin-bottom: 20px">
+							<div class="col-md-6">
+								<label><strong>Documentación rechazada</strong></label><br/>
+								{{ $instructor->last_docs_reject_at->format('d/m/Y H:i:s') }}
+							</div>
+
+							<div class="col-md-6">
+								<label><strong>Motivo rechazo</strong></label><br/>
+								<div class="card">
+									<div class="card-body" style="padding: 10px;">
+									{{ $instructor->last_docs_reject_reason }}
+									</div>
+								</div>
+							</div>	
+						</div>
+						@endif
+						
 
 						<div class="row" style="margin-bottom: 20px">
 							<div class="col-md-3">
@@ -435,7 +464,7 @@
       		<div class="col-lg-6">
 				<div class="box_general padding_bottom">
 					<div class="header_box">
-						<h2 class="d-inline-block">Detalles del servicio 
+						<h2 class="d-inline-block">Detalles de publicación del servicio 
 							@if($instructor->isApproved())
 							<a target="_blank" href="{{ route('service-page', $service->number) }}"><i style="font-size: 17px" class="fa fa-link" aria-hidden="true"></i></a>
 							@endif
@@ -449,9 +478,13 @@
 							<div class="col-lg-4">
 								<label><strong>Estado:</strong></label> 
 								@if($service->published)
-								<span class="badge badge-success" style="font-size: 14px">Activo</span>
+								<span class="badge badge-success" style="font-size: 14px">Publicado</span>
 								@else
-								<span class="badge badge-secondary" style="font-size: 14px">Inactivo</span>
+									@if(!$service->paused_by_admin)
+									<span class="badge badge-secondary" style="font-size: 14px">No publicado</span>
+									@else
+									<span class="badge badge-dark" style="font-size: 14px">Pausado por admin</span>
+									@endif
 								@endif
 							</div>
 							<div class="col-lg-4">

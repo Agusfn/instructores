@@ -3,19 +3,15 @@
 namespace App\Http\Controllers\Instructor;
 
 use Validator;
-
-
 use Carbon\Carbon;
 use App\Lib\Reservations;
 use App\ServiceDateRange;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Validators\Instructor\CreateDateRange;
 use App\Http\Validators\Instructor\UpdateServiceData;
 
 
-class ServiceDetailsController extends Controller
+class ServiceDetailsController extends InstructorPanelBaseController
 {
     
 
@@ -24,7 +20,7 @@ class ServiceDetailsController extends Controller
 	 */
 	public function __construct()
 	{
-		$this->middleware("auth:instructor")->only("index");
+		parent::__construct();
 		$this->middleware("instructor.approved")->except("index");
 	}
     
@@ -36,11 +32,8 @@ class ServiceDetailsController extends Controller
 	 */
 	public function index()
 	{
-		$instructor = Auth::user();
-
-		return view("instructor.service")->with([
-			"instructor" => $instructor,
-			"service" => $instructor->service, // null if instructor not approved
+		return view("instructor.panel.service.index")->with([
+			"service" => $this->instructor->service, // null if instructor not approved
             "activityStartDate" => Reservations::getCurrentYearActivityStart(),
             "activityEndDate" => Reservations::getCurrentYearActivityEnd()
 		]);			
@@ -53,12 +46,10 @@ class ServiceDetailsController extends Controller
 	 */
 	public function pause()
 	{
-		$instructor = Auth::user();
+		if($this->instructor->service->published) {
 
-		if($instructor->service->published) {
-
-			$instructor->service->published = false;
-			$instructor->service->save();
+			$this->instructor->service->published = false;
+			$this->instructor->service->save();
 		}
 
 		return redirect()->back();
@@ -72,12 +63,14 @@ class ServiceDetailsController extends Controller
 	 */
 	public function activate()
 	{
-		$instructor = Auth::user();
-		$service = $instructor->service;
+		$service = $this->instructor->service;
 
 		if($service->published)
 			return redirect()->back();
 
+		if($service->paused_by_admin) {
+			return redirect()->back()->withErrors(["cant_activate" => "La publicación fue pausada por un admin, no es posible publicarla hasta que el admin la reactive."]);
+		}
 
 		if(!$service->description || !$service->features)
 			return redirect()->back()->withErrors(["cant_activate" => "Escribe una descripción y las características de tu servicio antes de publicarlo."]);
@@ -95,8 +88,8 @@ class ServiceDetailsController extends Controller
 			return redirect()->back()->withErrors(["cant_activate" => "Ingresa al menos un rango de fechas de trabajo antes de publicar tu servicio."]);
 
 
-		$instructor->service->published = true;
-		$instructor->service->save();
+		$this->instructor->service->published = true;
+		$this->instructor->service->save();
 		request()->session()->flash('activate-success');
 
 
@@ -119,18 +112,16 @@ class ServiceDetailsController extends Controller
 			return response($validator->messages()->first(), 422);
 		
 
-		$instructor = Auth::user();
-
         $dateStart = Carbon::createFromFormat("d/m/y", $request->date_start);
         $dateEnd = Carbon::createFromFormat("d/m/y", $request->date_end);
 
 		$dateRange = ServiceDateRange::create([
-			"instructor_service_id" => $instructor->service->id,
+			"instructor_service_id" => $this->instructor->service->id,
 			"date_start" => $dateStart->format("Y-m-d"),
 			"date_end" => $dateEnd->format("Y-m-d"),
 			"price_per_block" => $request->block_price
 		]);
-		$instructor->service->rebuildAvailabilityIndexes();
+		$this->instructor->service->rebuildAvailabilityIndexes();
 
 		
 		return response()->json(["range_id" => $dateRange->id]);
@@ -152,21 +143,20 @@ class ServiceDetailsController extends Controller
 		if ($validator->fails())
 			return response($validator->messages()->first(), 422);
 
-		$instructor = Auth::user();
 
-		if($instructor->service->published && $instructor->service->dateRanges()->count() == 1) {
+		if($this->instructor->service->published && $this->instructor->service->dateRanges()->count() == 1) {
 			return response("Pausa tu publicación antes de eliminar todas las fechas de trabajo.", 422);
 		}
 		
 
-		$dateRange = $instructor->service->dateRanges()->where("range_id", $request->range_id)->first();
+		$dateRange = $this->instructor->service->dateRanges()->where("range_id", $request->range_id)->first();
 
 		if(!$dateRange) {
 			return response("Rango de fechas a eliminar inexistente.", 422);
 		}
 
 		$dateRange->delete();
-		$instructor->service->rebuildAvailabilityIndexes();
+		$this->instructor->service->rebuildAvailabilityIndexes();
 
 		return response(200);
 	}
@@ -180,8 +170,6 @@ class ServiceDetailsController extends Controller
 	 */
 	public function uploadImage(Request $request) 
 	{
-		$instructor = Auth::user();
-
 		$validator = Validator::make($request->all(), [
 			"file" => "required|file|mimes:jpeg,png|max:4096"
 		]);
@@ -189,11 +177,11 @@ class ServiceDetailsController extends Controller
 		if ($validator->fails()) {
 			return response($validator->messages()->first(), 422);
         }
-        else if($instructor->service->images_json != null && sizeof($instructor->service->images()) >= 5) {
+        else if($this->instructor->service->images_json != null && sizeof($this->instructor->service->images()) >= 5) {
         	return response("Se alcanzó la cantidad máxima de imágenes subidas.", 422);
         }
 
-        $imgNames = $instructor->service->addImage($request->file("file"));
+        $imgNames = $this->instructor->service->addImage($request->file("file"));
 
 		return response()->json(["img" => $imgNames]);
 	}
@@ -208,8 +196,6 @@ class ServiceDetailsController extends Controller
 	 */
 	public function deleteImage(Request $request)
 	{
-		$instructor = Auth::user();
-
 		$validator = Validator::make($request->all(), [
 			"file_name" => "required|string"
 		]);
@@ -217,11 +203,11 @@ class ServiceDetailsController extends Controller
 		if ($validator->fails()) {
 			return response($validator->messages()->first(), 422);
         }
-        if(!$instructor->service->hasImage($request->file_name)) {
+        if(!$this->instructor->service->hasImage($request->file_name)) {
         	return response("The image file name provided is invalid.", 422);
         }
 
-        $instructor->service->removeImage($request->file_name);
+        $this->instructor->service->removeImage($request->file_name);
 
         return response("OK",200);
 
@@ -244,7 +230,7 @@ class ServiceDetailsController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput();
 		}
 
-		$service = Auth::user()->service;
+		$service = $this->instructor->service;
 
 
 

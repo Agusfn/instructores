@@ -1,5 +1,4 @@
-
-@extends('layouts.main')
+@extends('user.panel.layouts.main-layout')
 
 @section('title', 'Reserva')
 
@@ -30,7 +29,6 @@
 		border-bottom-right-radius: 50% 50%;
 		border-bottom-left-radius: 50% 50%;
 	}
-
 	.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
     width: 30px;
     height: 4px;
@@ -41,29 +39,104 @@
     transition-duration: .15s;
     transition-timing-function: ease;
 }
+
+
+
+
+   html main {
+   	overflow-y: hidden;
+
+   }
+
+	.profile-pic {
+		width: 150px;
+		height: 150px;
+		border-top-left-radius: 50% 50%;
+		border-top-right-radius: 50% 50%;
+		border-bottom-right-radius: 50% 50%;
+		border-bottom-left-radius: 50% 50%;
+	}
+
+ .sr {background-color: whitesmoke;}.
+    #page {background-color: whitesmoke;}
+    .mm-slideout { 
+        background-color: #299aea!important;
+        color: white !important;
+
+    }
+    .margin_80_55 {
+        background-color: whitesmoke !important;
+
+    }
+    
+    #registbotton{
+        margin-top: 0%;
+        margin-bottom: 0%;
+        
+       
+    }
+
+    #ofertas {
+        display: none;
+    }
+
+    .main_title_3 span em {
+    width: 60px;
+    height: 2px;
+    background-color: #0054a6!important;
+    display: block;
+}
+    .mm-slideout {
+        border-bottom: 1px solid #ededed!important;
+   
+    color: black !important;
+}
+   .mm-slideout p{
+    
+    color: black !important;
+}
+ .mm-slideout   ul > li span > a {
+    color: white !important;   
+}
+
+.mm-slideout   ul > li span > a:hover {
+    color: #fc5b62 !important;   
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+    width: 30px;
+    height: 4px;
+    background-color: #333 !important;
+    border-radius: 0;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: .15s;
+    transition-timing-function: ease;
+}
+
+#logo p {
+    color: white;
+}
+
+.hamburger-inner, .hamburger-inner::after, .hamburger-inner::before {
+    width: 30px;
+    height: 4px;
+    background-color: white !important;
+    border-radius: 0;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: .15s;
+    transition-timing-function: ease;
+}
+
 </style>
 @endsection
 
-@section('content')
+@section('panel-tab-content')
 	
-	<section class="hero_in general start_bg_zoom"></section>
-	<div class="container margin_60">
-		
 
-
-		<div class="row">
-
-            <aside class="col-lg-3" id="sidebar">
-                   
-                    @include('instructor.panel-nav-layout')
-            </aside>
-            <!--/aside -->
-
-			<div class="col-lg-9">
 
 				<h4 class="add_bottom_30">Reserva #{{ $reservation->code }}</h4>
-
-				@include('layouts.errors')
 
 				<div class="row">
 
@@ -80,10 +153,16 @@
 											<i class="far fa-clock status-icon"></i><br/>
 											Procesando pago<br/>
 										</div>
-										@elseif($payment->isFailed() || $payment->isPending())
+										@elseif($payment->isPending() && $payment->isMercadoPago())
 										<div>
 											<i class="far fa-clock status-icon"></i><br/>
 											Pago pendiente<br/>
+											<a href="{{ $payment->mercadopagoPayment->ext_resource_url }}" target="_blank">Realiza el pago</a> del dentro de las siguientes {{ \App\Reservation::RETRY_PAYMENT_TIME_HS }} horas.
+										</div>
+										@elseif($payment->isFailed())
+										<div>
+											No se pudo realizar el pago.<br>
+											<a href="{{ route('reservation.retry-payment', $reservation->code) }}">Reintentalo</a> dentro de las sgtes {{ \App\Reservation::RETRY_PAYMENT_TIME_HS }} hs.
 										</div>
 										@endif
 									@elseif($reservation->isPendingConfirmation())
@@ -91,16 +170,7 @@
 										<i class="far fa-check-circle status-icon"></i><br/>
 										Pago realizado
 									</div>
-									Pendiente de confirmación.<br/>
-									Confirmala dentro de {{ \App\Reservation::AUTO_REJECT_TIME_HS }} hs.<br/>
-									<div class="btn-group" role="group">
-										<button type="button" class="btn btn-default" style="color: #36b11d;" data-tooltip="tooltip" data-placement="top" title="Confirmar reserva" data-toggle="modal" data-target="#confirm-reservation-modal">
-											<i class="fas fa-check"></i>
-										</button>
-										<button type="button" class="btn btn-default" style="color: #bc2f2f;" data-tooltip="tooltip" data-placement="top" title="Rechazar reserva y hacer un reembolso" data-toggle="modal" data-target="#reject-reservation-modal">
-											<i class="fas fa-times"></i>
-										</button>
-									</div>
+									Pendiente de confirmación del instructor
 									@elseif($reservation->isConfirmed())
 									<div style="color: #3d9630">
 										<i class="far fa-check-circle status-icon"></i><br/>
@@ -109,13 +179,16 @@
 									@elseif($reservation->isConcluded())
 									<div style="color: #3d9630">
 										<i class="far fa-check-circle status-icon"></i><br/>
-										Reserva concluida<br/>
-										Pago acreditado en saldo
+										Reserva concluida
 									</div>
 									@elseif($reservation->isRejected())
 									<div style="color: #bc2f2f">
 										<i class="far fa-times-circle status-icon"></i><br/>
-										Reserva rechazada por el instructor
+										Reserva rechazada por el instructor<br/>
+										@if($reservation->reject_message)
+										Motivo: {{ $reservation->reject_message }}<br/><br/>
+										@endif
+										El pago fue reembolsado
 									</div>
 									@elseif($reservation->isFailed())
 									<div style="color: #bc2f2f">
@@ -129,12 +202,19 @@
 									</div>
 									@endif
 
-
 								</div>
 
 							</div>
 						</div>
 
+						@if($reservation->isConfirmed() && $reservation->confirm_message)
+						<div class="card" style="margin-bottom: 30px">
+							<div class="card-body">
+								<h6 class="card-title">Mensaje de confirmación del instructor</h6>
+								<span style="font-style: italic;">&quot;{{ $reservation->confirm_message }}&quot;</span>
+							</div>
+						</div>
+						@endif
 
 						@if(!$payment->isFailed())						
 						<div class="card" style="margin-bottom: 30px">
@@ -163,13 +243,13 @@
 										@if($payment->isMercadoPago())
 
 											@if($payment->mercadopagoPayment->isWithCreditCard())
-												Tarj. de crédito - {{ ucfirst($payment->mercadopagoPayment->payment_method_id) }}
+												Tarj. de crédito - {{ ucfirst($payment->mercadopagoPayment->payment_method_id).' ...'.$payment->mercadopagoPayment->last_four_digits }}
 											@else
 												{{ ucfirst($payment->mercadopagoPayment->payment_method_id) }}
 											@endif
 
 										@endif
-									</div>							
+									</div>								
 								</div>
 
 								<div class="row" style="margin-top: 15px">
@@ -191,47 +271,6 @@
 						</div>
 						@endif
 
-
-
-						<div class="card">
-							<div class="card-body">
-								<h6 class="card-title">
-									Composición del precio de clases
-									<div style="float: right;">
-										<a data-toggle="collapse" href="#collapse-price-breakdown" role="button">
-											<i class="far fa-plus-square"></i>
-										</a>
-									</div>
-								</h6>
-
-								<div class="collapse" id="collapse-price-breakdown">
-									${{ round($reservation->price_per_block, 2) }}/2hs x {{ $reservation->time_blocks_amount }} = ${{ round($reservation->price_per_block * $reservation->time_blocks_amount, 2) }} (precio base por persona)
-
-									<table class="table table-sm" style="margin-top: 10px">
-										<thead>
-											<tr>
-												<th>Persona</th>
-												<th>Precio</th>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach($reservation->priceBreakdown() as $studentPrice)
-											<tr>
-												<td>{{ $loop->iteration }}º</td>
-												<td>${{ $studentPrice }}</td>
-											</tr>
-											@endforeach
-											<tr>
-												<td></td>
-												<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-
-							</div>
-						</div>
-
 					</div>
 
 					<div class="col-md-5">
@@ -240,17 +279,17 @@
 								<h4>Detalles de la reserva</h4>
 								<hr>
 								<div>
-									<strong>Cliente</strong>
+									<strong>Instructor</strong>
 									<div style="text-align: center;">
-										<img class="profile-pic" src="{{ $reservation->user->getProfilePicUrl() }}"><br/>
+										<img class="profile-pic" src="{{ $reservation->instructor->getProfilePicUrl() }}"><br/>
 										@if($reservation->isConfirmed() || $reservation->isConcluded())
-											{{ $reservation->user->name.' '.$reservation->user->surname }}<br/>
-											{{ $reservation->user->email }}
-											@if($reservation->user->phone_number)
-											<br/>{{ $reservation->user->phone_number }}
+											{{ $reservation->instructor->name.' '.$reservation->instructor->surname }}<br/>
+											{{ $reservation->instructor->email }}
+											@if($reservation->instructor->phone_number)
+											<br/>{{ $reservation->instructor->phone_number }}
 											@endif
 										@else
-											{{ $reservation->user->name.' '.$reservation->user->surname[0].'.' }}
+											{{ $reservation->instructor->name.' '.$reservation->instructor->surname[0].'.' }}
 										@endif
 									</div>
 								</div>						
@@ -266,7 +305,7 @@
 									{{ $reservation->reserved_time_start.':00 - '.$reservation->reserved_time_end.':00 hs' }}
 								</div>
 								<div>
-									<strong>Personas a dar clase</strong><br/>
+									<strong>Personas</strong><br/>
 									@if($reservation->adults_amount > 0)
 									{{ $reservation->adults_amount }} adultos<br/>
 									@endif
@@ -275,6 +314,13 @@
 									@endif
 								</div>
 								<hr>
+
+								@if($payment->isProcessing() && $payment->isMercadoPago() && $payment->mercadopagoPayment->installment_amount > 1)
+								<div class="alert alert-info">
+									La información del precio total con el costo financiero se actualizará una vez acreditado el pago.
+								</div>
+								@endif
+								
 								<table class="table table-sm table-borderless price-details-table">
 									<tbody>
 										<tr>
@@ -297,95 +343,18 @@
 										</tr>
 									</tbody>
 								</table>
-								<hr style="margin: 4px 0;">
-								<table class="table table-sm table-borderless price-details-table">
-									<tbody>
-										<tr>
-											<td>Precio clases</td>
-											<td>${{ round($reservation->instructor_pay + $reservation->service_fee, 2) }}</td>
-										</tr>
-										<tr>
-											<td>Comisión servicio ({{ round($reservation->service_fee / ($reservation->instructor_pay + $reservation->service_fee) * 100) }}%)</td>
-											<td>-${{ round($reservation->service_fee, 2) }}</td>
-										</tr>
-										<tr style="font-size: 17px">
-											<td>Saldo neto</td>
-											<td>${{ round($reservation->instructor_pay, 2) }}</td>
-										</tr>
-									</tbody>
-								</table>
+								
 							</div>
 						</div>
 					</div>
 
 				</div>
 				
-
-			</div>
-
-		</div>
-
-
-	</div>
-            
 @endsection
 
 
 @section('body-end')
-@if($reservation->isPendingConfirmation())
-<div class="modal menu_fixed" style="z-index: 1050" tabindex="-1" role="dialog" id="confirm-reservation-modal">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Confirmar reserva</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form action="{{ url('instructor/panel/reservas/'.$reservation->code.'/confirmar') }}" method="POST" id="confirm-form">
-					@csrf
-					<div class="form-group">
-						<label>(Opcional) Ingresa un mensaje que quieras dejarle al cliente </label>
-						<textarea class="form-control" name="confirm_message"></textarea>
-					</div>
-				</form>
-				Luego de confirmar, podrás ver los datos de contacto del cliente.
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Desea confirmar la reserva?')) $('#confirm-form').submit();">Confirmar</button>
-			</div>
-		</div>
-	</div>
-</div>
 
-<div class="modal menu_fixed" style="z-index: 1050" tabindex="-1" role="dialog" id="reject-reservation-modal">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Rechazar reserva</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form action="{{ url('instructor/panel/reservas/'.$reservation->code.'/rechazar') }}" method="POST" id="reject-form">
-					@csrf
-					<div class="form-group">
-						<label>Ingresa el motivo (opcional)</label>
-						<textarea class="form-control" name="reject_reason"></textarea>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				<button type="button" class="btn btn-primary" onclick="if(confirm('¿Desea rechazar la reserva?')) $('#reject-form').submit();">Rechazar</button>
-			</div>
-		</div>
-	</div>
-</div>
-@endif
 @endsection
 
 

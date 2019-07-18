@@ -25,7 +25,7 @@ class AccountDetailsController extends Controller
 	public function index()
 	{
 		$user = Auth::user();
-		return view("user.account")->with("user", $user);
+		return view("user.panel.account.details")->with("user", $user);
 	}
 
 
@@ -61,7 +61,7 @@ class AccountDetailsController extends Controller
 	public function showEditAccountForm()
 	{
 		$user = Auth::user();
-		return view("user.edit-account")->with("user", $user);
+		return view("user.panel.account.edit")->with("user", $user);
 	}
 
 
