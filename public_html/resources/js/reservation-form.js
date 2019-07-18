@@ -37,7 +37,10 @@ $(document).ready(function() {
 		if(!validateForm())
 			return;
 
+        disablePurchaseBtn();
+
         if(paymentType == "card") {
+
             Mercadopago.createToken($("#payment-form"), function(status, response) {
 
                 if (status != 200 && status != 201) {
@@ -46,11 +49,13 @@ $(document).ready(function() {
                     else
                         alert("Error obteniendo autorización de tarjeta.");
 
+                    enablePurchaseBtn();
                     return;
                 }
 
                 if($("#installments").val() == null || $("#installments").val() == -1) {
                     alert("Selecciona la cantidad de cuotas a pagar.");
+                    enablePurchaseBtn();
                     return;
                 }
 
@@ -160,6 +165,17 @@ function validateForm()
 		
 		return false;
 	}
+}
+
+
+function disablePurchaseBtn() {
+   $("button.purchase").prop("disabled", true);
+   $("button.purchase").html("Pagar&nbsp;&nbsp;<i class='fas fa-spinner fa-spin'></i>");
+}
+
+function enablePurchaseBtn() {
+   $("button.purchase").prop("disabled", false);
+   $("button.purchase").html("Pagar");
 }
 
 

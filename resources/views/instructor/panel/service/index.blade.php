@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('instructor.panel.layouts.main-layout')
 
 
 @section('title', 'Mi servicio')
@@ -9,6 +9,8 @@
 	<link href="{{ asset('resources/vendor/dropzone/min/dropzone.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('resources/vendor/nouislider/nouislider.min.css') }}" rel="stylesheet">
 	<link href="{{ asset('resources/css/skins/square/blue.css') }}" rel="stylesheet">
+	@endif
+
 	<style>
 	.noUi-connect {
 		background: #2489c5;
@@ -26,19 +28,6 @@
 	}
 	.dz-details {
 		display: none;
-	}
-	  html main {
-   	overflow-y: hidden;
-
-   }
-
-	.profile-pic {
-		width: 150px;
-		height: 150px;
-		border-top-left-radius: 50% 50%;
-		border-top-right-radius: 50% 50%;
-		border-bottom-right-radius: 50% 50%;
-		border-bottom-left-radius: 50% 50%;
 	}
 
  .sr {background-color: whitesmoke;}.
@@ -97,43 +86,18 @@
     transition-duration: .15s;
     transition-timing-function: ease;
 }
-#logo p {
-    margin-top: -10px;
-    font-size: medium;
-    color: white!important;
-}
 
-
-	</style>
-	@endif
+</style>
+	
 @endsection
 
 
 
 
-@section('content')
+@section('panel-tab-content')
 	
 	
-    <br><br>
-        <div class="container margin_80_55"></div>
 
-
-
-
-
-		<div class="container">
-
-
-		    <div class="row">
-
-                <aside class="col-lg-3" id="sidebar">
-                       
-                        @include('instructor.panel-nav-layout')
-                </aside>
-                <!--/aside -->
-
-
-			<div class="col-lg-9">
 
 				@if($instructor->isApproved())
 
@@ -174,6 +138,14 @@
                 </div>
                 @endif
 
+
+                @if($service->paused_by_admin)
+				<div class="alert alert-info" role="alert">
+					Pausamos tu publicación. Corrige la publicación si esta tiene algún problema y comunicate con soporte para poder activarla.
+				</div>
+                @endif
+
+
                 @if(!$service->published)
                 <p><strong>Por favor completa todos los campos para poder activar tu publicación. Cualquier duda estamos para ayudarte.</strong></p>
                 @endif
@@ -181,18 +153,20 @@
 				<h5 style="margin-bottom: 20px">
 					Información del servicio
                     
-					@if($service->published)
-					<span style="font-size:15px">(<a href="{{ url('instructor/'.$service->number) }}" target="_blank">ver pag</a>)</span>
+                    @if(!$service->paused_by_admin)
+						@if($service->published)
+						<span style="font-size:15px">(<a href="{{ url('instructor/'.$service->number) }}" target="_blank">ver pag</a>)</span>
 
-					<form style="float:right;" action="{{ url('instructor/panel/servicio/pausar') }}" method="POST">
-						@csrf
-						<button type="button" class="btn btn-default" onclick="if(confirm('Recuerda guardar los cambios si modificaste alguno. ¿Continuar?')) $(this).parent().submit();">Pausar publicación</button>
-					</form>
-					@else
-					<form style="float:right;" action="{{ url('instructor/panel/servicio/activar') }}" method="POST">
-						@csrf
-						<button type="button" class="btn btn-info" onclick="if(confirm('Recuerda guardar los cambios si modificaste alguno. ¿Continuar?')) $(this).parent().submit();">Activar publicación</button>
-					</form>
+						<form style="float:right;" action="{{ url('instructor/panel/servicio/pausar') }}" method="POST">
+							@csrf
+							<button type="button" class="btn btn-default" onclick="if(confirm('Recuerda guardar los cambios si modificaste alguno. ¿Continuar?')) $(this).parent().submit();">Pausar publicación</button>
+						</form>
+						@else
+						<form style="float:right;" action="{{ url('instructor/panel/servicio/activar') }}" method="POST">
+							@csrf
+							<button type="button" class="btn btn-info" onclick="if(confirm('Recuerda guardar los cambios si modificaste alguno. ¿Continuar?')) $(this).parent().submit();">Activar publicación</button>
+						</form>
+						@endif
 					@endif
 					
 				</h5>
@@ -375,21 +349,9 @@
 					</div>
 
 				</form>
-				@else
-				<div class="alert alert-warning">
-					Tu cuenta no ha sido aprobada aún. Para empezar a ofrecer tus servicios debés verificar tu documentación de identidad y certificación.
-				</div>
 				@endif
-			
-			</div>
-
-		</div>
-
-		<br><br>
 
 
-	</div>
-            
 @endsection
 
 

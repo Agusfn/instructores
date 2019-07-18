@@ -1,24 +1,11 @@
-@extends('layouts.main')
+@extends('instructor.panel.layouts.main-layout')
 
 @section('title', 'Modificar cuenta')
 
-@section('content')
+
+@section('custom-css')
 <style type="text/css">
 
-   html main {
-   	overflow-y: hidden;
-   	overflow-x: hidden;
-
-   }
-
-	.profile-pic {
-		width: 150px;
-		height: 150px;
-		border-top-left-radius: 50% 50%;
-		border-top-right-radius: 50% 50%;
-		border-bottom-right-radius: 50% 50%;
-		border-bottom-left-radius: 50% 50%;
-	}
 
  .sr {background-color: whitesmoke;}.
     #page {background-color: whitesmoke;}
@@ -77,36 +64,15 @@
     transition-timing-function: ease;
 }
 
-#logo p {
-    margin-top: -10px;
-    font-size: medium;
-    color: white!important;
-}
-
 
 </style>
+@endsection
 
 
-<br><br>
-        <div class="container margin_80_55"></div>
+@section('panel-tab-content')
 
 
-	
-	<div class="container">
-		
 
-
-		 <div class="row">
-
-                <aside class="col-lg-3" id="sidebar">
-                       
-                        @include('instructor.panel-nav-layout')
-                </aside>
-                <!--/aside -->
-
-			<div class="col-md-9">
-
-				
 				<h4 class="add_bottom_30">Mi cuenta bancaria</h4>
 
 				@if($bankAccount && $bankAccount->hasPendingCollections())
@@ -196,11 +162,4 @@
 					@endif
 				</form>
 
-			</div>
-
-		</div>
-
-
-	</div>
-            
 @endsection

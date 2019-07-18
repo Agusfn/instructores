@@ -16,18 +16,46 @@
 header.header.sticky #logo p{
      color: white;
 }
+
+header {
+  padding: 20px 30px 20px 40px;
+}
+
+@media (max-width: 767px) {
+	header {
+    	padding: 15px 15px 25px 15px;
+	}
+}
+@media (max-width: 991px) {
+	header.header.sticky {
+		padding: 15px 15px 25px 15px;
+	}
+}
+
 /*LOGO*/
 
 #logo h6{
 	font-weight: bolder;
 	font-size: 1.3em;
 	color: orange;
+	margin-bottom: 0;
 }
 #logo p{
 
-	margin-top: -10px ;
+	margin-top: -2px ;
 	font-size: medium;
 	color: white!important;
+	margin-bottom: 0;
+}
+
+#logo .logo-block {
+	display: inline-block;
+}
+
+@media (max-width: 991px) {
+	#logo .logo-block  {
+		margin-top: 10px;
+	}
 }
 
 
@@ -281,11 +309,9 @@ ul#cat_nav li a:hover, ul#cat_nav li a#active, ul#cat_nav li a.active {
 /*Propiedades del contenedor de la cabecera*/
 .mm-slideout {
 	background-color: #00000040 disabled!important;
-    height: 83px;
-
-
-
+    /*height: 83px;*/
 }
+
 .hero_in.hotels .wrapper {background-color: #299aea;}
 
 

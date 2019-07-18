@@ -6,20 +6,18 @@ use Illuminate\Http\Request;
 use App\InstructorMpAccount;
 use App\InstructorCollection;
 use App\InstructorBankAccount;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Lib\AdminEmailNotifications;
 use App\Http\Validators\Instructor\RequestCollection;
 use App\Mail\Admin\Collections\CollectionRequestCreated;
 use App\Mail\Instructor\Collections\CollectionAccountChanged;
 
-class AccountBalanceController extends Controller
+class AccountBalanceController extends InstructorPanelBaseController
 {
 	
 	public function __construct()
 	{
-		$this->middleware("auth:instructor")->only("overview");
+		parent::__construct();
 		$this->middleware("instructor.approved")->except("overview");
 	}
 
@@ -30,17 +28,13 @@ class AccountBalanceController extends Controller
 	 */
 	public function overview()
 	{
-		$instructor = Auth::user();
-		$instructor->load("bankAccount", "wallet");
-
-		if($instructor->isApproved())
-			$walletMovements = $instructor->wallet->movements()->orderBy("date", "DESC")->paginate(10);
+		if($this->instructor->isApproved())
+			$walletMovements = $this->instructor->wallet->movements()->orderBy("id", "DESC")->paginate(10);
 		else
 			$walletMovements = null;
 
-		return view("instructor.balance.overview")->with([
-			"instructor" => $instructor,
-			"wallet" => $instructor->wallet, // null if not approved
+		return view("instructor.panel.balance.overview")->with([
+			"wallet" => $this->instructor->wallet, // null if not approved
 			"walletMovements" => $walletMovements
 		]);
 	}
@@ -51,12 +45,8 @@ class AccountBalanceController extends Controller
 	 */
 	public function showBankAccountForm()
 	{
-		$instructor = Auth::user();
-		$instructor->load("bankAccount", "wallet");
-
-		return view("instructor.balance.bank-account")->with([
-			"instructor" => $instructor,
-			"bankAccount" => $instructor->bankAccount, // null if not configured by instructor
+		return view("instructor.panel.balance.bank-account")->with([
+			"bankAccount" => $this->instructor->bankAccount, // null if not configured by instructor
 		]);
 	}
 
@@ -73,36 +63,33 @@ class AccountBalanceController extends Controller
 			"document_number" => "required|between:5,30",
 			"cuil_cuit" => "required|between:8,20"
 		]);
-		
-		$instructor = Auth::user();
 
-
-		if(!$instructor->bankAccount) {
+		if(!$this->instructor->bankAccount) {
 			InstructorBankAccount::create([
-				"instructor_id" => $instructor->id,
+				"instructor_id" => $this->instructor->id,
 				"cbu" => $request->cbu,
 				"holder_name" => $request->holder_name,
 				"document_number" => $request->document_number,
 				"cuil_cuit" => $request->cuil_cuit
 			]);
-			$instructor->load("bankAccount");
+			$this->instructor->load("bankAccount");
 		}
 		else {
 
-			if($instructor->bankAccount->hasPendingCollections() > 0) {
+			if($this->instructor->bankAccount->hasPendingCollections() > 0) {
 				return redirect()->route("instructor.balance.bank-account");
 			}
 
-			$instructor->bankAccount->fill($request->only([
+			$this->instructor->bankAccount->fill($request->only([
 				"cbu",
 				"holder_name",
 				"document_number",
 				"cuil_cuit"
 			]));
-			$instructor->bankAccount->save();
+			$this->instructor->bankAccount->save();
 		}
 
-		Mail::to($instructor)->send(new CollectionAccountChanged($instructor, "bank"));
+		Mail::to($this->instructor)->send(new CollectionAccountChanged($this->instructor, "bank"));
 
 		return redirect()->route("instructor.balance.overview");
 	}
@@ -120,30 +107,27 @@ class AccountBalanceController extends Controller
 			"email" => "required|email"
 		]);
 
-		$instructor = Auth::user();
-
-
-		if(!$instructor->mpAccount) {
+		if(!$this->instructor->mpAccount) {
 			InstructorMpAccount::create([
-				"instructor_id" => $instructor->id,
+				"instructor_id" => $this->instructor->id,
 				"email" => $request->email
 			]);
-			$instructor->load("mpAccount");
+			$this->instructor->load("mpAccount");
 		}
 		else {
 
-			if($instructor->mpAccount->hasPendingCollections()) {
+			if($this->instructor->mpAccount->hasPendingCollections()) {
 				return redirect()->back()->withErrors("La cuenta de MercadoPago tiene solicitudes de extracciones de dinero pendientes, no es posible modificar.");
 			}
-			else if($instructor->mpAccount->email == $request->email) {
+			else if($this->instructor->mpAccount->email == $request->email) {
 				return redirect()->back()->withErrors("Ingresa una e-mail de cuenta diferente al anterior.");
 			}
 
-			$instructor->mpAccount->email = $request->email;
-			$instructor->mpAccount->save();
+			$this->instructor->mpAccount->email = $request->email;
+			$this->instructor->mpAccount->save();
 		}
 
-		Mail::to($instructor)->send(new CollectionAccountChanged($instructor, "mercadopago"));
+		Mail::to($this->instructor)->send(new CollectionAccountChanged($this->instructor, "mercadopago"));
 
 		return redirect()->route("instructor.balance.overview");
 	}
@@ -155,8 +139,7 @@ class AccountBalanceController extends Controller
 	 */
 	public function showCollectionForm()
 	{
-		$instructor = Auth::user();
-		return view("instructor.balance.withdraw")->with("instructor", $instructor);
+		return view("instructor.panel.balance.withdraw");
 	}
 
 
@@ -167,9 +150,7 @@ class AccountBalanceController extends Controller
 	 */
 	public function createCollectionRequest(Request $request)
 	{
-		$instructor = Auth::user();
-
-		if(!$instructor->wallet) {
+		if(!$this->instructor->wallet) {
 			return redirect()->route("instructor.balance.withdraw");
 		}
 
@@ -181,32 +162,32 @@ class AccountBalanceController extends Controller
 
 
 		if($request->destination == "bank") {
-			if(!$instructor->bankAccount || !$instructor->bankAccount->lockTimePassed())
+			if(!$this->instructor->bankAccount || !$this->instructor->bankAccount->lockTimePassed())
 				return redirect()->route("instructor.balance.withdraw");
 		}
 		else {
-			if(!$instructor->mpAccount || !$instructor->mpAccount->lockTimePassed())
+			if(!$this->instructor->mpAccount || !$this->instructor->mpAccount->lockTimePassed())
 				return redirect()->route("instructor.balance.withdraw");
 		}
 
 
 		$collectionData = [
-			"instructor_wallet_id" => $instructor->wallet->id,
+			"instructor_wallet_id" => $this->instructor->wallet->id,
 			"status" => InstructorCollection::STATUS_PENDING,
 			"amount" => $request->amount,
 			"destination_acc_type" => $request->destination == "bank" ? InstructorCollection::DESTINATION_BANK : InstructorCollection::DESTINATION_MP
 		];
 		
 		if($request->destination == "bank")
-			$collectionData["instructor_bank_acc_id"] = $instructor->bankAccount->id;
+			$collectionData["instructor_bank_acc_id"] = $this->instructor->bankAccount->id;
 		else 
-			$collectionData["instructor_mp_acc_id"] = $instructor->mpAccount->id;
+			$collectionData["instructor_mp_acc_id"] = $this->instructor->mpAccount->id;
 		
 
 		$collection = InstructorCollection::create($collectionData);
 
 
-		Mail::to(AdminEmailNotifications::recipients())->send(new CollectionRequestCreated($instructor, $collection));
+		Mail::to(AdminEmailNotifications::recipients())->send(new CollectionRequestCreated($this->instructor, $collection));
 
 		return redirect()->route("instructor.balance.overview");
 	}
@@ -224,9 +205,7 @@ class AccountBalanceController extends Controller
 			"collection_id" => "required|integer"
 		]);
 
-		$instructor = Auth::user();
-
-		$collection = $instructor->wallet->collections()
+		$collection = $this->instructor->wallet->collections()
 			->where([
 				["id", "=", $request->collection_id],
 				["status", "=", InstructorCollection::STATUS_PENDING]

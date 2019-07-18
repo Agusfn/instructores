@@ -91,7 +91,12 @@ class InstructorsController extends Controller
 	}
 
 
-
+	/**
+	 * Reject instructor approval documents and send an e-mail to him.
+	 * @param  Request $request [description]
+	 * @param  [type]  $id      [description]
+	 * @return [type]           [description]
+	 */
 	public function rejectDocs(Request $request, $id)
 	{
 		$instructor = Instructor::find($id);
@@ -113,7 +118,7 @@ class InstructorsController extends Controller
 		}
 		
 
-		$instructor->rejectDocs();
+		$instructor->rejectDocs($request->reason);
 
 		Mail::to($instructor)->send(new InstructorDocsRejected($instructor, $request->reason));
 
@@ -195,6 +200,31 @@ class InstructorsController extends Controller
 	}
 
 
+
+	/**
+	 * Pausar por admin (instructor) publicación de instructor
+	 * @return [type] [description]
+	 */
+	public function toggleAdminPause($id)
+	{	
+
+		$instructor = Instructor::find($id);
+
+		if(!$instructor || !$instructor->isApproved())
+			return redirect()->route("admin.instructors.list");
+
+		if(!$instructor->service->paused_by_admin) {
+			$instructor->service->published = false;
+			$instructor->service->paused_by_admin = true;
+		}
+		else {
+			$instructor->service->paused_by_admin = false;
+		}
+
+		$instructor->service->save();
+
+		return redirect()->back();
+	}
 
 
 }

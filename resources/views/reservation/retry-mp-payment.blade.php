@@ -4,6 +4,38 @@
 @section('title', 'Reservar clases')
 
 
+
+@section('custom-css')
+<style type="text/css">
+
+.hero_in {
+    margin-top: 17px;
+}
+.mm-slideout {
+    background-color: #0054a6!important;
+   
+}
+
+header.header.sticky #logo p {
+    color: #f8f9fa!important;
+}
+
+header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.sticky .hamburger-inner::after {
+    background-color: #f8f9fa!important;
+}
+
+.bs-wizard > .bs-wizard-step.active > .bs-wizard-dot:after {
+   
+    color: green;
+}
+
+.btn_1:disabled {
+	opacity: 0.65;
+}
+</style>
+@endsection
+
+
 @section('content')
 		<div class="hero_in cart_section">
 			<div class="wrapper">
@@ -168,7 +200,7 @@
 													<div class="row">
 														<div class="col-4">
 															<div class="form-group">
-																<input type="text" class="form-control" placeholder="CCV" data-checkout="securityCode" maxlength="4" autocomplete="off">
+																<input type="password" class="form-control" placeholder="CCV" data-checkout="securityCode" maxlength="4" autocomplete="new-password">
 															</div>
 														</div>
 														<div class="col-8">

@@ -3,21 +3,18 @@
 namespace App\Http\Controllers\Instructor;
 
 use App\Reservation;
-use App\Lib\MercadoPago;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\User\Reservations\ReservationConfirmedByInstructor;
 use App\Mail\User\Reservations\ReservationRejectedByInstructor;
 
-class ReservationsController extends Controller
+class ReservationsController extends InstructorPanelBaseController
 {
 	
 
 	public function __construct()
 	{
-		$this->middleware("auth:instructor")->only("showList");
+		parent::__construct();
 		$this->middleware("instructor.approved")->except("showList");
 	}
 
@@ -28,16 +25,13 @@ class ReservationsController extends Controller
 	 */
 	public function showList()
 	{
-		$instructor = Auth::user();
-
-		if($instructor->isApproved()) {
-			$reservations = $instructor->reservations()->with("user")->orderBy("created_at", "DESC")->paginate(10);
+		if($this->instructor->isApproved()) {
+			$reservations = $this->instructor->reservations()->with("user")->orderBy("created_at", "DESC")->paginate(10);
 		}
 		else
 			$reservations = null;
 		
-		return view("instructor.reservations.list")->with([
-			"instructor" => $instructor,
+		return view("instructor.panel.reservations.list")->with([
 			"reservations" => $reservations
 		]);
 	}
@@ -50,13 +44,12 @@ class ReservationsController extends Controller
 	 */
 	public function details($code)
 	{
-		$instructor = Auth::user();
-		$reservation = $instructor->reservations()->withCode($code)->first();
+		$reservation = $this->instructor->reservations()->withCode($code)->first();
 
 		if(!$reservation)
 			return redirect()->route("instructor.reservations");
 
-		return view("instructor.reservations.details")->with([
+		return view("instructor.panel.reservations.details")->with([
 			"reservation" => $reservation,
 			"payment" => $reservation->lastPayment
 		]);
@@ -76,9 +69,7 @@ class ReservationsController extends Controller
 			"confirm_message" => "nullable|string"
 		]);
 
-		$instructor = Auth::user();
-
-		$reservation = $instructor->reservations()->withCode($reservation_code)->first();
+		$reservation = $this->instructor->reservations()->withCode($reservation_code)->first();
 
 		if(!$reservation)
 			return redirect()->route("instructor.reservations");
@@ -112,9 +103,7 @@ class ReservationsController extends Controller
 			"reject_reason" => "nullable|string"
 		]);
 
-		$instructor = Auth::user();
-
-		$reservation = $instructor->reservations()->withCode($reservation_code)->first();
+		$reservation = $this->instructor->reservations()->withCode($reservation_code)->first();
 
 		if(!$reservation || !$reservation->isPendingConfirmation())
 			return redirect()->route("instructor.reservations");

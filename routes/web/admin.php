@@ -30,6 +30,7 @@ Route::post("admin/instructores/{id}/rechazar_doc", "Admin\InstructorsController
 Route::get("admin/instructores/{id}/documentos/{filename}", "Admin\InstructorsController@displayDocumentImg")->name("admin.instructors.documents");
 Route::post("admin/instructores/{id}/suspender", "Admin\InstructorsController@toggleSuspend");
 Route::post("admin/instructores/{id}/eliminar", "Admin\InstructorsController@delete");
+Route::post("admin/instructores/{id}/pausa", "Admin\InstructorsController@toggleAdminPause");
 
 
 // Users

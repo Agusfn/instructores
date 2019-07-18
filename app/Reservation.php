@@ -330,6 +330,7 @@ class Reservation extends Model
 
             Mail::to($this->instructor)->send(new \App\Mail\Instructor\Reservations\ReservationPaid($this->instructor, $this));
             Mail::to($this->user)->send(new \App\Mail\User\Reservations\ReservationPaid($this->user, $this));
+            Mail::to(\App\Lib\AdminEmailNotifications::recipients())->send(new \App\Mail\Admin\Reservations\ReservationPaid($this));
         }
     }
 

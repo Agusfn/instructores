@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('instructor.panel.layouts.main-layout')
 
 @section('title', 'Mi cuenta')
 
@@ -13,19 +13,7 @@
 		border-bottom-right-radius: 50% 50%;
 		border-bottom-left-radius: 50% 50%;
 	}
-	html main {
-   	overflow-y: hidden;
 
-   }
-
-	.profile-pic {
-		width: 150px;
-		height: 150px;
-		border-top-left-radius: 50% 50%;
-		border-top-right-radius: 50% 50%;
-		border-bottom-right-radius: 50% 50%;
-		border-bottom-left-radius: 50% 50%;
-	}
 
  .sr {background-color: whitesmoke;}.
     #page {background-color: whitesmoke;}
@@ -101,82 +89,54 @@
 @endsection
 
 
-@section('content')
-	
-    <br><br>
-        <div class="container margin_80_55"></div>
+@section('panel-tab-content')
+		
 
+				@if(!$instructor->isApproved() && !$instructor->approvalDocsSent())
 
-		<div class="container">
+					<p style="color: red!important;">Necesitamos verificar tu identidad y tu certificación como instructor para que puedas empezar a ofrecer tus servicios.</p>
 
+					@if($instructor->phone_number && $instructor->profile_picture)
 
-		    <div class="row">
+						<form style="color: black"  action="{{ url('instructor/panel/cuenta/verificar') }}" method="post" enctype="multipart/form-data">
+							@csrf
+							<div class="form-group">
+								<label>Selecciona 2 fotos del DNI (una de cada cara), o una sola foto del pasaporte en la página de datos personales.</label>
+								<input type="file" style="display: block;" name="identification_imgs[]" multiple="multiple" accept="image/*">
+							    @if ($errors->has('identification_imgs'))
+							        <span class="invalid-feedback" role="alert" style="display: block;">
+							            <strong>{{ $errors->first('identification_imgs') }}</strong>
+							        </span>
+							    @elseif ($errors->has('identification_imgs.*'))
+							        <span class="invalid-feedback" role="alert" style="display: block;">
+							            <strong>Sólo se pueden subir imágenes JPG y PNG, de hasta 5MB cada una.</strong>
+							        </span>
+							    @endif
+					        </span>
+							</div>
+							<div class="form-group">
+								<label>Selecciona 2 fotos (una de cada cara) de la cédula profesional que te habilite como instructor.</label>
+								<input type="file" style="display: block;" name="certificate_imgs[]" multiple="multiple" accept="image/*">
+							    @if ($errors->has('certificate_imgs'))
+							        <span class="invalid-feedback" role="alert" style="display: block;">
+							            <strong>{{ $errors->first('certificate_imgs') }}</strong>
+							        </span>
+							    @elseif ($errors->has('certificate_imgs.*'))
+							        <span class="invalid-feedback" role="alert" style="display: block;">
+							            <strong>Sólo se pueden subir imágenes JPG y PNG, de hasta 5MB cada una.</strong>
+							        </span>
+							    @endif
+							</div>
 
-                <aside class="col-lg-3" id="sidebar">
-                       
-                        @include('instructor.panel-nav-layout')
-                </aside>
-                <!--/aside -->
-
-			<div class="col-lg-9">
-
-				@if(!$instructor->isApproved())
-
-					@if(!$instructor->approvalDocsSent())
-
-
-						<div class="alert alert-warning">Tu cuenta de instructor no está aprobada aún. Debés enviar la documentacion solicitada para ofrecer tus servicios de instructor.</div>
-
-
-						<p style="color: red!important;">Necesitamos verificar tu identidad y tu certificación como instructor para que puedas empezar a ofrecer tus servicios.</p>
-
-						@if($instructor->phone_number && $instructor->profile_picture)
-
-							<form style="color: black"  action="{{ url('instructor/panel/cuenta/verificar') }}" method="post" enctype="multipart/form-data">
-								@csrf
-								<div class="form-group">
-									<label>Selecciona 2 fotos del DNI (una de cada cara), o una sola foto del pasaporte en la página de datos personales.</label>
-									<input type="file" style="display: block;" name="identification_imgs[]" multiple="multiple" accept="image/*">
-								    @if ($errors->has('identification_imgs'))
-								        <span class="invalid-feedback" role="alert" style="display: block;">
-								            <strong>{{ $errors->first('identification_imgs') }}</strong>
-								        </span>
-								    @elseif ($errors->has('identification_imgs.*'))
-								        <span class="invalid-feedback" role="alert" style="display: block;">
-								            <strong>Sólo se pueden subir imágenes JPG y PNG, de hasta 5MB cada una.</strong>
-								        </span>
-								    @endif
-						        </span>
-								</div>
-								<div class="form-group">
-									<label>Selecciona 2 fotos (una de cada cara) de la cédula profesional que te habilite como instructor.</label>
-									<input type="file" style="display: block;" name="certificate_imgs[]" multiple="multiple" accept="image/*">
-								    @if ($errors->has('certificate_imgs'))
-								        <span class="invalid-feedback" role="alert" style="display: block;">
-								            <strong>{{ $errors->first('certificate_imgs') }}</strong>
-								        </span>
-								    @elseif ($errors->has('certificate_imgs.*'))
-								        <span class="invalid-feedback" role="alert" style="display: block;">
-								            <strong>Sólo se pueden subir imágenes JPG y PNG, de hasta 5MB cada una.</strong>
-								        </span>
-								    @endif
-								</div>
-
-								<button type="submit" class="btn btn-primary">Enviar</button>
-							</form>
-							<br>
-
-						@else
-							<p style="color: black!important">Para comenzar, <a href="{{ url('instructor/panel/cuenta/modificar') }}">ingresá tu número de teléfono</a> y seleccioná una foto de perfil. Despúes te pediremos tu documentación.</p>
-						@endif
+							<button type="submit" class="btn btn-primary">Enviar</button>
+						</form>
+						<br>
 
 					@else
-					<div class="alert alert-info">Se ha enviado la documentación para verificar y aprobar la cuenta. Estarás recibiendo un e-mail dentro de las siguientes 24hs de haberla enviado cuando la hayamos verificado.</div>
+						<p style="color: black!important">Para comenzar, <a href="{{ url('instructor/panel/cuenta/modificar') }}">ingresá tu número de teléfono</a>. Despúes te pediremos tu documentación.</p>
 					@endif
 
 				@endif
-
-
 
 
 				<div class="card bg-light mb-3" style="max-width: 100%">
@@ -325,26 +285,16 @@
 						</li>
 					</ul>
 				</div>
-   
-			</div>
-
-		</div>
-
-
-	
-
-            
+         
 @endsection
+
+
 
 @section('custom-js')
 <script src="{{ asset('resources/vendor/croppie/croppie.min.js') }}"></script>
 <script src="{{ asset('resources/js/instructor-account-pg.js') }}"></script>
 
 <script>
-
 var app_url = "{{ config('app.url').'/' }}";
-//var url = "{{ Storage::url('img/instructors/DSC01022.jpg') }}";
-
-
 </script>
 @endsection

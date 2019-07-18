@@ -2,27 +2,14 @@
 
 namespace App\Http\Controllers\Instructor;
 
-use \Hash;
 use Validator;
 use App\Lib\Helpers\Images;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 
-class AccountDetailsController extends Controller
+class AccountDetailsController extends InstructorPanelBaseController
 {
 
-
-	/**
-	 * [__construct description]
-	 */
-	public function __construct()
-	{
-		$this->middleware("auth:instructor");
-	}
-    
 
 
 	/**
@@ -31,7 +18,7 @@ class AccountDetailsController extends Controller
 	 */
 	public function index()
 	{
-		return view("instructor.account.details")->with("instructor", Auth::user());
+		return view("instructor.panel.account.details");
 	}
 
 
@@ -42,8 +29,7 @@ class AccountDetailsController extends Controller
 	 */
 	public function showEditAccountForm()
 	{
-		$instructor = Auth::user();
-		return view("instructor.account.edit")->with("instructor", $instructor);
+		return view("instructor.panel.account.edit");
 	}
 
 
@@ -61,19 +47,17 @@ class AccountDetailsController extends Controller
 			"instagram_username" => "nullable|string|max:30|regex:/^[\w\d._]{1,30}$/",
 		]);
 
-		$instructor = Auth::user();
-
-		$instructor->fill([
+		$this->instructor->fill([
 			"name" => $request->name,
 			"surname" => $request->surname,
 			"instagram_username" => $request->instagram_username
 		]);
 
 		if($request->filled("phone_number"))
-			$instructor->phone_number = $request->phone_number;
+			$this->instructor->phone_number = $request->phone_number;
 
 
-		$instructor->save();
+		$this->instructor->save();
 
 		return redirect()->route("instructor.account");
 	}
@@ -95,10 +79,8 @@ class AccountDetailsController extends Controller
 			return response($validator->messages()->first(), 422);
 		}
 
-		$instructor = Auth::user();
-
 		$image = Image::make($request->file("profile_pic"));
-		$instructor->setProfilePic($image);
+		$this->instructor->setProfilePic($image);
 
 		return response("OK", 200);
 	}
@@ -130,31 +112,29 @@ class AccountDetailsController extends Controller
 			return redirect()->to(url()->previous()."#verificar-cuenta")->withErrors($validator);
 		}
 
-		$instructor = Auth::user();
-
-		if(!$instructor->phone_number || !$instructor->profile_picture)
+		if(!$this->instructor->phone_number || !$this->instructor->profile_picture)
 			return redirect()->back()->withErrors("Instructor does not have number and profile picture.");
 
-		if($instructor->isApproved() || $instructor->approvalDocsSent())
+		if($this->instructor->isApproved() || $this->instructor->approvalDocsSent())
 			return redirect()->back()->withErrors("El instructor ya está aprobado o ya envió la documentación.");
 
 		
         $certImgNames = [];
         foreach($request->file("certificate_imgs") as $file)  {
         	$image = Images::toJpgAndResize(Image::make($file), 1920, 1080);
-        	$certImgNames[] = basename(Images::saveImgWithRandName("local", "instructor_documents/".$instructor->id, $image));
+        	$certImgNames[] = basename(Images::saveImgWithRandName("local", "instructor_documents/".$this->instructor->id, $image));
         }
 
         $idImgNames = [];
         foreach($request->file("identification_imgs") as $file) {
         	$image = Images::toJpgAndResize(Image::make($file), 1920, 1080);
-        	$idImgNames[] = basename(Images::saveImgWithRandName("local", "instructor_documents/".$instructor->id, $image));
+        	$idImgNames[] = basename(Images::saveImgWithRandName("local", "instructor_documents/".$this->instructor->id, $image));
         }
         
-        $instructor->identification_imgs = implode(",", $idImgNames);
-        $instructor->professional_cert_imgs = implode(",", $certImgNames);
-        $instructor->documents_sent_at = date("Y-m-d  H:i:s");
-        $instructor->save();
+        $this->instructor->identification_imgs = implode(",", $idImgNames);
+        $this->instructor->professional_cert_imgs = implode(",", $certImgNames);
+        $this->instructor->documents_sent_at = date("Y-m-d  H:i:s");
+        $this->instructor->save();
 
 
 		return redirect()->back();

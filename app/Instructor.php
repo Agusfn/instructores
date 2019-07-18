@@ -51,6 +51,16 @@ class Instructor extends Authenticatable
     ];
 
 
+    /**
+     * Attributes that will be mutated to carbon dates.
+     * @var array
+     */
+    protected $dates = [
+        "documents_sent_at",
+        "approved_at",
+        "last_docs_reject_at"
+    ];
+
 
     /**
      * Identification type codes (for DB) and names.
@@ -209,13 +219,18 @@ class Instructor extends Authenticatable
 
     /**
      * Reject the documents sent for approval. Telephone is left unchanged.
+     * @param string $reason
      * @return null
      */
-    public function rejectDocs()
+    public function rejectDocs($reason)
     {
         $this->documents_sent_at = null;
         $this->identification_imgs = null;
         $this->professional_cert_imgs = null;
+
+        $this->last_docs_reject_at = date("Y-m-d H:i:s");
+        $this->last_docs_reject_reason = $reason;
+
         $this->save();
     }
 

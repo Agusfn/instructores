@@ -111,7 +111,7 @@
 				
 			</div>
 
-			<div style="padding-bottom: 20px">{{ $collections->links() }}</div>
+			{{ $collections->links() }}
 		</div>
 		<!-- /box_general-->
 		<!--nav aria-label="...">

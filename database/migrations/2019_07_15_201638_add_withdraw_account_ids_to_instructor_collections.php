@@ -33,7 +33,10 @@ class AddWithdrawAccountIdsToInstructorCollections extends Migration
     public function down()
     {
         Schema::table('instructor_collections', function (Blueprint $table) {
-            
+                
+            $table->dropForeign('instructor_collections_instructor_bank_acc_id_foreign');
+            $table->dropForeign('instructor_collections_instructor_mp_acc_id_foreign');
+
             $table->dropColumn('destination_acc_type');
             $table->dropColumn('instructor_bank_acc_id');
             $table->dropColumn('instructor_mp_acc_id');

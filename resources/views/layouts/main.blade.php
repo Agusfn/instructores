@@ -41,8 +41,6 @@
 
 <body>
 	
-	
-	
 	<div id="page">
 		
 		@include('layouts.header')
@@ -58,54 +56,6 @@
 	</div>
 	<!-- page -->
 	
-	
-	<!-- Sign In Popup -->
-	<div id="sign-in-dialog" class="zoom-anim-dialog mfp-hide">
-		<div class="small-dialog-header">
-			<h3>Ingresar</h3>
-		</div>
-		<form>
-			<div class="sign-in-wrapper">
-				<a href="#0" class="social_bt facebook">Entrar con Facebook</a>
-				<a href="#0" class="social_bt google">Entrar con Google</a>
-				<div class="divider"><span>O</span></div>
-				<div class="form-group">
-					<label>Dirección de correo electronico</label>
-					<input type="email" class="form-control" name="email" id="email">
-					<i class="icon_mail_alt"></i>
-				</div>
-				<div class="form-group">
-					<label>Contraseña</label>
-					<input type="password" class="form-control" name="password" id="password" value="">
-					<i class="icon_lock_alt"></i>
-				</div>
-				<div class="clearfix add_bottom_15">
-					<div class="checkboxes float-left">
-						<label class="container_check">Recordarme
-						  <input type="checkbox">
-						  <span class="checkmark"></span>
-						</label>
-					</div>
-					<div class="float-right mt-1"><a id="forgot" href="javascript:void(0);">Olvidaste la contraseña?</a></div>
-				</div>
-				<div class="text-center"><input type="submit" value="Ingresar" class="btn_1 full-width"></div>
-				<div class="text-center">
-					No tenes una cuenta? <a href="register.html">Registrarme</a>
-				</div>
-				<div id="forgot_pw">
-					<div class="form-group">
-						<label>Por favor ingrese su email</label>
-						<input type="email" class="form-control" name="email_forgot" id="email_forgot">
-						<i class="icon_mail_alt"></i>
-					</div>
-					<p>Recibiras un email con un link para resetear tu clave</p>
-					<div class="text-center"><input type="submit" value="Reset Password" class="btn_1"></div>
-				</div>
-			</div>
-		</form>
-		<!--form -->
-	</div>
-	<!-- /Sign In Popup -->
 	
 	<div id="toTop"></div><!-- Back to top button -->
 	
@@ -127,12 +77,20 @@
     <script src="{{ asset('resources/js/Scrollreveal.js') }}"></script>
 
 
-    <!--GOOGLE ANALYTICS -->
-    <script src="{{ asset('resources/js/analytics.js') }}"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129656474-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
 
+	  gtag('config', 'UA-129656474-1');
+	</script>
       
+
 	@yield('custom-js')
 
 
 </body>
+
 </html>

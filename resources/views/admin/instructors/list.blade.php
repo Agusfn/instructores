@@ -90,8 +90,10 @@
 
 					</tbody>
 				</table>
-				{{ $instructors->links() }}
+				
 			</div>
+
+			{{ $instructors->links() }}
 		</div>
 		<!-- /box_general-->
 		<!--nav aria-label="...">

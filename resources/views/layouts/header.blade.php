@@ -1,34 +1,22 @@
 
 	<header class="header menu_fixed ">
-		<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129656474-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-129656474-1');
-</script>
 
-<div class="wrapper">
         
 		<div id="preloader"><div data-loader="circle-side"></div></div><!-- /Page Preload -->
 		
 		
 
-         <div class="col-lg-6">
-		 <div  id="logo">       
-			<a  href="{{ route('home') }}"><h6>INSTRUCTORES</h6><p>SKI&SNOWBOARD</p>
-				<!--
-				<img src="resources/img/logo.png" width="150" height="36" data-retina="true" alt="" class="logo_normal">
-				<img src="resources/img/logosticky.png" width="150" height="36" data-retina="true" alt="" class="logo_sticky">
-				-->
+		<div id="logo">       
+			<a href="{{ route('home') }}">
+				<div class="logo-block">
+					<h6>INSTRUCTORES</h6>
+					<p>SKI&SNOWBOARD</p>
+				</div>
 			</a>
-          </div>
+		</div>
 		
-		</div> 
 
-		<div class="col-md-2">
 		<a href="#menu" class="btn_mobile">
 			<div  class="hamburger hamburger--spin" id="hamburger">
 				<div class="hamburger-box">
@@ -36,7 +24,6 @@
 				</div>
 			</div>
 		</a>
-		</div>
 		
         
 
@@ -99,7 +86,4 @@
 			</ul>
 		</nav>
 		
-
- </div>      
-
 	</header>
