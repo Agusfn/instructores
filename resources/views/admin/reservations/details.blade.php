@@ -283,7 +283,7 @@
 					</div>
 				</div>
 
-				<div class="box_general padding_bottom">
+				{{--<div class="box_general padding_bottom">
 					<div class="header_box">
 						<h6 class="d-inline-block">Composición del precio de clase</h6>
 						<div style="float: right;">
@@ -324,7 +324,7 @@
 
 
 					</div>
-				</div>
+				</div>--}}
 
       		</div>
 

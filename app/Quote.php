@@ -14,6 +14,10 @@ class Quote
 	private $service;
 
 
+	/**
+	 * Sport discipline of the classes.
+	 * @var string
+	 */
 	public $discipline;
 
 
@@ -25,16 +29,32 @@ class Quote
 
 
 	/**
+	 * Currency in which this quote is calculated. Depends on the payment processor.
+	 * Currencies available at App\Lib\Currencies
+	 * @var string
+	 */
+	public $currency;
+
+
+
+	/**
 	 * The date in which the service/classes will be provided.
 	 * @var Carbon\Carbon
 	 */
 	public $serviceDate;
 
 
-
+	/**
+	 * @var int
+	 */
 	public $adultsAmount;
 
+
+	/**
+	 * @var int
+	 */
 	public $kidsAmount;
+
 
 	/**
 	 * Adults + kids.
@@ -43,10 +63,20 @@ class Quote
 	public $personAmount;
 
 
-
+	/**
+	 * Time block number of when the class starts.
+	 * @var int
+	 */
 	public $blockStart;
 
+
+	/**
+	 * Time block number of when the class ends (inclusive).
+	 * Ex: Starts at 0 and ends at 0.
+	 * @var int
+	 */
 	public $blockEnd;
+
 
 	/**
 	 * The ammount of time blocks that these classes will span.
@@ -56,20 +86,26 @@ class Quote
 
 
 
-
-	/**
-	 * Currency in which this quote is calculated. Depends on the payment processor.
-	 * Currencies available at App\Lib\Currencies
-	 * @var string
-	 */
-	public $currency;
-
 	/**
 	 * The price per time block of the instructor on the given date.
 	 * @var float
 	 */
 	public $pricePerBlock;
 
+
+	/**
+	 * The percentage of surcharge of (timeBlocksAmt * pricePerBlock) for being a group price. 
+	 * If it isn't a group or the instructor didn't set a surcharge, it is zero.
+	 * @var float
+	 */
+	public $groupSurchargePercent = 0;
+
+
+	/**
+	 * The amount charged for being a group class. It is obtained with the percentage over (timeBlocksAmt * pricePerBlock)
+	 * @var float
+	 */
+	public $groupSurchargeAmt = 0;
 
 
 	/**
@@ -78,14 +114,6 @@ class Quote
 	 * @var float
 	 */
 	public $classesPrice = 0;
-
-
-	/**
-	 * Breakdown array of the price of the classes. Each element is the price of each student, and the sum of all is the classes price.
-	 * @var array
-	 */
-	public $classesPriceDetail;
-
 
 
 	/**
@@ -117,16 +145,6 @@ class Quote
 	 * @var float
 	 */
 	public $total;
-
-
-
-
-	/**
-	 * Surcharges of each additional student in case it's a group class.
-	 * @var array
-	 */
-	private $groupSurcharges;
-
 
 
 
@@ -234,19 +252,15 @@ class Quote
 	public function calculate()
 	{
 		$this->pricePerBlock = $this->service->getPricePerBlockOnDate($this->serviceDate);
+
+		$this->classesPrice = $this->timeBlocksAmt * $this->pricePerBlock;
+
+		$groupSurcharges = $this->service->getGroupSurcharges();
+		$this->groupSurchargePercent = $groupSurcharges[$this->personAmount];
+		$this->groupSurchargeAmt = ($this->groupSurchargePercent/100) * $this->classesPrice;
+
+		$this->classesPrice += $this->groupSurchargeAmt;
 		
-		$this->groupSurcharges = $this->service->getGroupSurcharges();
-
-		
-		$studentBasePrice = $this->timeBlocksAmt * $this->pricePerBlock;
-
-		for($i=1; $i <= $this->personAmount; $i++) {
-			
-			$totalStudent = $studentBasePrice * ($this->groupSurcharges[$i]/100);
-
-			$this->classesPrice += $totalStudent;
-			$this->classesPriceDetail[] = round($totalStudent, 2);
-		}
 
 		if($this->paymentMethod == PaymentMethods::CODE_MERCADOPAGO) {
 			$this->payProviderFee = PaymentMethods::calculateMercadoPagoFees($this->classesPrice);
@@ -259,30 +273,6 @@ class Quote
 		$this->instructorPay = $this->classesPrice - $this->serviceFee;
 	}
 
-
-
-	/**
-	 * Returns a table with the breakdown of the price in json format.
-	 * Each column is a person, and the 1st column is the p
-	 * @return string
-	 */
-	/*public function getJsonBreakdown()
-	{
-		$subtotalPerPerson = $this->timeBlocksAmt * $this->pricePerBlock;
-
-		$table = [];
-
-		for($i=1; $i <= $this->personAmount; $i++) {	
-			$row = [
-				round($subtotalPerPerson, 2),
-				round($subtotalPerPerson * $this->groupDiscounts[$i]/100, 2),
-				round($subtotalPerPerson * (1 - $this->groupDiscounts[$i]/100), 2)
-			];
-			$table[] = $row;
-		}
-
-		return json_encode($table);
-	}*/
 
 
 }

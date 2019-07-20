@@ -92,7 +92,6 @@ header.sticky .hamburger-inner, header.sticky .hamburger-inner::before, header.s
 										</span>
 									</td>
 									<td>
-										{{-- round(100 - ($quote->classesPrice * 100 / ($quote->personAmount * $quote->pricePerBlock * $quote->timeBlocksAmt)), 1) --}}
 										0%
 									</td>
 									<td>

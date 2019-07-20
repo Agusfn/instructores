@@ -55,7 +55,7 @@
                             </div>
                             <div class="col-lg-3">
                                 <div class="form-group">
-                                    <input class="form-control" type="text" name="date" placeholder="Fecha" autocomplete="off">
+                                    <input class="form-control" type="text" name="date" placeholder="Fecha" autocomplete="off" readonly="" style="background-color: #FFF">
                                     <i class="icon_calendar"></i>
                                 </div>
                             </div>

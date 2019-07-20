@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Lib\Reservations;
 use App\ServiceDateRange;
 use Illuminate\Http\Request;
+use App\ServiceBlockedTimeblock;
 use App\Http\Validators\Instructor\CreateDateRange;
 use App\Http\Validators\Instructor\UpdateServiceData;
 
@@ -34,6 +35,7 @@ class ServiceDetailsController extends InstructorPanelBaseController
 	{
 		return view("instructor.panel.service.index")->with([
 			"service" => $this->instructor->service, // null if instructor not approved
+			"blocksPerDay" => Reservations::blocksPerDay(),
             "activityStartDate" => Reservations::getCurrentYearActivityStart(),
             "activityEndDate" => Reservations::getCurrentYearActivityEnd()
 		]);			
@@ -164,6 +166,72 @@ class ServiceDetailsController extends InstructorPanelBaseController
 
 
 	/**
+	 * Add a new blocked time block for the instructor service.
+	 * @param Request $request [description]
+	 */
+	public function addBlockedTimeblock(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			"date" => "required|date_format:d/m/y",
+			"time_block" => "required|integer|between:0,3",
+		]);
+
+		if ($validator->fails())
+			return response($validator->messages()->first(), 422);
+
+
+		$date = Carbon::createFromFormat("d/m/y", $request->date);
+
+		if($this->instructor->service->getDateRangeOfDate($date) == null) {
+			return response("La fecha ingresada no corresponde a un rango de fecha de trabajo.", 422);
+		}
+
+		if($this->instructor->service->hasBlockedTimeblock($date, $request->time_block)) {
+			return response("El horario seleccionado del día seleccionado ya está registrado en esta lista.", 422);
+		}
+
+		$blockedTimeblock = ServiceBlockedTimeblock::create([
+			"instructor_service_id" => $this->instructor->service->id,
+			"date" => $date->format("Y-m-d"),
+			"time_block" => $request->time_block
+		]);
+
+		$this->instructor->service->rebuildAvailabilityIndexes();
+
+		return response()->json(["blocked_timeblock_id" => $blockedTimeblock->id]);
+	}
+
+
+	/**
+	 * Delete a ServiceBlockedTimeblock belonging to this instructor service.
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function deleteBlockedTimeblock(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			"blocked_timeblock_id" => "required|integer",
+		]);
+
+		if ($validator->fails())
+			return response($validator->messages()->first(), 422);
+
+		$blockedTimeblock = $this->instructor->service->blockedTimeblocks()->where("id", $request->blocked_timeblock_id)->first();
+
+		if(!$blockedTimeblock) {
+			return response("No existe el ServiceBlockedTimeblock a eliminar.", 422);
+		}
+
+		$blockedTimeblock->delete();
+
+		$this->instructor->service->rebuildAvailabilityIndexes();
+
+		return response(200);
+	}
+
+
+
+	/**
 	 * [uploadImage description]
 	 * @param  Request $request [description]
 	 * @return [type]           [description]
@@ -213,6 +281,8 @@ class ServiceDetailsController extends InstructorPanelBaseController
 
 	}
     
+
+
 
 
 

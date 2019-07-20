@@ -9,6 +9,10 @@
     @section('title', $instructor->name.' - Instructor Ski')
 @endif
 
+
+
+@section('custom-css')
+<link rel="stylesheet" type="text/css" href="{{ asset('resources/css/service-public-pg.css') }}">
 <style type="text/css">
     .hero_in {
     width: 100%;
@@ -21,9 +25,6 @@
     color: black!important;
 }
 </style>
-
-@section('custom-css')
-<link rel="stylesheet" type="text/css" href="{{ asset('resources/css/service-public-pg.css') }}">
 @endsection
 
 
@@ -407,7 +408,7 @@
 <script src="{{ asset('resources/js/map_single_hotel.js') }}"></script>
 <script src="{{ asset('resources/js/infobox.js') }}"></script>
 <script src="{{ asset('resources/js/input_qty.js') }}"></script>
-<script src="{{ asset('resources/js/service-public-pg.js?2') }}"></script>
+<script src="{{ asset('resources/js/service-public-pg.js?3') }}"></script>
 
 <script>
 

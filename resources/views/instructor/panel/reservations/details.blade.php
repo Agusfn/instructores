@@ -210,7 +210,7 @@
 
 
 
-						<div class="card">
+						{{--<div class="card">
 							<div class="card-body">
 								<h6 class="card-title">
 									Composición del precio de clases
@@ -247,7 +247,7 @@
 								</div>
 
 							</div>
-						</div>
+						</div>--}}
 
 					</div>
 
