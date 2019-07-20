@@ -46,22 +46,33 @@ $(document).ready(function() {
 		$("#date_end").val(end.format("DD/MM/YY"));
 	});
 
+	$("#blocked_time_block_date").daterangepicker({
+    	singleDatePicker: true,		
+		minDate: minDate,
+		maxDate: maxDate,
+		startDate: minDate,
+		endDate: minDate,
+		locale: {
+            format: 'DD/MM/YY',
+            cancelLabel: 'Cancelar'
+		},
+	});
 
 
 
 	imgDropzone.on("success", function(file, response) {
    		file.name_in_server = response.img.name;
-   		console.log(file);
-	    console.log(response);
+   		//console.log(file);
+	    //console.log(response);
 	});
 
 	imgDropzone.on("error", function(file, response) {
-   		console.log(file);
-	    console.log(response);
+   		//console.log(file);
+	    //console.log(response);
 	});
 
 	imgDropzone.on("removedfile", function(file) {
-		console.log(file);
+		//console.log(file);
 		if(file.accepted == true) {
 			
 			$.ajax({
@@ -221,15 +232,15 @@ $(document).ready(function() {
 			},
 
 			beforeSend: function() {
-				disable_range_form_btn($("#btn_submit_range"));
+				disable_btn($("#btn_submit_range"));
 			},
 
 			complete: function() {
-				enable_range_form_btn($("#btn_submit_range"));
+				enable_btn($("#btn_submit_range"));
 			},
 
 			success: function(response) {
-				console.log(response); // debug
+				//console.log(response); // debug
 				insert_date_range_row(date_start, date_end, block_price, response.range_id);
 			},
 
@@ -264,13 +275,13 @@ $(document).ready(function() {
 			data: { range_id: range_id },
 
 			beforeSend: function() {
-				disable_range_form_btn(button);
+				disable_btn(button);
 			},
 			complete: function() {
-				enable_range_form_btn(button);
+				enable_btn(button);
 			},
 			success: function(response) {
-				console.log(response); // debug
+				//console.log(response); // debug
 				button.closest("tr").remove();
 			},
 			error: function (jqXhr, textStatus, errorMessage) {
@@ -284,12 +295,117 @@ $(document).ready(function() {
 
 	});
 
+	/**
+	 * Ajax add/remove unavailable time blocks.
+	 */
+
+	$("#submit_blocked_time_block").click(function() {
+
+		var date = $("#blocked_time_block_date").val();
+		var time_block = $("#blocked_time_block_number").val();
+		var time_block_readable = $("#blocked_time_block_number option:selected").text();
+
+		$.ajax({
+
+			type: "POST",
+			url: app_url + "instructor/panel/servicio/agregar_horario_bloqueado",
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+
+			data: {
+				date: date, 
+				time_block: time_block
+			},
+
+			beforeSend: function() {
+				disable_btn($("#submit_blocked_time_block"));
+			},
+
+			complete: function() {
+				enable_btn($("#submit_blocked_time_block"));
+			},
+
+			success: function(response) {
+				console.log(response); // debug
+				insert_blocked_timeblock(date, time_block_readable, response.blocked_timeblock_id);
+			},
+
+			error: function (jqXhr, textStatus, errorMessage) {
+				if(jqXhr.status == 422)
+					alert(jqXhr.responseText);
+				else
+					alert("An error ocurred with the request.");
+		    }
+
+		});
+
+	});
+
+
+	$('body').on('click', '.delete-blocked-timeblock-btn', function() {
+
+		if(!confirm("¿Eliminar?"))
+			return;
+
+		var button = $(this);
+		
+		
+
+		
+		$.ajax({
+
+			type: "POST",
+			url: app_url + "instructor/panel/servicio/eliminar_horario_bloqueado",
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		    },
+			data: { blocked_timeblock_id: $(this).attr("data-blocked-timeblock-id") },
+
+			beforeSend: function() {
+				disable_btn(button);
+			},
+			complete: function() {
+				enable_btn(button);
+			},
+			success: function(response) {
+				console.log(response); // debug
+				button.closest("tr").remove();
+			},
+			error: function (jqXhr, textStatus, errorMessage) {
+				if(jqXhr.status == 422)
+					alert(jqXhr.responseText);
+				else
+					alert("An error ocurred with the request.");
+		    }
+
+		});
+	});
+
+
+
 });
 
 
 
-function validate_range_form()
-{
+
+function disable_btn(button) {
+	button.prop("disabled", true);
+	button.find("i").addClass("fa-spinner fa-spin");
+}
+
+
+function enable_btn(button) {
+	button.prop("disabled", false);
+	button.find("i").removeClass("fa-spinner fa-spin");
+}
+
+
+/**
+ * Date ranges ajax form functions.
+ */
+
+function validate_range_form() {
 	
 	var valid_date = /^\d{2}\/\d{2}\/\d{2}$/;
 
@@ -334,35 +450,34 @@ function validate_range_form()
 	return true;
 }
 
-
-
-
-function disable_range_form_btn(button)
-{
-	button.prop("disabled", true);
-	button.find("i").addClass("fa-spinner fa-spin");
-}
-
-
-function enable_range_form_btn(button)
-{
-	button.prop("disabled", false);
-	button.find("i").removeClass("fa-spinner fa-spin");
-}
-
-
-function insert_date_range_row(date_start, date_end, block_price, range_id)
-{
+function insert_date_range_row(date_start, date_end, block_price, range_id) {
 	var html = `
 	<tr>
 		<td>`+ date_start +` - ` + date_end + `</td>
 		<td>$` + block_price + `</td>
-		<td><button type="button" class="btn btn-danger btn-sm delete-range-btn" data-range-id="` + range_id + `"><i class="fa fa-times" aria-hidden="true"></i></button></td>
+		<td><button type="button" class="btn btn-outline-danger btn-sm delete-range-btn" data-range-id="` + range_id + `"><i class="far fa-trash-alt" aria-hidden="true"></i></button></td>
 	</tr>`;
 
 	$("#insert-form-row input").val("");
 
 	$("#insert-form-row").before(html);
+}
+
+
+/**
+ * Unavailable time blocks ajax form functions
+ */
+function insert_blocked_timeblock(date, time_block_readable, id) {
+	var html = `
+	<tr>
+		<td>`+ date + `</td>
+		<td>` + time_block_readable + `</td>
+		<td><button type="button" class="btn btn-outline-danger btn-sm delete-blocked-timeblock-btn" data-blocked-timeblock-id="` + id + `"><i class="far fa-trash-alt" aria-hidden="true"></i></button></td>
+	</tr>`;
+
+	$("#blocked_timeblock_form_row input").val("");
+
+	$("#blocked_timeblock_form_row").before(html);
 }
 
 

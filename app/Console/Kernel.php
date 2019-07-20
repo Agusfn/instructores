@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -27,7 +28,11 @@ class Kernel extends ConsoleKernel
         $schedule->command("reservations:cancel-unpaid")->hourly();
         $schedule->command("reservations:reject-unconfirmed")->hourly();
         $schedule->command("reservations:conclude-completed")->hourly();
-        
+
+        $schedule->call(function () {
+            DB::table('service_blocked_timeblocks')->whereRaw("date < CURDATE()")->delete();
+        })->daily();
+
     }
 
     /**

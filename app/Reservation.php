@@ -279,11 +279,7 @@ class Reservation extends Model
      */
     public function readableHourRange($compact = false)
     {
-        if(!$compact)
-            return Dates::hoursToReadableHourRange($this->reserved_time_start, $this->reserved_time_end);
-
-        else
-            return $this->reserved_time_start."-".$this->reserved_time_end." hs";
+        return Dates::hoursToReadableHourRange($this->reserved_time_start, $this->reserved_time_end, $compact);
     }
 
 

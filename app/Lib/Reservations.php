@@ -2,8 +2,11 @@
 
 namespace App\Lib;
 
-use App\Lib\Helpers\Dates;
+
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use App\Lib\Helpers\Dates;
+
 
 class Reservations
 {
@@ -111,6 +114,45 @@ class Reservations
 	}
 
 
+	/**
+	 * Returns the nearest day of activity from today, of current year. 
+	 * If period hasn't started, returns activity start date. If period has started, returns today. If it has ended, returns null.
+	 * @return Carbon\Carbon|null
+	 */
+	public static function nearestActivityDayCurrentYear()
+	{
+		$today = Carbon::today();
+		$activityStart = self::getCurrentYearActivityStart();
+		$activityEnd = self::getCurrentYearActivityEnd();
+
+		if($today->lessThanOrEqualTo($activityEnd)) {
+			if($activityStart->isBefore($today))
+				return $today;
+			else 
+				return $activityStart;
+		}
+		else
+			return null;
+
+	}
+
+
+	/**
+	 * Obtain a period of all the days left until the current year activity end. 
+	 * If the season hasn't started, it contains all the season days, otherwise, it contains from today to season end.
+	 * @return Carbon\CarbonPeriod
+	 */
+	public static function periodUntilActivityEnd()
+	{
+		$startDate = self::nearestActivityDayCurrentYear();
+
+		if(!$startDate)
+			return []; // should be empty carbonperiod, but this is iterable too.
+
+		return CarbonPeriod::create($startDate, self::getCurrentYearActivityEnd());
+	}
+
+
 
 	/**
 	 * Returns int or int[] with the block numbers that span the given hour period.
@@ -189,10 +231,10 @@ class Reservations
 	 * @param  int[] $blockNumbers
 	 * @return string
 	 */
-	public static function blocksToReadableHourRange($blockStart, $blockEnd)
+	public static function blocksToReadableHourRange($blockStart, $blockEnd, $compact = false)
 	{
 		$hourRange = self::blockRangeToHourRange($blockStart, $blockEnd);
-		return Dates::hoursToReadableHourRange($hourRange[0], $hourRange[1]);
+		return Dates::hoursToReadableHourRange($hourRange[0], $hourRange[1], $compact);
 	}
 
 

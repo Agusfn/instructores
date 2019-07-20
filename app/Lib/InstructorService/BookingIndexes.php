@@ -3,7 +3,6 @@ namespace App\Lib\InstructorService;
 
 use Log;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use App\Lib\Reservations;
 use App\InstructorService;
 use Illuminate\Support\Facades\DB;
@@ -113,7 +112,7 @@ trait BookingIndexes
 
 
 	/**
-	 * Creates the calendar array with only the occupied (reserved) time blocks, of only the days that have reservations.
+	 * Creates the calendar array with only the occupied (reserved or blocked) time blocks, of only the days that have reservations.
 	 * @param InstructorService $service
 	 * @return array
 	 */
@@ -121,6 +120,8 @@ trait BookingIndexes
 	{
 		$calendar = [];
 
+
+		// Make unavailable the time blocks occupied by existing active reservations.
 		$seasonReservations = $this->reservations()->active()->leftWithinCurrentSeason()->orderBy("reserved_class_date", "asc")->get();
 		
 		foreach($seasonReservations as $reservation) {		
@@ -131,6 +132,13 @@ trait BookingIndexes
 				$calendar[$date->month][$date->day]["block_availability"][$blockNumber] = false;
 			}
 
+		}
+
+		// Make unavailable the time blocks determined by the instructor.
+		$blockedTimeBlocks = $this->blockedTimeblocks()->leftWithinCurrentSeason()->orderBy("date", "asc")->get();
+
+		foreach($blockedTimeBlocks as $timeblock) {
+			$calendar[$timeblock->date->month][$timeblock->date->day]["block_availability"][$timeblock->time_block] = false;
 		}
 
 		return $calendar;
@@ -148,37 +156,20 @@ trait BookingIndexes
 	private function fillCalendarWithAvailability($calendar)
 	{
 		
-		$serviceWorkingPeriods = $this->dateRanges()->orderBy("date_start", "asc")->get();
+		$dateRangeCollection = new DateRangeCollection($this->dateRanges);
 
-		$today = Carbon::today();
-		$periodStart = Reservations::getCurrentYearActivityStart();
-
-		$seasonPeriod = CarbonPeriod::create(
-			$periodStart->isBefore($today) ? $today : $periodStart, 
-			Reservations::getCurrentYearActivityEnd()
-		);
+		$seasonPeriod = Reservations::periodUntilActivityEnd();
 
 		foreach($seasonPeriod as $date) 
 		{
 
-			if(isset($calendar[$date->month][$date->day]))
-				$dateData = $calendar[$date->month][$date->day];
-			else
-				$dateData = [];
+			$dateData = $calendar[$date->month][$date->day] ?? [];
 
-
-			// obtain the DateRange where the current $date belongs to
-			$serviceDateRange = $serviceWorkingPeriods->filter(function($dateRange) use ($date) {
-				return $dateRange->date_start->lte($date) && $dateRange->date_end->gte($date);
-			})->first();
-
-
-			
-			if($serviceDateRange != null)  // working day
+			if($dateRangeCollection->dateExists($date))  // working day
 			{
 
 				$dateData["working_day"] = true;
-				$dateData["ppb"] = round($serviceDateRange->price_per_block, 2);
+				$dateData["ppb"] = round($dateRangeCollection->getPricePerBlockOfLastDate(), 2);
 
 				$occupiedBlocksAmt = 0;
 				$workedBlocksAmt = 0;

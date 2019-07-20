@@ -48,11 +48,17 @@ class Dates {
 	/**
 	 * Converts a range of 2 ints of hours to a readable format.
 	 * Eg: 11, 13: "11:00-13:00 hs"
+	 * @param int $hour1
+	 * @param int $hour2
+	 * @param boolean $compact
 	 * @return string
 	 */
-	public static function hoursToReadableHourRange($hour1, $hour2)
+	public static function hoursToReadableHourRange($hour1, $hour2, $compact = false)
 	{
-		return $hour1.":00-".$hour2.":00 hs";
+		if(!$compact)
+			return $hour1.":00-".$hour2.":00 hs";
+		else
+			return $hour1."-".$hour2." hs";
 	}
 
 

@@ -383,41 +383,24 @@ function updateTotalSummary()
 	$(".total-summary table tbody").empty();
 
 	var personAmt = selectedPeopleAmount();
-
+	console.log(selected_blocks.length);
 	if(selected_blocks.length > 0 && personAmt >= 1)
 	{
 		
-		var classesPrice = 0;
-		var studentBasePrice = price_per_block * selected_blocks.length;
+		var classesPrice = price_per_block * selected_blocks.length;
+		$(".total-summary table tbody").append("<tr><td>Clases instructor</td><td>$"+round(classesPrice)+"</td></tr>");
 
-		for(var i=1; i <= personAmt; i++) 
-		{
-			if(typeof group_surcharges[i] === "undefined")
-				group_surcharges[i] = 100;
+		var groupSurcharge = 0;
 
-			var studentTotal = studentBasePrice * (group_surcharges[i]/100);
-			classesPrice += studentTotal;
-
-
-			if(i == 1) {
-				var person = "Clases instructor";
-			}
-			else {
-				var person = i + "º persona adicional";
-				/*if(group_surcharges[i] > 0)
-					person += " ("+group_surcharges[i]+"% off)";*/
-			}
+		if(personAmt > 1 && max_group_size >= personAmt) {
+			groupSurcharge = classesPrice * (group_surcharges[personAmt]/100);
 			
-			$(".total-summary table tbody").append("<tr><td>"+person+"</td><td>$"+round(studentTotal)+"</td></tr>");
-
+			if(groupSurcharge > 0)
+				$(".total-summary table tbody").append("<tr><td>Recargo clase grupal</td><td>$"+round(groupSurcharge)+"</td></tr>");
 		}
 
-		/*classesPrice = price_per_block * selected_blocks.length;
-		$(".total-summary table tbody").append("<tr><td>Clases instructor ("+selected_blocks.length+" x $"+price_per_block+")</td><td>$"+round(classesPrice)+"</td></tr>");*/
-
-
-		var mpFees = calculateMPFees(classesPrice);
-		var total = classesPrice + mpFees;
+		var mpFees = calculateMPFees(classesPrice + groupSurcharge);
+		var total = classesPrice + groupSurcharge + mpFees;
 
 		$(".total-summary table tbody").append("<tr><td>Tarifa serv. pagos</td><td>$"+round(mpFees)+"</td></tr>");
 		$(".total-summary table tbody").append("<tr><td><strong>Total</strong></td><td><strong>$"+round(total)+"</strong></td></tr>");

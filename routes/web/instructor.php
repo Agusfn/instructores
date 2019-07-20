@@ -18,6 +18,8 @@ Route::get("instructor/login/{provider}", "Instructor\Auth\SocialLoginController
 Route::get("instructor/login/{provider}/callback", "Instructor\Auth\SocialLoginController@getSocialCallback");
 Route::post("instructor/logout", "Instructor\Auth\SocialLoginController@logout")->name("instructor.logout");
 
+
+
 // Account
 Route::get("instructor/panel/cuenta", "Instructor\AccountDetailsController@index")->name("instructor.account");
 Route::get("instructor/panel/cuenta/modificar", "Instructor\AccountDetailsController@showEditAccountForm");
@@ -25,15 +27,26 @@ Route::post("instructor/panel/cuenta/modificar", "Instructor\AccountDetailsContr
 Route::post("instructor/panel/cuenta/img_perfil", "Instructor\AccountDetailsController@changeProfilePic");
 Route::post("instructor/panel/cuenta/verificar", "Instructor\AccountDetailsController@sendVerifyInfo");
 
+
+
 // Service
 Route::get("instructor/panel/servicio", "Instructor\ServiceDetailsController@index")->name("instructor.service");
-Route::post("instructor/panel/servicio/agregar_fechas", "Instructor\ServiceDetailsController@addDateRange");
-Route::post("instructor/panel/servicio/eliminar_fechas", "Instructor\ServiceDetailsController@deleteDateRange");
-Route::post("instructor/panel/servicio/subir_imagen", "Instructor\ServiceDetailsController@uploadImage");
-Route::post("instructor/panel/servicio/eliminar_imagen", "Instructor\ServiceDetailsController@deleteImage");
-Route::post("instructor/panel/servicio/guardar_cambios", "Instructor\ServiceDetailsController@saveChanges");
+
 Route::post("instructor/panel/servicio/pausar", "Instructor\ServiceDetailsController@pause");
 Route::post("instructor/panel/servicio/activar", "Instructor\ServiceDetailsController@activate");
+
+Route::post("instructor/panel/servicio/subir_imagen", "Instructor\ServiceDetailsController@uploadImage");
+Route::post("instructor/panel/servicio/eliminar_imagen", "Instructor\ServiceDetailsController@deleteImage");
+
+Route::post("instructor/panel/servicio/agregar_fechas", "Instructor\ServiceDetailsController@addDateRange");
+Route::post("instructor/panel/servicio/eliminar_fechas", "Instructor\ServiceDetailsController@deleteDateRange");
+
+Route::post("instructor/panel/servicio/agregar_horario_bloqueado", "Instructor\ServiceDetailsController@addBlockedTimeblock");
+Route::post("instructor/panel/servicio/eliminar_horario_bloqueado", "Instructor\ServiceDetailsController@deleteBlockedTimeblock");
+
+Route::post("instructor/panel/servicio/guardar_cambios", "Instructor\ServiceDetailsController@saveChanges");
+
+
 
 // Reservations
 Route::get("instructor/panel/reservas", "Instructor\ReservationsController@showList")->name("instructor.reservations");

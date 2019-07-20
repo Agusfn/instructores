@@ -103,14 +103,24 @@ class InstructorService extends Model
 		return $this->hasMany("App\Reservation");
 	}
 
-
 	/**
-	 * [availableDate description]
-	 * @return [type] [description]
+	 * Obtain the ServiceAvailableDates associated with this service.
+	 * These are used only to index the date availability for search function.
+	 * @return Illuminate\Database\Eloquent\Collection
 	 */
 	public function availableDates()
 	{
 		return $this->hasMany("App\ServiceAvailableDate");
+	}
+
+
+	/**
+	 * Obtain all the ServiceBlockedTimeblock (defined by the instructor) associated with this service.
+	 * @return Illuminate\Database\Eloquent\Collection
+	 */
+	public function blockedTimeblocks()
+	{
+		return $this->hasMany("App\ServiceBlockedTimeblock");
 	}
 
 
@@ -177,13 +187,12 @@ class InstructorService extends Model
 
 
 	/**
-	 * Get an array with 6 numbers, each one being the surcharge percentage for each additional student (apart from the first one, which is 100%) in a reservation.
-	 * The key of the array is the person number (1-6), and the value is the surcharge percentage (0: free - 100: same as first student)
+	 * Get an array of the total surcharge percentages to the cost of the classes according to the ammount of students.
 	 * @return array
 	 */
 	public function getGroupSurcharges()
 	{
-		$surcharges[1] = 100;
+		$surcharges[1] = 0;
 
 		if(!$this->allows_groups)
 			return $surcharges;
@@ -201,6 +210,7 @@ class InstructorService extends Model
 
 	/**
 	 * Checks if a service is not offered in any of the days within a date range.
+	 * If no current date range period intersect with the given period, returns true, otherwise, false.
 	 * Start and end dates must belong to the same year.
 	 * 
 	 * @param  string  $date_start Y-m-d
@@ -234,11 +244,11 @@ class InstructorService extends Model
 
 
 	/**
-	 * Obtain the working date range to which a certain date belongs (if it exists)
+	 * Obtain the ServiceDateRange where the given date belongs (if it exists)
 	 * @param  Carbon\Carbon  $date
 	 * @return ServiceDateRange|null
 	 */
-	public function getWorkingRangeOfDate($date)
+	public function getDateRangeOfDate($date)
 	{
 		return $this->dateRanges()->where([
 			["date_start", "<=", $date->format("Y-m-d")],
@@ -255,7 +265,7 @@ class InstructorService extends Model
 	 */
 	public function getPricePerBlockOnDate($date)
 	{
-		$dateRange = $this->getWorkingRangeOfDate($date);
+		$dateRange = $this->getDateRangeOfDate($date);
 
 		if(!$dateRange)
 			return null;
@@ -360,7 +370,7 @@ class InstructorService extends Model
 	public function isPeriodAvailableForReserving($date, $hour_start, $hour_end)
 	{
 		
-		if($this->getWorkingRangeOfDate($date) == null) // check if the instructor works that day
+		if($this->getDateRangeOfDate($date) == null) // check if the instructor works that day
 			return false;
 		
 		if(!$this->hourRangeWithinWorkingHours($hour_start, $hour_end)) // check if the instructor works in those hours
@@ -386,6 +396,30 @@ class InstructorService extends Model
 		}
 		return false;
 	}*/
+
+
+
+	/**
+	 * Check if a ServiceBlockedTimeblock associated with this service exists with the given date and time block number.
+	 * It does NOT check if a certain time is not available, it checks if the instructor has stated to
+	 * not to offer that time block while it was free previously.
+	 *
+	 * @param Carbon\Carbon $date
+	 * @param int $timeBlockNumber
+	 * @return boolean
+	 */
+	public function hasBlockedTimeblock($date, $timeBlockNumber)
+	{
+		$count = $this->blockedTimeblocks()->where([
+			"date" => $date->format("Y-m-d"),
+			"time_block" => $timeBlockNumber
+		])->count();
+
+		if($count > 0)
+			return true;
+		else 
+			return false;
+	}
 
 
 

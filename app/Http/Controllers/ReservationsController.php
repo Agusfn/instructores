@@ -157,7 +157,7 @@ class ReservationsController extends Controller
 			"price_per_block" => $this->quote->pricePerBlock,
 			"adults_amount" => $request->adults_amount,
 			"kids_amount" => $request->kids_amount,
-			"json_breakdown" => json_encode($this->quote->classesPriceDetail),
+			"json_breakdown" => "",
 			"final_price" => $this->quote->total, // changes if paid in installments
 			"instructor_pay" => $this->quote->instructorPay,
 			"service_fee" => $this->quote->serviceFee,
