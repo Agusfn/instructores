@@ -435,7 +435,7 @@
 	<script src="{{ asset('resources/vendor/nouislider/nouislider.min.js') }}"></script>
 	<script src="{{ asset('resources/js/wNumb.js') }}"></script>
 	<script src="{{ asset('resources/js/icheck.min.js') }}"></script>
-	<script src="{{ asset('resources/js/instructor-service-pg.js?2') }}"></script>
+	<script src="{{ asset('resources/js/instructor-service-pg.js?3') }}"></script>
 	<script>
 		var app_url = "{{ config('app.url').'/' }}";
 		var img_dir = "{{ config('filesystems.disks.public.url').'/img/service/'.$service->number.'/' }}";

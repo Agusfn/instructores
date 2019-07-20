@@ -408,7 +408,7 @@
 <script src="{{ asset('resources/js/map_single_hotel.js') }}"></script>
 <script src="{{ asset('resources/js/infobox.js') }}"></script>
 <script src="{{ asset('resources/js/input_qty.js') }}"></script>
-<script src="{{ asset('resources/js/service-public-pg.js?2') }}"></script>
+<script src="{{ asset('resources/js/service-public-pg.js?3') }}"></script>
 
 <script>
 
