@@ -32,7 +32,7 @@
 	<link href="{{ asset('resources/css/vendors.css') }}" rel="stylesheet">
 
     <!-- YOUR CUSTOM CSS -->
-    <link href="{{ asset('resources/css/custom.css?4') }}" rel="stylesheet">
+    <link href="{{ asset('resources/css/custom.css?5') }}" rel="stylesheet">
 
     @yield('custom-css')
 
@@ -69,7 +69,7 @@
 	<!--script src="https://kit.fontawesome.com/d20723212b.js"></script-->
     <script src="{{ asset('resources/js/jquery-2.2.4.min.js') }}"></script>
     <script src="{{ asset('resources/js/common_scripts.js') }}"></script>
-    <script src="{{ asset('resources/js/main.js') }}"></script>
+    <script src="{{ asset('resources/js/main.js?2') }}"></script>
 	<script src="{{ asset('resources/assets/validate.js') }}"></script>
     
        <!--SCROLLREVEAL-->
