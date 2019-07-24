@@ -4,7 +4,7 @@ namespace App\Filters;
 
 use Illuminate\Http\Request;
 
-class InstructorFilters extends QueryFilters
+class UserFilters extends QueryFilters
 {
 	
     protected $request;
