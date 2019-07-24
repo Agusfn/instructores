@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Validator;
 use App\Instructor;
 use Illuminate\Http\Request;
+use App\Filters\InstructorFilters;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -26,9 +27,12 @@ class InstructorsController extends Controller
 	 * Show existing instructor list.
 	 * @return [type] [description]
 	 */
-	public function list()
+	public function list(InstructorFilters $filters)
 	{
-		$instructors = Instructor::with("wallet")->orderBy("created_at", "DESC")->paginate(15);
+		$instructors = Instructor::with("wallet")
+		->filter($filters)
+		->paginate(15);
+
 		return view("admin.instructors.list")->with("instructors", $instructors);
 	}
 

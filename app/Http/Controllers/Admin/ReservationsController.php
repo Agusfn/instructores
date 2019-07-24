@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Reservation;
 use Illuminate\Http\Request;
+use App\Filters\ReservationFilters;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 
@@ -16,15 +17,15 @@ class ReservationsController extends Controller
 
 
 	/**
-	 * Display reservation list. *** DO PAGINATION AND FILTERS ***
+	 * Display reservation list.
 	 * @return [type] [description]
 	 */
-	public function list()
+	public function list(ReservationFilters $filters)
 	{
 		$reservations = Reservation::with([
 			"user:id,name,surname",
 			"instructor:id,name,surname"
-		])->orderBy("created_at", "DESC")
+		])->filter($filters)
 		->paginate(15);
 
 		return view("admin.reservations.list")->with("reservations", $reservations);

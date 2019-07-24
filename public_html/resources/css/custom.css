@@ -399,3 +399,27 @@ a.btn_1.full-width.purchase, .btn_1.full-width.purchase {
     cursor: pointer;
 }
 
+
+
+/** Dropdowns de filtros  */
+
+.custom-select-form.filter {
+	display: inline-block;
+}
+
+.custom-select-form.filter .nice-select {
+	width: 100%; /* will be determined by .custom-select-form */
+    font-size: 13px;
+    line-height: 30px;
+    height: 32px;
+    padding-left: 9px;
+    padding-right: 23px;
+}
+
+.custom-select-form.filter .nice-select:after {
+	right: 12px;
+}
+
+.custom-select-form.filter .nice-select .list {
+	height: auto;
+}

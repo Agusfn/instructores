@@ -268,7 +268,32 @@
 				<div class="card">
 					<div class="card-body">
 
-						<h5 class="card-title">Movimientos</h5>
+						<div class="row add_bottom_30">
+							<div class="col-md-3">
+								<h5>Movimientos</h5>
+							</div>
+							<div class="col-md-9">
+		                    
+		                        <div class="custom-select-form filter float-md-right" style="width: 125px">
+		                            <select name="order" autocomplete="off">
+										<option value="date_desc" {{ request()->order == "date_desc" ? "selected" : "" }}>Fecha &#8593;</option>
+										<option value="date_asc" {{ request()->order == "date_asc" ? "selected" : "" }}>Fecha &#8595;</option>
+										<option value="amount_desc" {{ request()->order == "price_desc" ? "selected" : "" }}>Monto &#8593;</option>
+										<option value="amount_asc" {{ request()->order == "price_asc" ? "selected" : "" }}>Monto &#8595;</option>
+		                            </select>
+		                        </div>
+
+		                        <div class="custom-select-form filter float-md-right mr-3" style="width: 115px">
+		                            <select name="type" autocomplete="off">
+										<option value="any" {{ request()->type == "any" ? "selected" : "" }}>Todos</option>
+										<option value="debit" {{ request()->type == "debit" ? "selected" : "" }}>Débito</option>
+										<option value="credit" {{ request()->type == "credit" ? "selected" : "" }}>Crédito</option>
+		                            </select>
+		                        </div>
+
+
+							</div>
+						</div>
 
 						<div class="movements-table add_bottom_30">
 							<div class="row head d-none d-md-flex">

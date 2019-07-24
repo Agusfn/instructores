@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
+use App\Filters\ReservationFilters;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
@@ -19,11 +20,11 @@ class ReservationsController extends Controller
 	 * Show reservation list page.
 	 * @return [type]
 	 */
-	public function showList()
+	public function showList(ReservationFilters $filters)
 	{
 		$user = Auth::user();
 
-		$reservations = $user->reservations()->orderBy("created_at", "DESC")->paginate(10);
+		$reservations = $user->reservations()->filter($filters)->paginate(10);
 		
 		return view("user.panel.reservations.list")->with("reservations", $reservations);
 	}

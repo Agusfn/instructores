@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\InstructorCollection;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use App\Filters\InstructorCollectionFilters;
 use \App\Mail\Instructor\Collections\CollectionConfirmed;
 use \App\Mail\Instructor\Collections\CollectionRejected;
 
@@ -24,9 +25,9 @@ class InstructorCollectionsController extends Controller
      * Show list of all the instructor collections.
      * @return [type] [description]
      */
-	public function list()
+	public function list(InstructorCollectionFilters $filters)
 	{
-		$collections = InstructorCollection::latest()->paginate(15);
+		$collections = InstructorCollection::filter($filters)->paginate(15);
 
 		return view("admin.instructor-collections.list")->with("collections", $collections);
 

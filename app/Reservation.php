@@ -5,6 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use App\Lib\Reservations;
 use App\Lib\Helpers\Dates;
+use App\Filters\Filterable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Mail;
 
 class Reservation extends Model
 {
+
+    use Filterable;
    
     /**
      * Length in characters of reservation code.
