@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\User;
 use Illuminate\Http\Request;
+use App\Filters\InstructorFilters;
 use App\Http\Controllers\Controller;
 
 class UsersController extends Controller
@@ -14,9 +15,9 @@ class UsersController extends Controller
 	}
 
 
-	public function list()
+	public function list(InstructorFilters $filters)
 	{
-		$users = User::orderBy("created_at", "DESC")->paginate(15);
+		$users = User::filter($filters)->paginate(15);
 		return view("admin.users.list")->with("users", $users);
 	}
 

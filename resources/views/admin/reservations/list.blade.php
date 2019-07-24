@@ -1,6 +1,27 @@
 @extends('admin.layouts.main')
 
 
+@section('custom-css')
+<style type="text/css">
+	
+	{{--/*.filter-dropdown-group {
+		float: right;
+		margin-right: 20px;
+	}
+
+	.filter-dropdown-group .dropdown-menu {
+		min-width: 220px;
+		font-size: 13px;
+	}
+
+	.filter-dropdown-group .dropdown-menu .form-check-input {
+		margin-left: 0;
+	}*/--}}
+
+</style>
+
+@endsection
+
 @section('content')
 
 	<!-- Breadcrumbs-->
@@ -11,16 +32,85 @@
         <li class="breadcrumb-item active">Lista de reservas</li>
       </ol>
 		<div class="box_general">
-			<div class="header_box">
-				<h2 class="d-inline-block">Reservas</h2>
-				<!--div class="filter">
-					<select name="orderby" class="selectbox">
-						<option value="Any status">Any status</option>
-						<option value="Approved">Approved</option>
-						<option value="Pending">Pending</option>
-						<option value="Cancelled">Cancelled</option>
-					</select>
-				</div-->
+			<div class="header_box row">
+
+				<div class="col-lg-5">
+					<h2 class="d-inline-block">Reservas <small style="font-size: 13px">- {{ $reservations->total() }} resultado/s</small></h2>
+				</div>
+
+				<div class="col-lg-7">
+					<div class="filter">
+						<select name="order" class="selectbox" autocomplete="off">
+							<option value="date_desc" {{ request()->order == "date_desc" ? "selected" : "" }}>Fecha reservado (z-a)</option>
+							<option value="date_asc" {{ request()->order == "date_asc" ? "selected" : "" }}>Fecha reservado (a-z)</option>
+							<option value="class_date_desc" {{ request()->order == "class_date_desc" ? "selected" : "" }}>Fecha clases (z-a)</option>
+							<option value="class_date_asc" {{ request()->order == "class_date_asc" ? "selected" : "" }}>Fecha clases (a-z)</option>
+							<option value="price_desc" {{ request()->order == "price_desc" ? "selected" : "" }}>Precio (z-a)</option>
+							<option value="price_asc" {{ request()->order == "price_asc" ? "selected" : "" }}>Precio (a-z)</option>
+						</select>
+					</div>
+
+					<div class="filter mr-lg-3">
+						<select name="discipline" class="selectbox" autocomplete="off">
+							<option value="any" {{ request()->discipline == "any" ? "selected" : "" }}>Cualquier disciplina</option>
+							<option value="ski" {{ request()->discipline == "ski" ? "selected" : "" }}>Ski</option>
+							<option value="snowboard" {{ request()->discipline == "snowboard" ? "selected" : "" }}>Snowboard</option>
+						</select>
+					</div>
+
+
+					<div class="filter mr-lg-1">
+						<select name="status" class="selectbox" autocomplete="off">
+							<option value="any" {{ request()->status == "any" ? "selected" : "" }}>Cualquier estado</option>
+							<option value="payment_pending" {{ request()->status == "payment_pending" ? "selected" : "" }}>Pago pendiente</option>
+							<option value="pending_confirmation" {{ request()->status == "pending_confirmation" ? "selected" : "" }}>Pendiente confirmación</option>
+							<option value="payment_failed" {{ request()->status == "payment_failed" ? "selected" : "" }}>Pago fallido</option>
+							<option value="rejected" {{ request()->status == "rejected" ? "selected" : "" }}>Rechazada</option>
+							<option value="confirmed" {{ request()->status == "confirmed" ? "selected" : "" }}>Confirmada</option>
+							<option value="concluded" {{ request()->status == "concluded" ? "selected" : "" }}>Concluida</option>
+							<option value="canceled" {{ request()->status == "canceled" ? "selected" : "" }}>Cancelada</option>
+						</select>
+					</div>
+				</div>
+
+
+				{{--<!--div class="btn-group filter-dropdown-group">
+					<button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Estado</button>
+					<div class="dropdown-menu">
+						<div class="p-3">
+							<div class="mb-1">
+								<input type="checkbox" class="form-check-input" id="dropdownCheck1">
+								<label class="form-check-label" for="dropdownCheck1">Pago pendiente</label>
+							</div>
+							<div class="mb-1">
+								<input type="checkbox" class="form-check-input" id="dropdownCheck1">
+								<label class="form-check-label" for="dropdownCheck1">Pendiente confirmación</label>
+							</div>
+							<div class="mb-1">
+								<input type="checkbox" class="form-check-input" id="dropdownCheck1">
+								<label class="form-check-label" for="dropdownCheck1">Pago fallido</label>
+							</div>
+							<div class="mb-1">
+								<input type="checkbox" class="form-check-input" id="dropdownCheck1">
+								<label class="form-check-label" for="dropdownCheck1">Rechazado</label>
+							</div>
+							<div class="mb-1">
+								<input type="checkbox" class="form-check-input" id="dropdownCheck1">
+								<label class="form-check-label" for="dropdownCheck1">Confirmado</label>
+							</div>
+							<div class="mb-1">
+								<input type="checkbox" class="form-check-input" id="dropdownCheck1">
+								<label class="form-check-label" for="dropdownCheck1">Concluido</label>
+							</div>
+							<div class="mb-3">
+								<input type="checkbox" class="form-check-input" id="dropdownCheck1">
+								<label class="form-check-label" for="dropdownCheck1">Cancelado</label>
+							</div>
+							<button class="btn btn-sm btn-primary">Aplicar</button>
+						</div>
+					</div>
+				</div-->--}}
+
 			</div>
 			<div class="list_general">
 				
@@ -120,3 +210,16 @@
 @endsection
 
 
+@section('custom-js')
+<script type="text/javascript">
+	$(document).ready(function() {
+
+
+
+		{{--/*$('.filter-dropdown-group .dropdown-menu').on('click', function(e) {
+		  e.stopPropagation();
+		});*/--}}
+
+	});
+</script>
+@endsection

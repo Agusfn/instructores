@@ -28,7 +28,7 @@
   <!-- Plugin styles -->
   <link href="{{ asset('resources/admin/vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
   <!-- Your custom styles -->
-  <link href="{{ asset('resources/admin/css/custom.css?2') }}" rel="stylesheet">
+  <link href="{{ asset('resources/admin/css/custom.css?3') }}" rel="stylesheet">
   @yield('custom-css')
 	
 </head>
@@ -78,7 +78,7 @@
 	<script src="{{ asset('resources/admin/vendor/retina-replace.min.js') }}"></script>
 	<script src="{{ asset('resources/admin/vendor/jquery.magnific-popup.min.js') }}"></script>
     <!-- Custom scripts for all pages-->
-    <script src="{{ asset('resources/admin/js/admin.js') }}"></script>
+    <script src="{{ asset('resources/admin/js/admin.js?2') }}"></script>
 	<!-- Custom scripts for this page-->
 	@yield('custom-js')
     

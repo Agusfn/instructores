@@ -6,6 +6,7 @@ use App\Reservation;
 use App\InstructorWallet;
 use App\Lib\Reservations;
 use App\InstructorService;
+use App\Filters\Filterable;
 use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Lib\Traits\HasProfilePicture;
@@ -16,7 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Instructor extends Authenticatable
 {
-    use Notifiable, HasProfilePicture;
+    use Notifiable, HasProfilePicture, Filterable;
 
 
     /**

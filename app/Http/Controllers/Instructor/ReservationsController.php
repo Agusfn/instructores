@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Instructor;
 
 use App\Reservation;
 use Illuminate\Http\Request;
+use App\Filters\ReservationFilters;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\User\Reservations\ReservationConfirmedByInstructor;
 use App\Mail\User\Reservations\ReservationRejectedByInstructor;
@@ -23,10 +24,10 @@ class ReservationsController extends InstructorPanelBaseController
 	 * Show reservation list page.
 	 * @return [type]
 	 */
-	public function showList()
+	public function showList(ReservationFilters $filters)
 	{
 		if($this->instructor->isApproved()) {
-			$reservations = $this->instructor->reservations()->with("user")->orderBy("created_at", "DESC")->paginate(10);
+			$reservations = $this->instructor->reservations()->with("user")->filter($filters)->paginate(10);
 		}
 		else
 			$reservations = null;

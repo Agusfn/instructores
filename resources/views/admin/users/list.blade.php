@@ -27,16 +27,24 @@
         <li class="breadcrumb-item active">Lista de usuarios</li>
       </ol>
 		<div class="box_general">
-			<div class="header_box">
-				<h2 class="d-inline-block">Lista de usuarios</h2>
-				<!--div class="filter">
-					<select name="orderby" class="selectbox">
-						<option value="Any status">Any status</option>
-						<option value="Approved">Approved</option>
-						<option value="Pending">Pending</option>
-						<option value="Cancelled">Cancelled</option>
-					</select>
-				</div-->
+			<div class="header_box row">
+
+				<div class="col-lg-5">
+					<h2 class="d-inline-block">Usuarios <small style="font-size: 13px">- {{ $users->total() }} resultado/s</small></h2>
+				</div>
+
+				<div class="col-lg-7">
+					<div class="filter">
+						<select name="order" class="selectbox" autocomplete="off">
+							<option value="date_reg_desc" {{ request()->order == "date_reg_desc" ? "selected" : "" }}>Fecha ingreso (z-a)</option>
+							<option value="date_reg_asc" {{ request()->order == "date_reg_asc" ? "selected" : "" }}>Fecha ingreso (a-z)</option>
+							<option value="name_desc" {{ request()->order == "name_desc" ? "selected" : "" }}>Nombre (z-a)</option>
+							<option value="name_asc" {{ request()->order == "name_asc" ? "selected" : "" }}>Nombre (a-z)</option>
+						</select>
+					</div>
+
+				</div>
+
 			</div>
 			<div class="list_general">
 				

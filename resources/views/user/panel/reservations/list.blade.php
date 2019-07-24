@@ -131,8 +131,47 @@
 				<div class="card">
 					<div class="card-body">
 
-						<h4 class="add_bottom_30">Mis reservas</h4>
+						<div class="row add_bottom_30">
+							<div class="col-md-3">
+								<h4>Reservas</h4>
+							</div>
+							<div class="col-md-9">
+		                    
+		                        <div class="custom-select-form filter float-md-right" style="width: 165px">
+		                            <select name="order" autocomplete="off">
+										<option value="date_desc" {{ request()->order == "date_desc" ? "selected" : "" }}>Fecha reservado (z-a)</option>
+										<option value="date_asc" {{ request()->order == "date_asc" ? "selected" : "" }}>Fecha reservado (a-z)</option>
+										<option value="class_date_desc" {{ request()->order == "class_date_desc" ? "selected" : "" }}>Fecha clases (z-a)</option>
+										<option value="class_date_asc" {{ request()->order == "class_date_asc" ? "selected" : "" }}>Fecha clases (a-z)</option>
+										<option value="price_desc" {{ request()->order == "price_desc" ? "selected" : "" }}>Precio (z-a)</option>
+										<option value="price_asc" {{ request()->order == "price_asc" ? "selected" : "" }}>Precio (a-z)</option>
+		                            </select>
+		                        </div>
 
+		                        <div class="custom-select-form filter float-md-right mr-3" style="width: 100px">
+		                            <select name="discipline" autocomplete="off">
+										<option value="any" {{ request()->discipline == "any" ? "selected" : "" }}>Todas</option>
+										<option value="ski" {{ request()->discipline == "ski" ? "selected" : "" }}>Ski</option>
+										<option value="snowboard" {{ request()->discipline == "snowboard" ? "selected" : "" }}>Snowboard</option>
+		                            </select>
+		                        </div>
+
+		                        <div class="custom-select-form filter float-md-right mr-2" style="width: 150px">
+		                            <select name="status" autocomplete="off">
+										<option value="any" {{ request()->status == "any" ? "selected" : "" }}>Cualquier estado</option>
+										<option value="payment_pending" {{ request()->status == "payment_pending" ? "selected" : "" }}>Pago pendiente</option>
+										<option value="pending_confirmation" {{ request()->status == "pending_confirmation" ? "selected" : "" }}>Pend. confirmación</option>
+										<option value="payment_failed" {{ request()->status == "payment_failed" ? "selected" : "" }}>Pago fallido</option>
+										<option value="rejected" {{ request()->status == "rejected" ? "selected" : "" }}>Rechazadas</option>
+										<option value="confirmed" {{ request()->status == "confirmed" ? "selected" : "" }}>Confirmadas</option>
+										<option value="concluded" {{ request()->status == "concluded" ? "selected" : "" }}>Concluidas</option>
+										<option value="canceled" {{ request()->status == "canceled" ? "selected" : "" }}>Canceladas</option>
+		                            </select>
+		                        </div>
+
+							</div>
+						</div>
+						
 						<div class="reservation-table add_bottom_30">
 							<div class="row head d-none d-md-flex">
 								<div class="col-md-2">Código</div>

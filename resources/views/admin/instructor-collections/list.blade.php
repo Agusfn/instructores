@@ -11,16 +11,44 @@
         <li class="breadcrumb-item active">Pagos a instructores</li>
       </ol>
 		<div class="box_general">
-			<div class="header_box">
-				<h2 class="d-inline-block">Solicitudes de extracciones de saldo de instructores</h2>
-				<!--div class="filter">
-					<select name="orderby" class="selectbox">
-						<option value="Any status">Any status</option>
-						<option value="Approved">Approved</option>
-						<option value="Pending">Pending</option>
-						<option value="Cancelled">Cancelled</option>
-					</select>
-				</div-->
+			<div class="header_box row">
+
+				<div class="col-lg-5">
+					<h2 class="d-inline-block">Solicitudes de extraccion de instructores <small style="font-size: 13px">- {{ $collections->total() }} resultado/s</small></h2>
+				</div>
+
+				<div class="col-lg-7">
+					<div class="filter">
+						<select name="order" class="selectbox" autocomplete="off">
+							<option value="date_req_desc" {{ request()->order == "date_req_desc" ? "selected" : "" }}>Fecha solicitado (z-a)</option>
+							<option value="date_req_asc" {{ request()->order == "date_req_asc" ? "selected" : "" }}>Fecha solicitado (a-z)</option>
+							<option value="amount_desc" {{ request()->order == "amount_desc" ? "selected" : "" }}>Monto (z-a)</option>
+							<option value="amount_asc" {{ request()->order == "amount_asc" ? "selected" : "" }}>Monto (a-z)</option>
+						</select>
+					</div>
+
+					<div class="filter mr-lg-3">
+						<select name="collect_method" class="selectbox" autocomplete="off">
+							<option value="any" {{ request()->collect_method == "any" ? "selected" : "" }}>Cualquier medio</option>
+							<option value="mercadopago" {{ request()->collect_method == "mercadopago" ? "selected" : "" }}>Mercadopago</option>
+							<option value="bank" {{ request()->collect_method == "bank" ? "selected" : "" }}>Cuenta bancaria</option>
+						</select>
+					</div>	
+
+					<div class="filter mr-lg-1">
+						<select name="status" class="selectbox" autocomplete="off">
+							<option value="any" {{ request()->status == "any" ? "selected" : "" }}>Cualquier estado</option>
+							<option value="pending" {{ request()->status == "pending" ? "selected" : "" }}>Pendiente</option>
+							<option value="completed" {{ request()->status == "completed" ? "selected" : "" }}>Completado</option>
+							<option value="rejected" {{ request()->status == "rejected" ? "selected" : "" }}>Rechazado</option>
+							<option value="canceled" {{ request()->status == "canceled" ? "selected" : "" }}>Cancelado</option>
+						</select>
+					</div>
+
+				</div>
+
+
+
 			</div>
 			<div class="list_general">
 				

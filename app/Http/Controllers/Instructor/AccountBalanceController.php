@@ -8,6 +8,7 @@ use App\InstructorCollection;
 use App\InstructorBankAccount;
 use Illuminate\Support\Facades\Mail;
 use App\Lib\AdminEmailNotifications;
+use App\Filters\InstructorWalletMovementFilters;
 use App\Http\Validators\Instructor\RequestCollection;
 use App\Mail\Admin\Collections\CollectionRequestCreated;
 use App\Mail\Instructor\Collections\CollectionAccountChanged;
@@ -26,10 +27,10 @@ class AccountBalanceController extends InstructorPanelBaseController
 	 * Display account balance page.
 	 * @return [type] [description]
 	 */
-	public function overview()
+	public function overview(InstructorWalletMovementFilters $filters)
 	{
 		if($this->instructor->isApproved())
-			$walletMovements = $this->instructor->wallet->movements()->orderBy("id", "DESC")->paginate(10);
+			$walletMovements = $this->instructor->wallet->movements()->filter($filters)->paginate(10);
 		else
 			$walletMovements = null;
 

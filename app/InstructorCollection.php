@@ -2,11 +2,14 @@
 
 namespace App;
 
+use App\Filters\Filterable;
 use Illuminate\Database\Eloquent\Model;
 
 class InstructorCollection extends Model
 {
    
+    use Filterable;
+
 	const STATUS_PENDING = "pending"; // can be canceled.
     //const STATUS_IN_PROCESS = "in_process"; // can't be canceled now.
 	const STATUS_COMPLETED = "completed"; // Done.
