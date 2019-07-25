@@ -137,14 +137,22 @@
 							         <a href="{{ url('panel/cuenta/modificar') }}">-Agregar- </a>
 							         @endif</strong>
 						             </li>
-                                     </ul>
+                                     
 
-                                     <div class="card-body">
+                                     <li class="list-group-item">
                                      <a href="{{ url('panel/cuenta/modificar') }}">Actualizar datos</a>
-                                     </div>
+                                     </li>
 
-                                     <ul class="list-group list-group-flush">
-                                     <li class="list-group-item"><small>Logeado desde: {{ ucfirst($user->provider) }}</small></li>
+                                     @if(!$user->hasSocialLogin())
+                                     <li class="list-group-item">
+                                     <a href="{{ route('user.account.change-password') }}">Cambiar contraseña</a>
+                                     </li>
+                                     @else
+                                    <li class="list-group-item"><small>Logeado desde: {{ ucfirst($user->provider) }}</small></li>
+                                     @endif
+
+                                     
+
                                      </ul>
                          </div>
                  </div>

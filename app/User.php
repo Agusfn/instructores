@@ -3,22 +3,21 @@
 namespace App;
 
 use App\Filters\Filterable;
+use App\Mail\User\WelcomeEmail;
 use App\Mail\User\ResetPassword;
 use Illuminate\Support\Facades\Mail;
 use App\Lib\Traits\HasProfilePicture;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use Illuminate\Auth\MustVerifyEmail as VerifiesEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Auth\Passwords\CanResetPassword as ResetsPassword;
 
 
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
 
-    use Notifiable, VerifiesEmail, HasProfilePicture, Filterable, ResetsPassword;
+    use Notifiable, HasProfilePicture, Filterable;
 
 
     /**
@@ -87,6 +86,16 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     public function hasSocialLogin()
     {
         return $this->provider != null;
+    }
+
+    /**
+     * Send the welcome and verification (if normal login) email.
+     *
+     * @return void
+     */
+    public function sendWelcomeAndVerificationEmail()
+    {
+        Mail::to($this)->send(new WelcomeEmail($this));
     }
 
 

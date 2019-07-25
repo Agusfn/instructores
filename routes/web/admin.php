@@ -31,13 +31,15 @@ Route::get("admin/instructores/{id}/documentos/{filename}", "Admin\InstructorsCo
 Route::post("admin/instructores/{id}/suspender", "Admin\InstructorsController@toggleSuspend");
 Route::post("admin/instructores/{id}/eliminar", "Admin\InstructorsController@delete");
 Route::post("admin/instructores/{id}/pausa", "Admin\InstructorsController@toggleAdminPause");
-
+Route::post("admin/instructores/{id}/resend-verification-email", "Admin\InstructorsController@resendVerifEmail");
 
 // Users
 Route::get("admin/usuarios", "Admin\UsersController@list")->name("admin.users.list");
 Route::get("admin/usuarios/{id}", "Admin\UsersController@details")->name("admin.users.details");
 Route::post("admin/usuarios/{id}/suspender", "Admin\UsersController@toggleSuspend");
 Route::post("admin/usuarios/{id}/eliminar", "Admin\UsersController@delete");
+Route::post("admin/usuarios/{id}/resend-verification-email", "Admin\UsersController@resendVerifEmail");
+
 
 // Reservations
 Route::get("admin/reservas", "Admin\ReservationsController@list")->name("admin.reservations.list");

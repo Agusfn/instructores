@@ -39,7 +39,8 @@ Route::get("instructor/panel/cuenta/modificar", "Instructor\AccountDetailsContro
 Route::post("instructor/panel/cuenta/modificar", "Instructor\AccountDetailsController@editAccount");
 Route::post("instructor/panel/cuenta/img_perfil", "Instructor\AccountDetailsController@changeProfilePic");
 Route::post("instructor/panel/cuenta/verificar", "Instructor\AccountDetailsController@sendVerifyInfo");
-
+Route::get("instructor/panel/cuenta/cambiar-password", "Instructor\AccountDetailsController@showPasswordForm")->name("instructor.account.change-password");
+Route::post("instructor/panel/cuenta/cambiar-password", "Instructor\AccountDetailsController@changePassword");
 
 
 // Service

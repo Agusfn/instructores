@@ -82,7 +82,12 @@
 								</td>
 								<td><img src="{{ $instructor->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
 								<td>{{ $instructor->name.' '.$instructor->surname }}</td>
-								<td>{{ $instructor->email }}</td>
+								<td>
+									{{ $instructor->email }}
+									@if(!$instructor->hasSocialLogin() && !$instructor->hasVerifiedEmail())
+									<span class="badge badge-warning">Pend. verif</span>
+									@endif
+								</td>
 								<td>
 									@if(!$instructor->isApproved())
 										@if(!$instructor->approvalDocsSent())
@@ -111,7 +116,7 @@
 				
 			</div>
 
-			{{ $instructors->links() }}
+			{{ $instructors->appends(request()->input())->links() }}
 		</div>
 		<!-- /box_general-->
 		<!--nav aria-label="...">

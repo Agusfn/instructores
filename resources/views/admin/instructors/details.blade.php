@@ -161,20 +161,23 @@
 				@if(!$instructor->suspended)
 				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿Suspender cuenta? No podrá iniciar sesión.')) $(this).parent().submit();">Suspender cuenta</button>
 				@else
-				<button type="button" class="btn btn-info btn-sm" onclick="if(confirm('¿Reahabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
+				<button type="button" class="btn btn-info btn-sm" onclick="if(confirm('¿Rehabilitar cuenta?')) $(this).parent().submit();">Habilitar cuenta</button>
 				@endif
 			</form>
 
 			@if($instructor->reservations()->count() == 0)
-			<form action="{{ url('admin/instructores/'.$instructor->id.'/eliminar') }}" method="POST" style="display: inline;">
+			<form action="{{ url('admin/instructores/'.$instructor->id.'/eliminar') }}" method="POST" style="display: inline;margin-right: 20px">
 				@csrf
 				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿ELIMINAR cuenta? No se podrá recuperar')) $(this).parent().submit();">Eliminar cuenta</button>
 			</form>
 			@endif
 
-
-
-
+			@if(!$instructor->hasSocialLogin() && !$instructor->hasVerifiedEmail())
+			<form action="{{ url('admin/instructores/'.$instructor->id.'/resend-verification-email') }}" method="POST" style="display: inline;">
+				@csrf
+				<button type="button" class="btn btn-info btn-sm" onclick="if(confirm('¿Enviar mensaje de verificacion de e-mail?')) $(this).parent().submit();">Reenviar mail verif</button>
+			</form>
+			@endif
 
 		</div>
 

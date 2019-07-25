@@ -7,23 +7,21 @@ use App\InstructorWallet;
 use App\Lib\Reservations;
 use App\InstructorService;
 use App\Filters\Filterable;
-use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\Instructor\WelcomeEmail;
 use App\Lib\Traits\HasProfilePicture;
 use App\Mail\Instructor\ResetPassword;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use Illuminate\Auth\MustVerifyEmail as VerifiesEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Auth\Passwords\CanResetPassword as ResetsPassword;
 
 
 class Instructor extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
-    use Notifiable, HasProfilePicture, Filterable, ResetsPassword;
+    use Notifiable, HasProfilePicture, Filterable;
 
 
     /**
@@ -155,13 +153,6 @@ class Instructor extends Authenticatable implements MustVerifyEmail, CanResetPas
 
 
 
-
-    /*public function sendWelcomeAndVerificationEmail()
-    {
-        return Mail::to($this)->send(new UserWelcomeEmail($this));
-    }*/
-
-
     /**
      * If the user was registered and logs in through social media login services.
      * @return boolean
@@ -283,6 +274,16 @@ class Instructor extends Authenticatable implements MustVerifyEmail, CanResetPas
 
 
     /**
+     * Send the welcome and verification (if normal login) email.
+     *
+     * @return void
+     */
+    public function sendWelcomeAndVerificationEmail()
+    {
+        Mail::to($this)->send(new WelcomeEmail($this));
+    }
+
+    /**
      * Send the password reset notification.
      *
      * @param  string  $token
@@ -292,6 +293,9 @@ class Instructor extends Authenticatable implements MustVerifyEmail, CanResetPas
     {
         Mail::to($this)->send(new ResetPassword($this, $token));
     }
+
+
+
 
 
 }

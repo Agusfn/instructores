@@ -46,6 +46,8 @@ Route::get("panel/cuenta", "User\AccountDetailsController@index")->name("user.ac
 Route::get("panel/cuenta/modificar", "User\AccountDetailsController@showEditAccountForm");
 Route::post("panel/cuenta/img_perfil", "User\AccountDetailsController@changeProfilePic");
 Route::post("panel/cuenta/modificar", "User\AccountDetailsController@editAccount");
+Route::get("panel/cuenta/cambiar-password", "User\AccountDetailsController@showPasswordForm")->name("user.account.change-password");
+Route::post("panel/cuenta/cambiar-password", "User\AccountDetailsController@changePassword");
 
 // Reservations
 Route::get("panel/reservas", "User\ReservationsController@showList")->name("user.reservations");

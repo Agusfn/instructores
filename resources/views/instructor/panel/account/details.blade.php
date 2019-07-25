@@ -154,14 +154,12 @@
 								<div class="col-6"><strong>Foto de perfil</strong></div>
 								<div class="col-6">
 
-									<input type="file" id="profile-pic-input" accept="image/*" autocomplete="off" @if($instructor->profile_picture) style="display: none" @endif>
+									<input type="file" id="profile-pic-input" accept="image/*" autocomplete="off" style="display: none">
 
-									@if($instructor->profile_picture)
 									<div style="width: 150px;text-align: center;">
 										<img src="{{ $instructor->getProfilePicUrl() }}" class="profile-pic"><br/>
 										<a href="javascript:void(0);" id="change-profile-pic">Cambiar</a>
 									</div>
-									@endif
 								</div>
 							
 		                    
@@ -187,13 +185,14 @@
 								</div>
 							</div>
 						</li>
-	 
+	 					@if($instructor->hasSocialLogin())
 	                    <li class="list-group-item">
 							<div class="row">
 								<div class="col-6"><strong>Login cuenta</strong></div>
 								<div class="col-6"><small>{{ ucfirst($instructor->provider) }}</small></div>
 							</div>
 					    </li>
+					    @endif
 	                    <li class="list-group-item">
 							<div class="row">
 								<div class="col-6"><strong>Nombre y apellido</strong></div>
@@ -283,6 +282,14 @@
 								<small ><a href="{{ url('instructor/panel/cuenta/modificar') }}">Modificar Datos</a></small>
 							</div>
 						</li>
+
+						@if(!$instructor->hasSocialLogin())
+						<li class="list-group-item" style="text-align: center;">
+							<div class="container" >
+								<small ><a href="{{ route('instructor.account.change-password') }}">Cambiar contraseña</a></small>
+							</div>
+						</li>
+						@endif
 					</ul>
 				</div>
          

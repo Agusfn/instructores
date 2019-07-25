@@ -80,7 +80,7 @@ class RegisterController extends Controller
 
         $instructor = $this->create($request->all());
         
-        Mail::to($instructor)->send(new WelcomeEmail($instructor));
+        $instructor->sendWelcomeAndVerificationEmail();
 
         return redirect()->back()->with("registered", true);
     }

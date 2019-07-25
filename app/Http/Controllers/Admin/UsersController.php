@@ -90,5 +90,24 @@ class UsersController extends Controller
 	}
 
 
+	/**
+	 * Resend user welcome email and verification code.
+	 * @param  int $id
+	 * @return [type]     [description]
+	 */
+	public function resendVerifEmail($id)
+	{
+		$user = User::findOrFail($id);
+
+		if($user->hasSocialLogin() || $user->hasVerifiedEmail()) {
+			return redirect()->route("admin.users.details", $id);
+		}
+
+		$user->sendWelcomeAndVerificationEmail();
+
+		return redirect()->back();
+	}
+
+
 
 }

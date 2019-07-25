@@ -80,7 +80,7 @@ class RegisterController extends Controller
 
         $user = $this->create($request->all());
         
-        Mail::to($user)->send(new WelcomeEmail($user));
+        $user->sendWelcomeAndVerificationEmail();
 
         return redirect()->back()->with("registered", true);
     }
