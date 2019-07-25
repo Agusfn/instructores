@@ -74,6 +74,9 @@
 									<div class="col-md-6">
 										<label><strong>E-mail</strong></label><br/>
 										{{ $user->email }}
+										@if(!$user->hasSocialLogin() && !$user->hasVerifiedEmail())
+										<span class="badge badge-warning">Pend. verif</span>
+										@endif
 									</div>
 								</div>
 
@@ -115,11 +118,19 @@
 							</div>
 							<div class="col-md-3">
 								<label><strong>Login con</strong></label><br/>
+								@if($user->hasSocialLogin())
 								{{ ucfirst($user->provider) }}
+								@else
+								Login normal
+								@endif
 							</div>
 							<div class="col-md-3">
 								<label><strong>ID red social</strong></label><br/>
+								@if($user->hasSocialLogin())
 								{{ $user->provider_id }}
+								@else
+								-
+								@endif
 							</div>
 						</div>
 					</div>

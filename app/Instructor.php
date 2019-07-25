@@ -10,14 +10,20 @@ use App\Filters\Filterable;
 use App\Mail\UserWelcomeEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Lib\Traits\HasProfilePicture;
+use App\Mail\Instructor\ResetPassword;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Auth\MustVerifyEmail as VerifiesEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Auth\Passwords\CanResetPassword as ResetsPassword;
 
-class Instructor extends Authenticatable
+
+class Instructor extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
-    use Notifiable, HasProfilePicture, Filterable;
+    use Notifiable, HasProfilePicture, Filterable, ResetsPassword;
 
 
     /**
@@ -99,10 +105,18 @@ class Instructor extends Authenticatable
     }
 
 
-
-    public static function findByEmail($email) 
+    /**
+     * Find a user by email.
+     * @param  [type] $email [description]
+     * @return [type]        [description]
+     */
+    public static function findByEmailOrFail($email) 
     {
-        return self::where("email", $email)->first();
+        $user = self::where("email", $email)->first();
+        if(!$user) {
+            throw (new ModelNotFoundException)->setModel(self::class);
+        }
+        return $user;
     }
 
 
@@ -147,6 +161,15 @@ class Instructor extends Authenticatable
         return Mail::to($this)->send(new UserWelcomeEmail($this));
     }*/
 
+
+    /**
+     * If the user was registered and logs in through social media login services.
+     * @return boolean
+     */
+    public function hasSocialLogin()
+    {
+        return $this->provider != null;
+    }
 
 
     /**
@@ -255,6 +278,19 @@ class Instructor extends Authenticatable
     public function getPendingAmountToBeAccredited()
     {
         return $this->reservations()->where("status", Reservation::STATUS_CONFIRMED)->sum("instructor_pay");
+    }
+
+
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        Mail::to($this)->send(new ResetPassword($this, $token));
     }
 
 

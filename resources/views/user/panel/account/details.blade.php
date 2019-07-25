@@ -103,16 +103,26 @@
                 <div class="card" style="width: 28.5rem;">
 
 
-                      <div class="col-lg-3"><input type="file" id="profile-pic-input" accept="image/*" autocomplete="off" @if($user->profile_picture) style="display: none" @endif>
+                      <div class="col-lg-3">
+                        <input type="file" id="profile-pic-input" accept="image/*" autocomplete="off" style="display: none">
 
-							                       @if($user->profile_picture)
+							                       
 							            <div style="width: 150px;text-align: center;">
 								            <img src="{{ $user->getProfilePicUrl() }}" class="profile-pic">
 								            <a href="javascript:void(0);" id="change-profile-pic">Cambiar</a>
 							            </div>
-							                       @endif
+							                       
 						</div> 	                       
-  
+                                <div class="row add_bottom_30" id="img-crop-box" style="display: none">
+                                    <div class="col-sm-10">
+                                        <div class="img-crop"></div>
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        <button type="button" class="btn btn-default btn-primary" id="upload-profile-pic" style="position: absolute; bottom: 0">Cargar</button>
+                                    </div>
+                                </div>
+
                                      <ul class="list-group list-group-flush">
                                      <li class="list-group-item">Nombre y apellido<br>
     	                             <strong>{{ $user->name.' '.$user->surname }}</strong></li>

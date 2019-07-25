@@ -133,7 +133,7 @@
 						<br>
 
 					@else
-						<p style="color: black!important">Para comenzar, <a href="{{ url('instructor/panel/cuenta/modificar') }}">ingresá tu número de teléfono</a>. Despúes te pediremos tu documentación.</p>
+						<p style="color: black!important">Para comenzar, <a href="{{ url('instructor/panel/cuenta/modificar') }}">ingresá tu número de teléfono</a> y selecciona una foto de perfil. Despúes te pediremos tu documentación.</p>
 					@endif
 
 				@endif

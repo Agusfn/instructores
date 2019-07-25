@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Instructores - Sitio de reservas para clases a medida de ski o snowboard en Cerro Catedral. San Carlos de Bariloche.">
     <meta name="author" content="Ansonika">
-    <title>@yield('title') Instructores | Ski & Snowboard</title>
+    <title>@yield('title') - Instructores | Ski & Snowboard</title>
 
     <!-- Favicons-->
     <link rel="shortcut icon" href="{{ asset('resources/img/favicon.png') }}" type="image/x-icon">
@@ -26,6 +26,21 @@
 
     <!-- YOUR CUSTOM CSS -->
     <link href="{{ asset('resources/css/custom.css') }}" rel="stylesheet">
+
+    <style type="text/css">
+    #login figure, #register figure {
+        text-align: center;
+        border-bottom: 1px solid #ededed;
+        margin: 0px 0px 0px 0px !important ;
+        padding: 20px 60px 25px 60px;
+    }
+    #logo {
+        padding: 20px;
+    }
+    #logo p{
+        color: black!important;
+    }
+    </style>
 
     @yield('custom-css')
 

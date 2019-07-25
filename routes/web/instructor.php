@@ -11,12 +11,25 @@
 |
 */
 
+/**
+ * Auth
+ */
+Route::get("instructor/login", "Instructor\Auth\LoginController@showLoginForm")->name("instructor.login");
+Route::post("instructor/login", "Instructor\Auth\LoginController@login");
+Route::post("instructor/logout", "Instructor\Auth\LoginController@logout")->name("instructor.logout");
 
-// Login
-Route::get("instructor/login", "Instructor\Auth\SocialLoginController@showLoginForm")->name("instructor.login");
 Route::get("instructor/login/{provider}", "Instructor\Auth\SocialLoginController@redirectToSocialLogin")->name("instructor.login.social");
 Route::get("instructor/login/{provider}/callback", "Instructor\Auth\SocialLoginController@getSocialCallback");
-Route::post("instructor/logout", "Instructor\Auth\SocialLoginController@logout")->name("instructor.logout");
+
+Route::get("instructor/registrarse", "Instructor\Auth\RegisterController@showRegistrationForm")->name("instructor.register");
+Route::post("instructor/registrarse", "Instructor\Auth\RegisterController@register");
+
+Route::get("instructor/verificar-email/{email}", "Instructor\Auth\VerificationController@verify")->name("instructor.verify-email");
+
+Route::get("instructor/recuperar-cuenta", "Instructor\Auth\ForgotPasswordController@showLinkRequestForm")->name("instructor.reset-password");
+Route::post("instructor/recuperar-cuenta", "Instructor\Auth\ForgotPasswordController@sendResetLinkEmail");
+Route::get("instructor/cambiar-password/{token}", "Instructor\Auth\ResetPasswordController@showResetForm")->name("instructor.change-password-form");
+Route::post("instructor/cambiar-password", "Instructor\Auth\ResetPasswordController@reset")->name("instructor.change-password");
 
 
 

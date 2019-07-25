@@ -207,6 +207,9 @@
 									<div class="col-md-6">
 										<label><strong>E-mail</strong></label><br/>
 										{{ $instructor->email }}
+										@if(!$instructor->hasSocialLogin() && !$instructor->hasVerifiedEmail())
+										<span class="badge badge-warning">Pend. verif</span>
+										@endif
 									</div>
 								</div>
 
@@ -360,11 +363,19 @@
 							</div>
 							<div class="col-md-3">
 								<label><strong>Login con</strong></label><br/>
+								@if($instructor->hasSocialLogin())
 								{{ ucfirst($instructor->provider) }}
+								@else
+								Login normal
+								@endif
 							</div>
 							<div class="col-md-3">
 								<label><strong>ID red social</strong></label><br/>
+								@if($instructor->hasSocialLogin())
 								{{ $instructor->provider_id }}
+								@else
+								-
+								@endif
 							</div>
 						</div>
 					</div>

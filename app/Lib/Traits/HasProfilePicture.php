@@ -101,7 +101,10 @@ trait HasProfilePicture
      */
     public function getProfilePicUrl()
     {
-        return Storage::url($this->profilePicPath().$this->profile_picture);
+        if($this->profile_picture)
+            return Storage::url($this->profilePicPath().$this->profile_picture);
+        else
+            return asset("resources/img/avatar.jpg");
     }
 
 
