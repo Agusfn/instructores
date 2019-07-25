@@ -1,17 +1,20 @@
 @extends('layouts.main-auth')
 
+@section('title', 'Registrarse')
 
 @section('form')
 
+
+		
 			@if(session('registered'))
 			<div class="alert alert-success">
 				La cuenta se registró exitosamente. Revisa tu casilla de e-mail para verificar tu cuenta y poder iniciar sesión.
 			</div>
 			@else
-			<form method="POST" action="{{ route('instructor.register') }}">
+			<form autocomplete="off" method="POST" action="{{ route('instructor.register') }}">
 				@csrf
 				<div class="form-group">
-					<label>Your Name</label>
+					<label>Nombre</label>
 					<input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
 					<i class="ti-user"></i>
                     @if ($errors->has('name'))
@@ -21,7 +24,7 @@
                     @endif
 				</div>
 				<div class="form-group">
-					<label>Your Last Name</label>
+					<label>Apellido</label>
 					<input id="surname" type="text" class="form-control{{ $errors->has('surname') ? ' is-invalid' : '' }}" name="surname" value="{{ old('surname') }}" required autocomplete="surname" autofocus>
 					<i class="ti-user"></i>
                     @if ($errors->has('surname'))
@@ -31,7 +34,7 @@
                     @endif
 				</div>
 				<div class="form-group">
-					<label>Your Email</label>
+					<label>E-mail</label>
 					<input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required autocomplete="email">
 					<i class="icon_mail_alt"></i>
 					@if ($errors->has('email'))
@@ -41,7 +44,7 @@
                     @endif
 				</div>
 				<div class="form-group">
-					<label>Your password</label>
+					<label>Contraseña</label>
 					<input id="password1" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" required autocomplete="new-password">
 					<i class="icon_lock_alt"></i>
                     @if ($errors->has('password'))
@@ -51,15 +54,18 @@
                     @endif
 				</div>
 				<div class="form-group">
-					<label>Confirm password</label>
+					<label>Confirmar contraseña</label>
 					<input id="password2" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
 					<i class="icon_lock_alt"></i>
 				</div>
 				<div id="pass-info" class="clearfix"></div>
-				<button type="submit" class="btn_1 rounded full-width add_top_30">Register Now!</button>
-				<div class="text-center add_top_10">Already have an acccount? <strong><a href="{{ route('instructor.login') }}">Sign In</a></strong></div>
+				<button type="submit" class="btn_1 rounded full-width add_top_30">Registrarse ahora!</button>
+				<div class="text-center add_top_10">¿Ya tenés una cuenta? <strong><a href="{{ route('instructor.login') }}">Iniciar sesión</a></strong></div>
 			</form>
 			@endif
+
+
+
 
 @endsection
 

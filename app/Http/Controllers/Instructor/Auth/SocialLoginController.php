@@ -16,7 +16,7 @@ use App\Mail\Admin\InstructorRegistered;
 
 class SocialLoginController extends Controller
 {
-	
+    
 
     /**
      * Redirect instructors after logging in (if no intended redirection)
@@ -27,10 +27,10 @@ class SocialLoginController extends Controller
 
 
 
-	public function __construct()
-	{
-		$this->middleware('guest:user,instructor')->except('logout');
-	}
+    public function __construct()
+    {
+        $this->middleware('guest:user,instructor')->except('logout');
+    }
 
 
     /**
@@ -44,11 +44,11 @@ class SocialLoginController extends Controller
     }
 
 
-	/**
-	 * Redirects the user (instructor) to the respective social login page.
-	 * @param  string $provider    social network provider to log in
-	 * @return [type]
-	 */
+    /**
+     * Redirects the user (instructor) to the respective social login page.
+     * @param  string $provider    social network provider to log in
+     * @return [type]
+     */
     public function redirectToSocialLogin($provider)
     {
         try {
@@ -67,36 +67,36 @@ class SocialLoginController extends Controller
      */
     public function getSocialCallback(Request $request, $provider)
     {
-    	try {
-    		$socialUser = Socialite::with($provider)->redirectUrl(config("services.".$provider.".redirect_instructor"))->user();
-    	}
-    	catch(\Exception $e) {
-    		return redirect()->route("instructor.login")->withErrors("Ocurrió un error intentando iniciar sesión, intentalo nuevamente.");
-    	}
+        try {
+            $socialUser = Socialite::with($provider)->redirectUrl(config("services.".$provider.".redirect_instructor"))->user();
+        }
+        catch(\Exception $e) {
+            return redirect()->route("instructor.login")->withErrors("Ocurrió un error intentando iniciar sesión, intentalo nuevamente.", "social");
+        }
 
 
-    	$instructor = Instructor::findByProviderNameAndId($provider, $socialUser->id);
+        $instructor = Instructor::findByProviderNameAndId($provider, $socialUser->id);
 
-    	if(!$instructor) {
+        if(!$instructor) {
 
-    		if(User::findByProviderNameAndId($provider, $socialUser->id)) {
-    			return redirect()->route("instructor.login")->withErrors("Ya existe una cuenta de usuario (no instructor) registrada con esta cuenta de ".$provider.".");
-    		}
+            if(User::findByProviderNameAndId($provider, $socialUser->id)) {
+                return redirect()->route("instructor.login")->withErrors("Ya existe una cuenta de usuario (no instructor) registrada con esta cuenta de ".$provider.".", "social");
+            }
 
             $instructor = SocialLogin::createInstructor($socialUser, $provider);
 
             Mail::to($instructor)->send(new WelcomeEmail($instructor));
             Mail::to(AdminEmailNotifications::recipients())->send(new InstructorRegistered());
-    	}
+        }
 
         if($instructor->suspended) {
-            return redirect()->route("instructor.login")->withErrors("La cuenta de instructor está suspendida.");
+            return redirect()->route("instructor.login")->withErrors("La cuenta de instructor está suspendida.", "social");
         }
 
 
-    	Auth::guard("instructor")->login($instructor);
+        Auth::guard("instructor")->login($instructor);
 
-    	return redirect()->intended($this->redirectTo);
+        return redirect()->intended($this->redirectTo);
     }
 
 
@@ -107,9 +107,9 @@ class SocialLoginController extends Controller
      */
     public function logout()
     {
-    	Auth::guard("instructor")->logout();
+        Auth::guard("instructor")->logout();
 
-    	return redirect()->route("home");
+        return redirect()->route("home");
     }
 
 }

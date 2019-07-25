@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Instructor;
 use Validator;
 use App\Lib\Helpers\Images;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class AccountDetailsController extends InstructorPanelBaseController
@@ -141,6 +143,55 @@ class AccountDetailsController extends InstructorPanelBaseController
 
 		
 	}
+
+
+
+
+
+	/**
+	 * Show change password form.
+	 * @return [type] [description]
+	 */
+	public function showPasswordForm()
+	{
+		if($this->instructor->hasSocialLogin())
+			return redirect()->route("instructor.account");
+
+		return view("instructor.panel.account.change-password");
+	}
+
+
+	/**
+	 * Process change password.
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function changePassword(Request $request)
+	{
+        $request->validate([
+            "current_password" => "required",
+            "new_password" => "required|min:6|max:100|confirmed"
+        ]);
+
+		if($this->instructor->hasSocialLogin())
+			return redirect()->route("instructor.account");
+
+        if(!Hash::check($request->current_password, $this->instructor->password)) {
+            return redirect()->back()->withErrors(["current_password" => "La contraseña actual ingresada es inválida."]);
+        }
+
+        if(Hash::check($request->new_password, $this->instructor->password)) {
+            return redirect()->back()->withErrors(["new_password" => "La nueva contraseña no puede ser igual a la actual."]);
+        }
+
+        $this->instructor->password = Hash::make($request->new_password);
+        $this->instructor->save();
+
+
+        request()->session()->flash('success');
+        return redirect()->back();
+	}
+
 
 
 

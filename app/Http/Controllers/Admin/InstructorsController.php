@@ -231,4 +231,24 @@ class InstructorsController extends Controller
 	}
 
 
+	/**
+	 * Resend user welcome email and verification code.
+	 * @param  int $id
+	 * @return [type]     [description]
+	 */
+	public function resendVerifEmail($id)
+	{
+		$instructor = Instructor::findOrFail($id);
+
+		if($instructor->hasSocialLogin() || $instructor->hasVerifiedEmail()) {
+			return redirect()->route("admin.instructors.details", $id);
+		}
+
+		$instructor->sendWelcomeAndVerificationEmail();
+
+		return redirect()->back();
+	}
+
+
+
 }

@@ -139,7 +139,7 @@
 				
 			</div>
 
-			{{ $collections->links() }}
+			{{ $collections->appends(request()->input())->links() }}
 		</div>
 		<!-- /box_general-->
 		<!--nav aria-label="...">

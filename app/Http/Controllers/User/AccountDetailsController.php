@@ -6,6 +6,7 @@ use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class AccountDetailsController extends Controller
@@ -88,6 +89,55 @@ class AccountDetailsController extends Controller
 		$user->save();
 
 		return redirect()->route("user.account");
+	}
+
+
+	/**
+	 * Show change password form.
+	 * @return [type] [description]
+	 */
+	public function showPasswordForm()
+	{
+		$user = Auth::user();
+
+		if($user->hasSocialLogin())
+			return redirect()->route("user.account");
+
+		return view("user.panel.account.change-password");
+	}
+
+
+	/**
+	 * Process change password.
+	 * @param  Request $request [description]
+	 * @return [type]           [description]
+	 */
+	public function changePassword(Request $request)
+	{
+        $request->validate([
+            "current_password" => "required",
+            "new_password" => "required|min:6|max:100|confirmed"
+        ]);
+
+        $user = Auth::user();
+
+		if($user->hasSocialLogin())
+			return redirect()->route("user.account");
+
+        if(!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(["current_password" => "La contraseña actual ingresada es inválida."]);
+        }
+
+        if(Hash::check($request->new_password, $user->password)) {
+            return redirect()->back()->withErrors(["new_password" => "La nueva contraseña no puede ser igual a la actual."]);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+
+        request()->session()->flash('success');
+        return redirect()->back();
 	}
 
 

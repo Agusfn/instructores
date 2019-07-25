@@ -34,18 +34,6 @@ class SocialLoginController extends Controller
 
 
 
-    /**
-     * Show the application's login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showLoginForm()
-    {
-        return view('user.auth.login');
-    }
-
-
-
 	/**
 	 * Redirects the use to the proper social login page.
 	 * @param  string $provider
@@ -73,7 +61,7 @@ class SocialLoginController extends Controller
     		$socialUser = Socialite::with($provider)->user();
     	}
     	catch(\Exception $e) {
-    		return redirect()->route("user.login")->withErrors("Ocurrió un error intentando iniciar sesión, intentalo nuevamente.");
+    		return redirect()->route("user.login")->withErrors("Ocurrió un error intentando iniciar sesión, intentalo nuevamente.", "social");
     	}
 
 
@@ -82,7 +70,7 @@ class SocialLoginController extends Controller
     	if(!$user) {
             
     		if(Instructor::findByProviderNameAndId($provider, $socialUser->id)) {
-    			return redirect()->route("user.login")->withErrors("Ya existe una cuenta de instructor registrada con esta cuenta de ".$provider.".");
+    			return redirect()->route("user.login")->withErrors("Ya existe una cuenta de instructor registrada con esta cuenta de ".$provider.".", "social");
     		}
 
             $user = SocialLogin::createUser($socialUser, $provider);
@@ -92,25 +80,13 @@ class SocialLoginController extends Controller
     	}
 
         if($user->suspended) {
-            return redirect()->route("user.login")->withErrors("La cuenta de usuario está suspendida.");
+            return redirect()->route("user.login")->withErrors("La cuenta de usuario está suspendida.", "social");
         }
 
     	Auth::guard("user")->login($user);
 
 
     	return redirect()->intended($this->redirectTo);
-    }
-
-
-    /**
-     * Log user out.
-     * @return [type] [description]
-     */
-    public function logout()
-    {
-    	Auth::guard("user")->logout();
-
-    	return redirect()->route("home");
     }
 
 

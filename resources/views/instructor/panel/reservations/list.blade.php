@@ -235,7 +235,7 @@
 						@endif
 					</div>
 
-					{{ $reservations->links() }}
+					{{ $reservations->appends(request()->input())->links() }}
 
 					@endif
 				</div>

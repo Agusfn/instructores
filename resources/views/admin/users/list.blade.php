@@ -70,7 +70,12 @@
 								<td><img src="{{ $user->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
 								<td>{{ $user->id }}</td>
 								<td>{{ $user->name.' '.$user->surname }}</td>
-								<td>{{ $user->email }}</td>
+								<td>
+									{{ $user->email }}
+									@if(!$user->hasSocialLogin() && !$user->hasVerifiedEmail())
+									<span class="badge badge-warning">Pend. verif</span>
+									@endif
+								</td>
 								<td>{{ $user->reservations()->count() }}</td>
 							</tr>
 							@endforeach
@@ -80,7 +85,7 @@
 				</table>
 
 			</div>
-			{{ $users->links() }}
+			{{ $users->appends(request()->input())->links() }}
 		</div>
 		<!-- /box_general-->
 		<!--nav aria-label="...">

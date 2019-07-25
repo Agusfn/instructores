@@ -360,7 +360,7 @@
 							@endif
 						</div>
 
-						{{ $walletMovements->links() }}
+						{{ $walletMovements->appends(request()->input())->links() }}
 
 					</div>
 				</div>

@@ -187,7 +187,7 @@
 					</tbody>
 				</table>
 			</div>
-			{{ $reservations->links() }}
+			{{ $reservations->appends(request()->input())->links() }}
 
 		</div>
 		<!-- /box_general-->

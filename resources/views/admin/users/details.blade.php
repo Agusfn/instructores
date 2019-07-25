@@ -36,12 +36,18 @@
 			</form>
 
 			@if($user->reservations()->count() == 0)
-			<form action="{{ url('admin/usuarios/'.$user->id.'/eliminar') }}" method="POST" style="display: inline;">
+			<form action="{{ url('admin/usuarios/'.$user->id.'/eliminar') }}" method="POST" style="display: inline; margin-right: 20px">
 				@csrf
 				<button type="button" class="btn btn-danger btn-sm" onclick="if(confirm('¿ELIMINAR cuenta? No se podrá recuperar')) $(this).parent().submit();">Eliminar cuenta</button>
 			</form>
 			@endif
 
+			@if(!$user->hasSocialLogin() && !$user->hasVerifiedEmail())
+			<form action="{{ url('admin/usuarios/'.$user->id.'/resend-verification-email') }}" method="POST" style="display: inline;">
+				@csrf
+				<button type="button" class="btn btn-info btn-sm" onclick="if(confirm('¿Enviar mensaje de verificacion de e-mail?')) $(this).parent().submit();">Reenviar mail verif</button>
+			</form>
+			@endif
 
 		</div>
 
@@ -74,6 +80,9 @@
 									<div class="col-md-6">
 										<label><strong>E-mail</strong></label><br/>
 										{{ $user->email }}
+										@if(!$user->hasSocialLogin() && !$user->hasVerifiedEmail())
+										<span class="badge badge-warning">Pend. verif</span>
+										@endif
 									</div>
 								</div>
 
@@ -115,11 +124,19 @@
 							</div>
 							<div class="col-md-3">
 								<label><strong>Login con</strong></label><br/>
+								@if($user->hasSocialLogin())
 								{{ ucfirst($user->provider) }}
+								@else
+								Login normal
+								@endif
 							</div>
 							<div class="col-md-3">
 								<label><strong>ID red social</strong></label><br/>
+								@if($user->hasSocialLogin())
 								{{ $user->provider_id }}
+								@else
+								-
+								@endif
 							</div>
 						</div>
 					</div>

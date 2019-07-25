@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Mail\Instructor;
+namespace App\Mail;
 
+use App\User;
+use App\Instructor;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Carbon;
@@ -10,27 +12,41 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class WelcomeEmail extends Mailable
+class UserWelcomeEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
 
     /**
-     * @var App\Instructor
+     * User
+     * @var App\User
      */
-    public $instructor;
+    private $user;
+
+
+    /**
+     * Type of the user who is registering, to send the email.
+     * @var string
+     */
+    private $user_type;
 
 
     /**
      * Create a new message instance.
      *
+     * @param Illuminate\Foundation\Auth\User $user
      * @return void
      */
-    public function __construct($instructor)
+    public function __construct($user)
     {
-        $this->instructor = $instructor;
-    }
+        $this->user = $user;
 
+        if($user instanceof User)
+            $this->user_type = "user";
+        else
+            $this->user_type = "instructor";
+        
+    }
 
     /**
      * Build the message.
@@ -39,19 +55,15 @@ class WelcomeEmail extends Mailable
      */
     public function build()
     {
-        if($this->instructor->hasSocialLogin()) {
-
-            $this->subject("Bienvenido!");
-            return $this->view('emails.instructor.welcome');
-        }
-        else {
-            $this->subject("Bienvenido! Verifica tu e-mail para continuar.");
-            return $this->view('emails.instructor.welcome')->with("verification_url", $this->verificationUrl());
-        }
+        return $this->view('emails.'.$this->user_type.'.registered')->with([
+            "user" => $this->user, 
+            "verification_url" => $this->verificationUrl()
+        ]);
     }
 
+
     /**
-     * Get the verification URL for the instructor. 
+     * Get the verification URL for the user. 
      * In the URL obtained, "email" will go as the route parameter (the name of the key is alphabetically first) 
      * The rest will be as GET params.
      *
@@ -60,9 +72,9 @@ class WelcomeEmail extends Mailable
     protected function verificationUrl()
     {
         return URL::temporarySignedRoute(
-            'instructor.verify-email',
+            'verification.verify',
             Carbon::now()->addMinutes(Config::get('auth.verification.expire', 60)),
-            ['email' => $this->instructor->email]
+            ['type' => $this->user_type, 'email' => $this->user->email]
         );
     }
 
