@@ -156,8 +156,8 @@
 
             <div class="main_title_2" id="titulo2">
                 <span><em></em></span>
-                <h2>Por qué elegirnos</h2>
-                <p>Brindamos confianza</p>
+                <h2>Por qué la gente nos elige...</h2>
+                <p>Brindamos seguridad y confianza</p>
             </div>
 
             <div class="container">
