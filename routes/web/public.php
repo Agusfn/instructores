@@ -27,6 +27,8 @@ Route::post("buscar/resultados", "SearchInstructorsController@getResults"); // a
 Route::get("instructor/{service_number}", "InstructorServiceController@showDetails")->name("service-page");
 Route::post("instructor/{service_number}/calendar", "InstructorServiceController@fetchJsonCalendar"); // ajax
 
+// Review
+Route::post("instructor/{service_number}/comentario", "InstructorServiceController@leaveReview");
 
 // Reservation process
 Route::get("reservar/{service_number}", "ReservationsController@previewReservation");
@@ -36,6 +38,7 @@ Route::post("reservar/{service_number}/procesar", "ReservationsController@proces
 Route::get("reservar/resultado/{reservation_code}", "ReservationsController@showResult")->name("reservation.result");
 Route::get("reservar/{reservation_code}/reintentar-pago", "ReservationsController@retryPaymentForm")->name("reservation.retry-payment");
 Route::post("reservar/{reservation_code}/reintentar-pago", "ReservationsController@retryMpPayment");
+
 
 
 

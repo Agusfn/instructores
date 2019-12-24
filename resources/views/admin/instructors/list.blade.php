@@ -78,7 +78,7 @@
 							@foreach($instructors as $instructor)
 							<tr>
 								<td>
-									<a href="{{ route('admin.instructors.details', $instructor->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a>
+									<a href="{{ route('admin.instructors.account-details', $instructor->id) }}" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i></a>
 								</td>
 								<td><img src="{{ $instructor->getProfilePicUrl() }}" class="profile-pic" height="60"></td>
 								<td>{{ $instructor->name.' '.$instructor->surname }}</td>

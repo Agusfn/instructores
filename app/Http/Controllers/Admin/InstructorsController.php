@@ -29,13 +29,52 @@ class InstructorsController extends Controller
 	 */
 	public function list(InstructorFilters $filters)
 	{
-		$instructors = Instructor::with("wallet")
-		->filter($filters)
-		->paginate(15);
-
+		$instructors = Instructor::with("wallet")->filter($filters)->paginate(15);
 		return view("admin.instructors.list")->with("instructors", $instructors);
 	}
 
+
+
+	/**
+	 * Show details of the instructor account.
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
+	public function accountDetails($id)
+	{
+		$instructor = Instructor::findOrFail($id);
+		return view("admin.instructors.account-details")->with("instructor", $instructor);
+	}
+
+
+	/**
+	 * Show details of the instructor service.
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
+	public function serviceDetails($id)
+	{
+		$instructor = Instructor::findOrFail($id);
+		return view("admin.instructors.service-details")->with([
+			"instructor" => $instructor,
+			"service" => $instructor->service
+		]);
+	}
+
+
+	/**
+	 * Show details of the instructor balance and funds.
+	 * @param  [type] $id [description]
+	 * @return [type]     [description]
+	 */
+	public function balanceDetails($id)
+	{
+		$instructor = Instructor::findOrFail($id);
+		return view("admin.instructors.balance-details")->with([
+			"instructor" => $instructor,
+			"walletMovements" => $instructor->isApproved() ? $instructor->wallet->movements()->latest('date')->paginate(10) : null,
+		]);
+	}
 
 
 	/**
@@ -45,10 +84,7 @@ class InstructorsController extends Controller
 	 */
 	public function details($id)
 	{
-		$instructor = Instructor::with("service")->find($id);
-
-		if(!$instructor)
-			return redirect()->route("admin.instructors.list");
+		$instructor = Instructor::findOrFail($id);
 
 		return view("admin.instructors.details")->with([
 			"instructor" => $instructor,

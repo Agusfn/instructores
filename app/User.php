@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Reservation;
 use App\Filters\Filterable;
 use App\Mail\User\WelcomeEmail;
 use App\Mail\User\ResetPassword;
@@ -71,12 +72,25 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     }
 
 
-
-
+    /**
+     * Return the reservations that this user has made.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function reservations()
     {
         return $this->hasMany("App\Reservation");
     }
+
+
+    /**
+     * The reviews that this user has made to instructors.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reviews()
+    {
+        return $this->hasMany("App\InstructorReview");
+    }
+
 
 
     /**
@@ -109,6 +123,32 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     {
         Mail::to($this)->send(new ResetPassword($this, $token));
     }
+
+
+
+    /**
+     * Check if user can leave a review to a certain instructor by its id.
+     * For this, user must have at least 1 completed reservation to that instructor, and must not have left a review to him already.
+     *
+     * @param int $instructorId
+     * @return boolean
+     */
+    public function canLeaveReviewToInstructor($instructorId)
+    {
+        if($this->reservations()
+            ->where("status", Reservation::STATUS_CONCLUDED)
+            ->where("instructor_id", $instructorId)
+            ->count() == 0)
+            return false;
+
+        if($this->reviews()->where("instructor_id", $instructorId)->count() > 0)
+            return false;
+
+
+        return true;
+    }
+
+    
 }
 
 

@@ -90,10 +90,6 @@
                                     <ul>
                                         @if($service->allows_groups)
                                             <li><i class="fas fa-users"></i><span>Admite clases grupales de hasta {{ $service->max_group_size }} personas<span></li>
-                                            {{-- REMOVED, SERVICES NO LONGER HAVE GROUP DISCOUNTS, INSTEAD THEY HAVE SURCHARGES
-                                            @if($service->hasGroupDiscounts())
-                                            <li><i class="fas fa-percent"></i><span>Ofrece descuento por grupo</span></li>
-                                            @endif--}}
                                         @endif
 
                                         @if($service->offered_to_adults && $service->offered_to_kids)
@@ -158,63 +154,30 @@
                         </section>
                         <!-- /section -->
                     
-                        {{--<section id="reviews">
+                        <section id="reviews">
                             <h2>Comentarios</h2>
                             <div class="reviews-container">
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div id="review_summary">
-                                            <strong>8.5</strong>
-                                            <em>Superinstructor</em>
-                                            <small>4 comentarios</small>
+                                            <strong>{{ $instructor->review_stars_score ?: '-' }}</strong>
+                                            @if($instructor->review_stars_score > 4.5)<em>Superinstructor</em>@endif
+                                            <small>{{ $reviews->count() }} @if($reviews->count() > 1) comentarios @else comentario @endif</small>
                                         </div>
                                     </div>
                                     <div class="col-lg-9">
+
+                                        @foreach($instructor->getGroupedReviewScore() as $starCount => $starRatingInfo)
                                         <div class="row">
                                             <div class="col-lg-10 col-9">
                                                 <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-bar" role="progressbar" style="width: {{ $starRatingInfo['percentage'] }}%" aria-valuenow="{{ $starRatingInfo['percentage'] }}" aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2 col-3"><small><strong>5 stars</strong></small></div>
+                                            <div class="col-lg-2 col-3"><small><strong>{{ $starCount }} @if($starCount > 1) estrellas @else estrella @endif</strong></small></div>
                                         </div>
-                                        <!-- /row -->
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3"><small><strong>4 stars</strong></small></div>
-                                        </div>
-                                        <!-- /row -->
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3"><small><strong>3 stars</strong></small></div>
-                                        </div>
-                                        <!-- /row -->
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3"><small><strong>2 stars</strong></small></div>
-                                        </div>
-                                        <!-- /row -->
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3"><small><strong>1 stars</strong></small></div>
-                                        </div>
-                                        <!-- /row -->
+                                        @endforeach
+                                        
                                     </div>
                                 </div>
                                 <!-- /row -->
@@ -224,88 +187,86 @@
 
                             <div class="reviews-container">
 
-                                <div class="review-box clearfix">
-                                    <figure class="rev-thumb"><img src="{{ asset('resources/img/avatar1.jpg') }}" alt="">
-                                    </figure>
-                                    <div class="rev-content">
-                                        <div class="rating">
-                                            <i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
-                                        </div>
-                                        <div class="rev-info">
-                                            Juan – Julio 03, 2018:
-                                        </div>
-                                        <div class="rev-text">
-                                            <p>
-                                                Muy buena onda! gran instructor.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /review-box -->
-                                <div class="review-box clearfix">
-                                    <figure class="rev-thumb"><img src="{{ asset('resources/img/avatar2.jpg') }}" alt="">
-                                    </figure>
-                                    <div class="rev-content">
-                                        <div class="rating">
-                                            <i class="icon-star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star voted"></i><i class="icon_star"></i>
-                                        </div>
-                                        <div class="rev-info">
-                                            Lio Messi – Julio 21, 2018:
-                                        </div>
-                                        <div class="rev-text">
-                                            <p>
-                                                Ismael es un monstro. -10-
-                                            </p>
+                                @if($reviews->count() > 0)
+                                    @foreach($reviews as $review)
+                                    <div class="review-box clearfix">
+                                        <figure class="rev-thumb"><img src="{{ $review->user->getProfilePicUrl() }}" alt="{{ $review->user->name }}">
+                                        </figure>
+                                        <div class="rev-content">
+                                            <div class="rating">
+                                                @for($i=1; $i<=5; $i++)
+                                                <i class="icon_star {{ $i <= $review->rating_stars ? 'voted' : '' }}"></i>
+                                                @endfor
+                                            </div>
+                                            <div class="rev-info">
+                                                {{ $review->user->name }} – {{ $review->created_at->day }} {{ $review->created_at->shortMonthName }}, {{ $review->created_at->year }}.
+                                            </div>
+                                            <div class="rev-text">
+                                                <p>
+                                                    {{ $review->comment }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <!-- /review-box -->
+                                    @endforeach
+                                @else
+                                    <h4>Este instructor aún no tiene comentarios.</h4>
+                                @endif
+                                
                                 
                             </div>
                             <!-- /review-container -->
                         </section>
-                        <!-- /section -->
+
+
+                        @user
+                        @if(Auth::user()->canLeaveReviewToInstructor($instructor->id))
+
                         <hr>
 
                         <div class="add-review">
                             <h5>Dejar un comentario</h5>
-                            <form>
+                            <form action="{{ url('instructor/'.$service->number.'/comentario') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="service_number" value="{{ $service->number }}">
                                 <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label>Nombre y apellido*</label>
-                                        <input type="text" name="name_review" id="name_review" placeholder="" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label>Email *</label>
-                                        <input type="email" name="email_review" id="email_review" class="form-control">
-                                    </div>
                                     <div class="form-group col-md-6">
                                         <label>Calificación </label>
                                         <div class="custom-select-form">
-                                        <select name="rating_review" id="rating_review" class="wide">
-                                            <option value="1">1 (bajo)</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5" selected>5 (medio)</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10 (alto)</option>
-                                        </select>
+                                            <select name="rating" id="rating_review" class="form-control wide{{ $errors->review->has('rating') ? ' is-invalid' : '' }}">
+                                                <option value="-1" selected>Seleccionar</option>
+                                                <option value="1">1 (bajo)</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5 (alto)</option>
+                                            </select>
+                                            @if ($errors->review->has('rating'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->review->first('rating') }}</strong>
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="form-group col-md-12">
                                         <label>Comentario</label>
-                                        <textarea name="review_text" id="review_text" class="form-control" style="height:130px;"></textarea>
+                                        <textarea name="comment" id="review_text" class="form-control{{ $errors->review->has('comment') ? ' is-invalid' : '' }}" style="height:130px;"></textarea>
+                                        @if ($errors->review->has('comment'))
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $errors->review->first('comment') }}</strong>
+                                            </span>
+                                        @endif
                                     </div>
                                     <div class="form-group col-md-12 add_top_20">
-                                        <input type="submit" value="Submit" class="btn_1" id="submit-review">
+                                        <input type="submit" value="Enviar" class="btn_1" id="submit-review">
                                     </div>
                                 </div>
                             </form>
-                        </div>--}}
+                        </div>
+
+                        @endif
+                        @enduser
+
 
                     </div>
                     <!-- /col -->
@@ -315,7 +276,17 @@
                             <div class="price">
                                 <div id="price-from-label">Desde<br/></div>
                                 <span><span id="price-per-block"></span><small>/ bloque 2hs</small></span>
-                                {{--<div class="score"><span>Excelente<em>350 votos</em></span><strong>9.6</strong></div>--}}
+                                @if($instructor->review_stars_score)
+                                <div class="score">
+                                    @if($instructor->review_stars_score > 4.5)
+                                        <span>Excelente<em>{{ $reviews->count() }} votos</em></span>
+                                    @else
+                                        <span><em>{{ $reviews->count() }} votos</em><br/></span>
+                                    @endif
+                                    
+                                    <strong>{{ $instructor->review_stars_score }}</strong>
+                                </div>
+                                @endif
                             </div>
 
                             <form method="GET" action="{{ url('reservar/'.$service->number) }}" id="book-form">

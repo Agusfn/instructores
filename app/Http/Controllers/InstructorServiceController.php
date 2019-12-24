@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\InstructorReview;
 use App\Lib\Reservations;
 use App\InstructorService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class InstructorServiceController extends Controller
@@ -35,6 +37,7 @@ class InstructorServiceController extends Controller
 		return view("service")->with([
 			"service" => $service,
 			"instructor" => $service->instructor,
+			"reviews" => $service->instructor->reviews()->with("user")->orderBy("created_at", "DESC")->get(),
             "activityStartDate" => Reservations::getCurrentYearActivityStart(),
             "activityEndDate" => Reservations::getCurrentYearActivityEnd(),
             "setInitialDate" => $setInitialDate,
@@ -58,6 +61,42 @@ class InstructorServiceController extends Controller
 
 		return response()->json($service->getCalendarForDatepicker());
 
+	}
+
+
+
+	/**
+	 * Make a review to an instructor, as an user.
+	 * @return [type] [description]
+	 */
+	public function leaveReview(Request $request, $service_number)
+	{
+
+		$validator = Validator::make($request->all(), [
+			"rating" => "required|integer|between:1,5",
+			"comment" => "required"
+		]);
+
+		if($validator->fails()) {
+			return redirect()->back()->withErrors($validator, 'review');
+		}
+
+		$service = InstructorService::findActiveByNumber($service_number);
+
+		if(!$service || !Auth::guard("user")->check() || !Auth::user()->canLeaveReviewToInstructor($service->instructor_id))
+			return redirect()->route("home");
+
+
+		InstructorReview::create([
+			"instructor_id" => $service->instructor_id,
+			"user_id" => Auth::user()->id,
+			"rating_stars" => $request->rating,
+			"comment" => $request->comment
+		]);
+
+		$service->instructor->calculateReviewScore();
+
+		return redirect()->route("service-page", $service->number);
 	}
 
 

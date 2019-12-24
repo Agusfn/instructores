@@ -122,7 +122,7 @@ class SearchInstructorsController extends Controller
 	private function appendQuoteToEachResult($request, $paginatedResults, $date)
 	{
 
-		$services = $paginatedResults->items(); // full object results array
+		$services = $paginatedResults->items(); // results array with InstructorServices with all the properties, used to calculate the quote of each service.
 		$resultsArray = $paginatedResults->toArray(); // InstructorServices in array format to be returned as json, with sensible properties hidden.
 
 
@@ -142,6 +142,8 @@ class SearchInstructorsController extends Controller
 			$quote->calculate();
 			$resultsArray["data"][$i]["quote"]["classes_price"] = $quote->classesPrice;
 			$resultsArray["data"][$i]["quote"]["person_amt"] = $quote->personAmount;
+
+			$resultsArray["data"][$i]["instructor"]["review_count"] = $services[$i]->instructor->reviews()->count();
 		}
 
 		return $resultsArray;

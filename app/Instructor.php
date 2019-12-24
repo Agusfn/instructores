@@ -7,6 +7,7 @@ use App\InstructorWallet;
 use App\Lib\Reservations;
 use App\InstructorService;
 use App\Filters\Filterable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Instructor\WelcomeEmail;
 use App\Lib\Traits\HasProfilePicture;
@@ -51,7 +52,8 @@ class Instructor extends Authenticatable implements MustVerifyEmail, CanResetPas
     protected $visible = [
         "name",
         "profile_picture",
-        "level"
+        "level",
+        "review_stars_score"
 
     ];
 
@@ -129,28 +131,52 @@ class Instructor extends Authenticatable implements MustVerifyEmail, CanResetPas
     }
 
 
-
+    /**
+     * Return the associated InstructorMpAccount of this instructor.
+     * @return App\InstructorMpAccount|null
+     */
     public function mpAccount()
     {
         return $this->hasOne("App\InstructorMpAccount");
     }
 
+    /**
+     * Return the associated InstructorBankAccount of this instructor.
+     * @return App\InstructorBankAccount|null
+     */
     public function bankAccount()
     {
         return $this->hasOne("App\InstructorBankAccount");
     }
 
+    /**
+     * Return the associated InstructorWallet of this instructor.
+     * @return App\InstructorWallet|null
+     */
     public function wallet()
     {
         return $this->hasOne("App\InstructorWallet");
     }
 
 
+    /**
+     * Return the reservations made to this instructor.
+     * @return Illuminate\Database\Eloquent\Collection
+     */
     public function reservations()
     {
         return $this->hasMany("App\Reservation");
     }
 
+
+    /**
+     * Return the reviews made to this instructor.
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function reviews()
+    {
+        return $this->hasMany("App\InstructorReview");
+    }
 
 
     /**
@@ -294,6 +320,69 @@ class Instructor extends Authenticatable implements MustVerifyEmail, CanResetPas
         Mail::to($this)->send(new ResetPassword($this, $token));
     }
 
+
+
+    /**
+     * Return an array of the count and percentage of each of the 1-5 stars ratings.
+     * @return array
+     */
+    public function getGroupedReviewScore()
+    {
+        $ratings = DB::table("instructor_reviews")
+            ->selectRaw("COUNT(*) as count, rating_stars")
+            ->where("instructor_id", $this->id)
+            ->groupBy("rating_stars")
+            ->get()->toArray();
+
+        $totalRatings = 0;
+
+        foreach($ratings as $rating) {
+            $allRatings[$rating->rating_stars]["count"] = $rating->count;
+            $totalRatings += $rating->count;
+        }
+        
+        for($i = 5; $i > 0; $i--) 
+        {
+            if(!isset($allRatings[$i])) {
+                $allRatings[$i]["count"] = 0;
+                $allRatings[$i]["percentage"] = 0;
+            }
+            else {
+                $allRatings[$i]["percentage"] = round($allRatings[$i]["count"]/$totalRatings * 100);
+            }
+        }
+        
+        krsort($allRatings);
+        return $allRatings;
+    }
+
+
+
+    /**
+     * Calculate and set the average review score from all the reviews.
+     * @return null
+     */
+    public function calculateReviewScore()
+    {
+        $this->load("reviews");
+        $reviews = $this->reviews;
+
+        $sum = 0;
+        $count = 0;
+
+        foreach($reviews as $review) {
+            $sum += $review->rating_stars;
+            $count++;
+        }
+
+        if($count > 0)
+            $this->review_stars_score = round($sum / $count, 1);
+        else
+            $this->review_stars_score = null;
+
+
+        $this->save();
+    }
 
 
 

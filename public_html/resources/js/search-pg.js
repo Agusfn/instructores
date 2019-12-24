@@ -73,6 +73,7 @@ function search_response(response)
 
 function place_result(service)
 {
+	console.log(service);
 	var date_formatted = moment(date, "DD/MM/YYYY").format("DD-MM-YYYY");
 	var service_url = app_url + "instructor/" + service.number + "?discipline="+discipline+"&date="+date_formatted+"&adults="+qty_adults+"&kids="+qty_kids;
 	var profile_pic_url = app_url + "storage/img/instructors/" + service.instructor.profile_picture;
@@ -103,10 +104,24 @@ function place_result(service)
 				<!--p>Idiomas: Ingles/español</p-->\
 				<span class="price"> <strong>$' + service.quote.classes_price + '</strong> /2 horas de clase</span>\
 			</div>\
-			<!--ul>\
-				<li><div class="score"><span>Super instructor<em>350 Reseñas</em></span><strong>9.6</strong></div></li>\
-			</ul-->\
-		</div>\
+			';
+			if(service.instructor.review_stars_score != null) {
+				html += '\
+				<ul>\
+					<li>&nbsp;</li>\
+					';
+					if(service.instructor.review_stars_score > 4.5) {
+						html += '<li><div class="score"><span>Excelente<em>'+service.instructor.review_count+' Reseñas</em></span><strong>'+service.instructor.review_stars_score+'</strong></div></li>';
+					}
+					else {
+						html += '<li><div class="score"><span><em>'+service.instructor.review_count+' Reseñas</em><br/></span><strong>'+service.instructor.review_stars_score+'</strong></div></li>';
+					}
+					html += '\
+				</ul>\
+				';
+			}
+
+		html += '</div>\
 	</div>\
 	';
 

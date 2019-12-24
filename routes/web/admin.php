@@ -24,7 +24,13 @@ Route::get("admin", "Admin\HomeController@index")->name("admin.home");
 
 // Instructors
 Route::get("admin/instructores", "Admin\InstructorsController@list")->name("admin.instructors.list");
-Route::get("admin/instructores/{id}", "Admin\InstructorsController@details")->name("admin.instructors.details");
+
+Route::get("admin/instructores/{id}/cuenta", "Admin\InstructorsController@accountDetails")->name("admin.instructors.account-details");
+Route::get("admin/instructores/{id}/servicio", "Admin\InstructorsController@serviceDetails")->name("admin.instructors.service-details");
+Route::get("admin/instructores/{id}/saldo", "Admin\InstructorsController@balanceDetails")->name("admin.instructors.balance-details");
+Route::get("admin/instructores/{id}/calificaciones", "Admin\InstructorsController@reviewDetails")->name("admin.instructors.review-details");
+
+
 Route::post("admin/instructores/{id}/aprobar", "Admin\InstructorsController@approve");
 Route::post("admin/instructores/{id}/rechazar_doc", "Admin\InstructorsController@rejectDocs");
 Route::get("admin/instructores/{id}/documentos/{filename}", "Admin\InstructorsController@displayDocumentImg")->name("admin.instructors.documents");
