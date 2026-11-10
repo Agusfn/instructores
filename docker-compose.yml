@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    # Demo-only defaults; no .env file required. Override via shell env or a compose .env.
+    environment:
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_KEY: ${APP_KEY:-}
+      DB_DATABASE: ${DB_DATABASE:-instructores}
+      DB_USERNAME: ${DB_USERNAME:-instructores}
+      DB_PASSWORD: ${DB_PASSWORD:-instructores-demo}
+      MAIL_DRIVER: ${MAIL_DRIVER:-log}
+      MP_ACCESS_TOKEN: ${MP_ACCESS_TOKEN:-TEST-placeholder-access-token}
+      MP_PUBLIC_KEY: ${MP_PUBLIC_KEY:-TEST-placeholder-public-key}
+      FACEBOOK_APP_ID: ${FACEBOOK_APP_ID:-placeholder}
+      FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET:-placeholder}
+      GOOGLE_APP_ID: ${GOOGLE_APP_ID:-placeholder}
+      GOOGLE_APP_SECRET: ${GOOGLE_APP_SECRET:-placeholder}
+    volumes:
+      - dbdata:/var/lib/mysql
+      # Uploaded files (profile pictures, instructor documents, service images)
+      - appstorage:/var/www/app/storage/app
+
+volumes:
+  dbdata:
+  appstorage:
